@@ -1,0 +1,90 @@
+/* Calendar Cell Styles */
+.calendar-cell {
+  position: relative;
+  height: 2.5rem;
+  border-bottom: 1px solid var(--border-light);
+  border-left: 1px solid var(--border-light);
+  cursor: crosshair;
+  transition: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-primary);
+}
+
+.calendar-cell:hover {
+  box-shadow: var(--shadow-subtle);
+  border-color: var(--border-medium);
+}
+
+.cell-inner {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  pointer-events: none;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+/* Use CSS for completion pattern instead of inline styles */
+.cell-completed .cell-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--tick-color, #16a34a33) 0 8px,
+    transparent 8px 16px
+  );
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Dynamic tick color via CSS variable */
+.cell-inner[data-tick-color]::after {
+  --tick-color: attr(data-tick-color);
+}
+
+.cell-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: white;
+  font-weight: 500;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+  padding: 0 0.25rem;
+  text-align: center;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell-hint {
+  opacity: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--text-light);
+  padding-left: 0.25rem;
+  padding-top: 0.25rem;
+  user-select: none;
+  transition: opacity 0.2s ease;
+  font-weight: 400;
+}
+
+.calendar-cell:hover .cell-hint {
+  opacity: 1;
+}
+
+/* Batch paint operations with will-change */
+.calendar-cell.painting {
+  will-change: background-color;
+}
+
+/* Optimize rendering with GPU acceleration for scrolling */
+.calendar-grid-container {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
