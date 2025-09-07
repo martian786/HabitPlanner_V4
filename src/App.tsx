@@ -294,8 +294,8 @@ function AuthScreen() {
   }
 
   return (
-    <div className="min-h-screen grid place-items-center p-8">
-      <div className="rounded-2xl border p-6 max-w-sm w-full space-y-4 bg-white">
+    <div className="min-h-screen grid place-items-center p-8 bg-pink-100">
+      <div className="rounded-2xl border-pink-300 border-2 p-6 max-w-sm w-full space-y-4 bg-pink-50 shadow-lg">
         <h1 className="text-xl font-semibold">{isSignUp ? "Sign up" : "Sign in"}</h1>
         
         <div className="space-y-3">
