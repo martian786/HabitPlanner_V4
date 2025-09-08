@@ -3,9 +3,10 @@ import { supabase } from "./lib/supabase";
 import type { Session } from "@supabase/supabase-js";
 import { useDataService } from "./hooks/useDataService";
 import { DataService, MAX_OBJECTIVE_NAME_LENGTH } from "./lib/dataService";
+import habitblockLogo from "./assets/habitblock-logo.png";
 
 /*************************************************
- * My Time Palette + Supabase (Auth + DB)
+ * Habitblock + Supabase (Auth + DB)
  *************************************************/
 
 /********************** Utilities **********************/
@@ -1289,76 +1290,151 @@ function AuthenticatedApp({ session }: { session: Session }) {
   return (
     <div className="min-h-screen w-full bg-white text-slate-900">
       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-xl bg-slate-900 text-white grid place-items-center font-bold">MP</div>
-            <div>
-              <h1 className="text-xl font-semibold leading-tight">My Time Palette</h1>
-              <input type="text" value={planName} onChange={(e) => setPlanName(e.target.value)} placeholder="Name your plan…" className="mt-1 text-sm border-b border-slate-300 focus:border-slate-600 outline-none bg-transparent px-1 py-0.5" />
-              <p className="text-xs text-slate-500">Click an objective to select, then paint your week.</p>
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <img src={habitblockLogo} alt="Habitblock" className="h-8 w-auto" />
+                <div>
+                  <h1 className="text-xl font-semibold leading-tight">Habitblock</h1>
+                  <p className="text-xs text-slate-500 font-medium">My secret to success</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 sm:hidden">
+                <a
+                  href="/analytics"
+                  className="p-2 rounded-lg border hover:bg-slate-100"
+                  aria-label="View analytics"
+                >
+                  📊
+                </a>
+                <button
+                  onClick={() => setSettingsPanelOpen(!settingsPanelOpen)}
+                  className="p-2 rounded-lg border hover:bg-slate-100"
+                  aria-label="Toggle settings"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.51-1V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  </svg>
+                </button>
+                <div className="relative user-menu">
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="w-8 h-8 rounded-full bg-slate-700 text-white flex items-center justify-center hover:bg-slate-800"
+                    aria-label="Toggle user menu"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </button>
+                  
+                  {userMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-slate-200 rounded-lg shadow-lg z-50">
+                      <div className="p-3 border-b border-slate-100">
+                        <div className="text-sm font-medium text-slate-900">Signed in as</div>
+                        <div className="text-sm text-slate-600 truncate">{session.user.email}</div>
+                      </div>
+                      <div className="p-1">
+                        <button
+                          onClick={async () => {
+                            setUserMenuOpen(false);
+                            console.log("Signing out and clearing all data");
+                            // Clear all localStorage data
+                            localStorage.clear();
+                            // Sign out from Supabase with Google session clearing
+                            await supabase.auth.signOut({
+                              scope: 'global' // This attempts to clear Google session too
+                            });
+                            // Force page reload to ensure clean state
+                            window.location.reload();
+                          }}
+                          className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md"
+                          aria-label="Sign out"
+                        >
+                          Sign out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a
-              href="/analytics"
-              className="px-3 py-1.5 rounded-lg border hover:bg-slate-100 text-sm"
-              aria-label="View analytics"
-            >
-              📊 Analytics
-            </a>
-            <button
-              onClick={() => setSettingsPanelOpen(!settingsPanelOpen)}
-              className="p-2 rounded-lg border hover:bg-slate-100"
-              aria-label="Toggle settings"
-              title="Settings"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.51-1V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-            </button>
-            <div className="relative user-menu">
+            
+            <div className="sm:flex-1 sm:max-w-md">
+              <input 
+                type="text" 
+                value={planName} 
+                onChange={(e) => setPlanName(e.target.value)} 
+                placeholder="Name your plan…" 
+                className="w-full text-sm border-b border-slate-300 focus:border-slate-600 outline-none bg-transparent px-1 py-1" 
+              />
+              <p className="text-xs text-slate-500 mt-1">Click an objective to select, then paint your week.</p>
+            </div>
+            
+            <div className="hidden sm:flex items-center gap-3">
+              <a
+                href="/analytics"
+                className="px-3 py-1.5 rounded-lg border hover:bg-slate-100 text-sm"
+                aria-label="View analytics"
+              >
+                📊 Analytics
+              </a>
               <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="w-8 h-8 rounded-full bg-slate-700 text-white flex items-center justify-center hover:bg-slate-800"
-                aria-label="Toggle user menu"
-                title="User menu"
+                onClick={() => setSettingsPanelOpen(!settingsPanelOpen)}
+                className="p-2 rounded-lg border hover:bg-slate-100"
+                aria-label="Toggle settings"
+                title="Settings"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.51-1V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
               </button>
-              
-              {userMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-slate-200 rounded-lg shadow-lg z-50">
-                  <div className="p-3 border-b border-slate-100">
-                    <div className="text-sm font-medium text-slate-900">Signed in as</div>
-                    <div className="text-sm text-slate-600 truncate">{session.user.email}</div>
+              <div className="relative user-menu">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="w-8 h-8 rounded-full bg-slate-700 text-white flex items-center justify-center hover:bg-slate-800"
+                  aria-label="Toggle user menu"
+                  title="User menu"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </button>
+                
+                {userMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-slate-200 rounded-lg shadow-lg z-50">
+                    <div className="p-3 border-b border-slate-100">
+                      <div className="text-sm font-medium text-slate-900">Signed in as</div>
+                      <div className="text-sm text-slate-600 truncate">{session.user.email}</div>
+                    </div>
+                    <div className="p-1">
+                      <button
+                        onClick={async () => {
+                          setUserMenuOpen(false);
+                          console.log("Signing out and clearing all data");
+                          // Clear all localStorage data
+                          localStorage.clear();
+                          // Sign out from Supabase with Google session clearing
+                          await supabase.auth.signOut({
+                            scope: 'global' // This attempts to clear Google session too
+                          });
+                          // Force page reload to ensure clean state
+                          window.location.reload();
+                        }}
+                        className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md"
+                        aria-label="Sign out"
+                      >
+                        Sign out
+                      </button>
+                    </div>
                   </div>
-                  <div className="p-1">
-                    <button
-                      onClick={async () => {
-                        setUserMenuOpen(false);
-                        console.log("Signing out and clearing all data");
-                        // Clear all localStorage data
-                        localStorage.clear();
-                        // Sign out from Supabase with Google session clearing
-                        await supabase.auth.signOut({
-                          scope: 'global' // This attempts to clear Google session too
-                        });
-                        // Force page reload to ensure clean state
-                        window.location.reload();
-                      }}
-                      className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md"
-                      aria-label="Sign out"
-                    >
-                      Sign out
-                    </button>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -1483,8 +1559,15 @@ function AuthenticatedApp({ session }: { session: Session }) {
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setBrush(o.id); } }}>
                     <button
                       onClick={(e) => { e.stopPropagation(); confirmAndDeleteObjective(o); }}
-                      className="h-7 w-7 grid place-items-center rounded-md text-xs leading-none p-0 hover:bg-red-50 hover:text-red-600 absolute left-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                      aria-label={`Delete ${o.name}`} title="Delete objective">🗑</button>
+                      className="h-7 w-7 grid place-items-center rounded-md text-xs leading-none p-0 hover:bg-red-50 hover:text-red-600 absolute left-2 opacity-100 xl:opacity-0 xl:group-hover:opacity-100 transition-opacity"
+                      aria-label={`Delete ${o.name}`} title="Delete objective">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3,6 5,6 21,6"></polyline>
+                        <path d="M19,6V20a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6M8,6V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2V6"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                    </button>
                     <div className="h-6 w-6 rounded-md border" style={{ background: o.color }} />
                     {editingObjectiveId === o.id ? (
                       <input type="text" 
@@ -2038,7 +2121,8 @@ function AuthenticatedApp({ session }: { session: Session }) {
                   </div>
 
                   <div className="flex flex-col gap-2 text-sm">
-                    <button onClick={exportData} className="px-3 py-2 rounded-xl border hover:bg-slate-100" aria-label="Export as JSON">Export JSON</button>
+                    {/* Updated styling to match Import JSON */}
+                    <button onClick={exportData} className="btn-unstyled px-3 py-2 rounded-xl border cursor-pointer hover:bg-slate-100 text-center" aria-label="Export as JSON">Export JSON</button>
                     <label className="px-3 py-2 rounded-xl border cursor-pointer hover:bg-slate-100 text-center" title="Import from a JSON file">Import JSON
                       <input aria-label="Import JSON file" type="file" accept="application/json" onChange={(e) => (e.target.files && (e.target.files[0])) && importData(e.target.files[0])} className="hidden" />
                     </label>
@@ -2049,7 +2133,7 @@ function AuthenticatedApp({ session }: { session: Session }) {
                         // Always load all objectives (including archived) so we don't lose data
                         await dataService.loadObjectives(true);
                       }}
-                      className="px-3 py-2 rounded-xl border hover:bg-slate-100"
+                      className="btn-unstyled px-3 py-2 rounded-xl border cursor-pointer hover:bg-slate-100 text-center"
                       aria-label={dataService.userPreferences?.show_archived ? "Hide archived objectives" : "Show archived objectives"}
                     >
                       {dataService.userPreferences?.show_archived ? "Hide" : "Show"} Archive ({dataService.objectives.filter(o => o?.archived).length})
