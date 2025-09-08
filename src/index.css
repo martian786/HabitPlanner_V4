@@ -63,9 +63,9 @@
 }
 
 /* Unified Button Styles - Single Source of Truth */
-button,
-input[type="button"],
-input[type="submit"],
+button:not(.btn-unstyled),
+input[type="button"]:not(.btn-unstyled),
+input[type="submit"]:not(.btn-unstyled),
 .btn {
   font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
@@ -79,9 +79,9 @@ input[type="submit"],
   cursor: pointer !important;
 }
 
-button:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover,
+button:not(.btn-unstyled):hover,
+input[type="button"]:not(.btn-unstyled):hover,
+input[type="submit"]:not(.btn-unstyled):hover,
 .btn:hover {
   background-color: #eeeeee !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
@@ -113,3 +113,4 @@ button.bg-slate-900:hover,
   background-color: #0f172a !important;
   color: white !important;
 }
+
