@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features - Habitblock</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --color-rich-black: #03071eff;
+      --color-chocolate-cosmos: #370617ff;
+      --color-rosewood: #6a040fff;
+      --color-penn-red: #9d0208ff;
+      --color-engineering-orange: #d00000ff;
+      --color-sinopia: #dc2f02ff;
+      --color-persimmon: #e85d04ff;
+      --color-princeton-orange: #f48c06ff;
+      --color-orange-web: #faa307ff;
+      --color-selective-yellow: #ffba08ff;
+    }
+
+    .bg-gradient-white-yellow {
+      background: linear-gradient(to bottom, white, var(--color-selective-yellow));
+    }
+
+    .bg-card-gradient {
+      background: linear-gradient(145deg, #FFF, #FFA770);
+    }
+
+    .bg-rich-black { background-color: var(--color-rich-black); }
+    .text-rich-black { color: var(--color-rich-black); }
+    .bg-penn-red { background-color: var(--color-penn-red); }
+    .text-penn-red { color: var(--color-penn-red); }
+    .bg-engineering-orange { background-color: var(--color-engineering-orange); }
+    .text-engineering-orange { color: var(--color-engineering-orange); }
+    .bg-persimmon { background-color: var(--color-persimmon); }
+    .text-persimmon { color: var(--color-persimmon); }
+    .bg-princeton-orange { background-color: var(--color-princeton-orange); }
+    .text-princeton-orange { color: var(--color-princeton-orange); }
+    .bg-orange-web { background-color: var(--color-orange-web); }
+    .text-orange-web { color: var(--color-orange-web); }
+    .bg-selective-yellow { background-color: var(--color-selective-yellow); }
+    .text-selective-yellow { color: var(--color-selective-yellow); }
+
+    .mobile-menu {
+      display: none;
+    }
+    .mobile-menu.show {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gradient-white-yellow text-rich-black font-sans">
+
+  <!-- Header Section -->
+  <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center">
+      <div class="font-bold text-3xl">Habitblock</div>
+      <nav class="hidden md:flex space-x-8 text-lg font-medium">
+        <a href="index.html" class="hover:text-penn-red transition duration-300">Home</a>
+        <a href="features.html" class="text-penn-red font-semibold">Features</a>
+        <a href="pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+        <a href="about.html" class="hover:text-penn-red transition duration-300">About</a>
+        <a href="contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="../index.html" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300">
+          Login
+        </a>
+        <button class="md:hidden focus:outline-none" onclick="toggleMobileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rich-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4">
+      <nav class="flex flex-col space-y-4">
+        <a href="index.html" class="hover:text-penn-red transition duration-300">Home</a>
+        <a href="features.html" class="text-penn-red font-semibold">Features</a>
+        <a href="pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+        <a href="about.html" class="hover:text-penn-red transition duration-300">About</a>
+        <a href="contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
+        <a href="../index.html" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300">
+          Login
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="py-20 px-6 text-center">
+    <div class="container mx-auto max-w-4xl">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6">
+        Features That Solve <span class="text-penn-red">Real Problems</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto">
+        Stop struggling with overwhelm, procrastination, and tools that don't fit your life. Habitblock addresses the real challenges that keep you stuck.
+      </p>
+    </div>
+  </section>
+
+  <!-- Overcoming Procrastination & Finding Focus Section -->
+  <section class="py-20 px-6">
+    <div class="container mx-auto max-w-6xl">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Overcoming Procrastination & Finding Focus</h2>
+        <p class="text-xl text-gray-700 max-w-4xl mx-auto">
+          People who struggle with procrastination often feel overwhelmed before they even start. They get stuck trying to figure out what to do and when to do it.
+        </p>
+      </div>
+      
+      <div class="mb-16">
+        <div class="text-center mb-12">
+          <h3 class="text-3xl font-bold mb-6 text-penn-red">🎨 Making Planning Effortless</h3>
+          <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto">
+            Instead of facing a daunting blank page, our <strong>Drag & Paint Interface</strong> lets you visually block out your time in seconds. It's as simple and intuitive as sketching your day, making the first step of planning feel easy and even fun.
+          </p>
+          <div class="flex flex-wrap justify-center gap-8 mb-12">
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">Paint your schedule like sketching on a canvas</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">No complex forms or overwhelming menus</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">Visual time blocks that make sense instantly</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-card-gradient rounded-2xl shadow-xl overflow-hidden max-w-4xl mx-auto">
+          <div class="relative aspect-video -m-2">
+            <video 
+              class="w-full h-full object-fill rounded-2xl" 
+              autoplay 
+              loop 
+              muted 
+              playsinline
+              poster=""
+            >
+              <source src="assets/Paint_blocks.mp4" type="video/mp4">
+              <div class="text-6xl flex items-center justify-center h-64">🎨</div>
+            </video>
+          </div>
+          <div class="p-8">
+            <p class="text-center text-gray-700 italic text-lg">
+              "Planning should feel like painting your perfect week, not filling out forms."
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mb-16">
+        <div class="text-center mb-12">
+          <h3 class="text-3xl font-bold mb-6 text-penn-red">⚡ Removing Friction</h3>
+          <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto">
+            Our <strong>Lightning-Fast Productivity Tools</strong> eliminate the small hesitations that lead to procrastination. With simple keyboard shortcuts and batch operations, you can build an entire week in a few clicks. It gets you from idea to action without a second thought.
+          </p>
+          <div class="flex flex-wrap justify-center gap-8 mb-12">
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">Number keys (1-9) for instant objective selection</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">Copy entire weeks with batch operations</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">Alt+E eraser mode for instant corrections</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-card-gradient rounded-2xl shadow-xl overflow-hidden max-w-4xl mx-auto">
+          <div class="relative aspect-video -m-2">
+            <video 
+              class="w-full h-full object-fill rounded-2xl" 
+              autoplay 
+              loop 
+              muted 
+              playsinline
+              poster=""
+            >
+              <source src="assets/Erase_blocks.mp4" type="video/mp4">
+              <div class="text-6xl flex items-center justify-center h-64">⚡</div>
+            </video>
+          </div>
+          <div class="p-8">
+            <p class="text-center text-gray-700 italic text-lg">
+              "From idea to action without a second thought - no more small hesitations that lead to procrastination."
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Building Discipline & Seeing Results Section -->
+  <section class="py-20 px-6 bg-white">
+    <div class="container mx-auto max-w-6xl">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Building Discipline & Seeing Results</h2>
+        <p class="text-xl text-gray-700 max-w-4xl mx-auto">
+          The biggest challenge for people who lack discipline is seeing their efforts pay off. It's hard to stay motivated when you don't feel like you're making real progress.
+        </p>
+      </div>
+      
+      <div class="mb-16">
+        <div class="text-center mb-12">
+          <h3 class="text-3xl font-bold mb-6 text-penn-red">📊 Providing Undeniable Proof</h3>
+          <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto">
+            Our <strong>Powerful Analytics & Insights</strong> give you a clear, visual dashboard of your success. You don't have to just hope you're improving—you can see exactly how many hours you invested and your completion rates, which provides tangible proof that your hard work is paying off.
+          </p>
+          <div class="flex flex-wrap justify-center gap-8 mb-12">
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">Clear visual dashboard of your success metrics</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">Exact hours invested and completion percentages</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-penn-red mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="font-bold">Tangible proof your hard work is paying off</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-card-gradient rounded-2xl shadow-xl overflow-hidden max-w-4xl mx-auto">
+          <div class="relative aspect-video -m-2">
+            <video 
+              class="w-full h-full object-fill rounded-2xl" 
+              autoplay 
+              loop 
+              muted 
+              playsinline
+              poster=""
+            >
+              <source src="assets/Weekly_summary_blocks.mp4" type="video/mp4">
+              <div class="text-6xl flex items-center justify-center h-64">📊</div>
+            </video>
+          </div>
+          <div class="p-8">
+            <p class="text-center text-gray-700 italic text-lg">
+              "You don't have to just hope you're improving—you can see exactly how your efforts translate into results."
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="order-2 lg:order-1 bg-card-gradient p-8 rounded-2xl shadow-xl">
+          <div class="text-6xl text-center mb-4">🎮</div>
+          <p class="text-center text-gray-700 italic">
+            "Seeing your progress over time makes it easier to stay consistent and gives you reasons to celebrate your wins."
+          </p>
+        </div>
+        <div class="order-1 lg:order-2">
+          <h3 class="text-3xl font-bold mb-6 text-penn-red">🎮 Turning Consistency Into a Game</h3>
+          <p class="text-lg text-gray-700 mb-6">
+            The <strong>Visual Charts</strong> transform your discipline into a rewarding journey. Seeing your progress over time makes it easier to stay consistent and gives you a reason to celebrate your wins, no matter how small.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Beautiful progress charts that celebrate every win</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Historic trend analysis to track long-term growth</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Motivation through visual progress rewards</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Turning Setbacks into Growth Section -->
+  <section class="py-20 px-6">
+    <div class="container mx-auto max-w-6xl">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Turning Setbacks into Growth</h2>
+        <p class="text-xl text-gray-700 max-w-4xl mx-auto">
+          Everyone has off days. People who are trying to be more structured often feel immense guilt or failure when they fall off track, which can cause them to give up entirely.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-16">
+        <div>
+          <h3 class="text-3xl font-bold mb-6 text-penn-red">🧘 Encouraging Reflection, Not Judgment</h3>
+          <p class="text-lg text-gray-700 mb-6">
+            Our <strong>Built-in Reflection System</strong> guides you to think about what went well and what you can improve. Instead of just tracking what you did, you'll learn why you did it, turning every setback into a valuable lesson for your personal growth.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Weekly check-ins focused on learning, not judging</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Structured prompts for achievements and improvements</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Turn every setback into a stepping stone forward</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-card-gradient p-8 rounded-2xl shadow-xl">
+          <div class="text-6xl text-center mb-4">🧘</div>
+          <p class="text-center text-gray-700 italic">
+            "Instead of just tracking what you did, you'll learn why you did it—turning setbacks into valuable lessons."
+          </p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="order-2 lg:order-1 bg-card-gradient p-8 rounded-2xl shadow-xl">
+          <div class="text-6xl text-center mb-4">💙</div>
+          <p class="text-center text-gray-700 italic">
+            "Build a routine that genuinely makes you feel better, not just one you feel obligated to follow."
+          </p>
+        </div>
+        <div class="order-1 lg:order-2">
+          <h3 class="text-3xl font-bold mb-6 text-penn-red">💙 Connecting Habits to How You Feel</h3>
+          <p class="text-lg text-gray-700 mb-6">
+            By tracking your mood alongside your productivity, you can learn to recognize patterns and build a routine that genuinely makes you feel better, not just one you feel obligated to follow.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Simple emoji-based mood tracking</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Recognize patterns between mood and productivity</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Build routines based on what makes you feel good</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A Tool That Works for Your Life Section -->
+  <section class="py-20 px-6 bg-white">
+    <div class="container mx-auto max-w-6xl">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">A Tool That Works for Your Life</h2>
+        <p class="text-xl text-gray-700 max-w-4xl mx-auto">
+          Many planning tools are too rigid or complex, adding to the stress of a busy life.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-16">
+        <div class="order-2 lg:order-1 bg-card-gradient p-8 rounded-2xl shadow-xl">
+          <div class="text-6xl text-center mb-4">🎛️</div>
+          <p class="text-center text-gray-700 italic">
+            "Make it your own—the tool helps you, not the other way around."
+          </p>
+        </div>
+        <div class="order-1 lg:order-2">
+          <h3 class="text-3xl font-bold mb-6 text-penn-red">🎛️ Adapting to Your Style</h3>
+          <p class="text-lg text-gray-700 mb-6">
+            Our <strong>Advanced Planning Features</strong> allow you to customize everything from your week's start day to your time slots. You can make it your own, ensuring the tool helps you, not the other way around.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Flexible week views (Monday or Sunday start)</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Customizable time slots and daily ranges</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Archive system that preserves your history</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <h3 class="text-3xl font-bold mb-6 text-penn-red">📱 Being There for You, Everywhere</h3>
+          <p class="text-lg text-gray-700 mb-6">
+            With its <strong>Mobile-Optimized Experience</strong> and Real-time Sync, Habitblock is ready whenever you are, whether you're planning at your desk or checking your progress on the go.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Works seamlessly on desktop and mobile</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Real-time sync keeps everything up to date</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Touch-optimized for mobile planning</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-card-gradient p-8 rounded-2xl shadow-xl">
+          <div class="text-6xl text-center mb-4">📱</div>
+          <p class="text-center text-gray-700 italic">
+            "Ready whenever you are—plan at your desk or check progress on the go."
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enterprise-Grade Security Section -->
+  <section class="py-20 px-6">
+    <div class="container mx-auto max-w-6xl">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="order-2 lg:order-1 bg-card-gradient p-8 rounded-2xl shadow-xl">
+          <div class="text-6xl text-center mb-4">🔐</div>
+          <p class="text-center text-gray-700 italic">
+            "Plan with confidence knowing your data is protected by enterprise-grade security and never sold to third parties."
+          </p>
+        </div>
+        <div class="order-1 lg:order-2">
+          <h2 class="text-4xl font-bold mb-6">🔐 Enterprise-Grade Security & Privacy</h2>
+          <p class="text-lg text-gray-700 mb-6">
+            Your planning data is deeply personal and deserves the highest level of protection. We use industry-leading security practices and never monetize your information.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Encrypted data storage with Supabase backend</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Google OAuth and secure authentication</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>Full data export - your information stays yours</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-6 h-6 text-penn-red mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>No ads, no data selling - privacy-first business model</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-6 text-center">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6">
+        Ready to Overcome <span class="text-penn-red">Your Biggest Challenges</span>?
+      </h2>
+      <p class="text-xl text-gray-700 mb-8">
+        Stop struggling with procrastination, lack of progress visibility, and tools that don't fit your life. Transform your productivity starting today.
+      </p>
+      <div class="flex justify-center space-x-6">
+        <a href="../index.html" class="bg-penn-red text-white font-bold py-4 px-10 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80">
+          Start Free Trial
+        </a>
+        <a href="pricing.html" class="border-2 border-penn-red text-penn-red font-bold py-4 px-10 rounded-full transition duration-300 ease-in-out transform hover:bg-penn-red hover:text-white">
+          View Pricing
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 text-center text-gray-500 text-sm">
+    <p>&copy; 2024 Brightsun AI Ltd. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('show');
+    }
+  </script>
+
+</body>
+</html>

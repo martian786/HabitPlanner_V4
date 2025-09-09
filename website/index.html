@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habitblock - Your Secret to Success</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom color palette from user-provided hex values */
+    :root {
+      --color-rich-black: #03071eff;
+      --color-chocolate-cosmos: #370617ff;
+      --color-rosewood: #6a040fff;
+      --color-penn-red: #9d0208ff;
+      --color-engineering-orange: #d00000ff;
+      --color-sinopia: #dc2f02ff;
+      --color-persimmon: #e85d04ff;
+      --color-princeton-orange: #f48c06ff;
+      --color-orange-web: #faa307ff;
+      --color-selective-yellow: #ffba08ff;
+    }
+
+    /* Apply a subtle white-to-yellow gradient to the body */
+    .bg-gradient-white-yellow {
+      background: linear-gradient(to bottom, white, var(--color-selective-yellow));
+    }
+
+    /* New gradient for the cards */
+    .bg-card-gradient {
+      background: linear-gradient(145deg, #FFF, #FFA770);
+    }
+
+    .bg-rich-black { background-color: var(--color-rich-black); }
+    .text-rich-black { color: var(--color-rich-black); }
+    .bg-penn-red { background-color: var(--color-penn-red); }
+    .text-penn-red { color: var(--color-penn-red); }
+    .bg-engineering-orange { background-color: var(--color-engineering-orange); }
+    .text-engineering-orange { color: var(--color-engineering-orange); }
+    .bg-persimmon { background-color: var(--color-persimmon); }
+    .text-persimmon { color: var(--color-persimmon); }
+    .bg-princeton-orange { background-color: var(--color-princeton-orange); }
+    .text-princeton-orange { color: var(--color-princeton-orange); }
+    .bg-orange-web { background-color: var(--color-orange-web); }
+    .text-orange-web { color: var(--color-orange-web); }
+    .bg-selective-yellow { background-color: var(--color-selective-yellow); }
+    .text-selective-yellow { color: var(--color-selective-yellow); }
+
+    /* Mobile menu styles */
+    .mobile-menu {
+      display: none;
+    }
+    .mobile-menu.show {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gradient-white-yellow text-rich-black font-sans">
+
+  <!-- Header Section -->
+  <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center">
+      <div class="font-bold text-3xl">Habitblock</div>
+      <nav class="hidden md:flex space-x-8 text-lg font-medium">
+        <a href="index.html" class="hover:text-penn-red transition duration-300">Home</a>
+        <a href="features.html" class="hover:text-penn-red transition duration-300">Features</a>
+        <a href="pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+        <a href="about.html" class="hover:text-penn-red transition duration-300">About</a>
+        <a href="contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="../index.html" class="font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300 text-white" style="background-color: #D00000;">
+          Login
+        </a>
+        <button class="md:hidden focus:outline-none" onclick="toggleMobileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rich-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4">
+      <nav class="flex flex-col space-y-4">
+        <a href="index.html" class="hover:text-penn-red transition duration-300">Home</a>
+        <a href="features.html" class="hover:text-penn-red transition duration-300">Features</a>
+        <a href="pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+        <a href="about.html" class="hover:text-penn-red transition duration-300">About</a>
+        <a href="contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
+        <a href="../index.html" class="text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300" style="background-color: #D00000;">
+          Login
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="py-24 px-6 text-center">
+    <div class="container mx-auto max-w-5xl">
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight">
+        Your secret to success
+      </h1>
+      <p class="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-gray-700">
+        Stop feeling overwhelmed by an endless to-do list. <strong>Habitblock</strong> turns your chaos into clarity by making planning feel effortless.
+      </p>
+      <div class="mt-10 flex justify-center">
+        <a href="../index.html" class="text-white font-bold py-4 px-12 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80" style="background-color: #D00000;">
+          Start 7-day free trial
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- How Habitblock Solves Your Biggest Challenges Section -->
+  <section class="py-20 px-6">
+    <div class="container mx-auto max-w-5xl text-center">
+      <h2 class="text-4xl md:text-5xl font-bold mb-12">How Habitblock Solves Your Biggest Challenges</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+
+        <!-- Card 1: Overcoming Procrastination & Finding Focus -->
+        <div class="p-8 rounded-xl transition duration-300 ease-in-out transform hover:-translate-y-2">
+          <div class="bg-penn-red rounded-full w-20 h-20 mx-auto flex items-center justify-center text-white text-4xl mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-4 0V3m-4 2V3m4 2V3m0 0a2 2 0 012-2h2a2 2 0 012 2v2m-4-2H9m4 0h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Effortless Planning</h3>
+          <p class="text-lg text-gray-700">
+            Our <strong>visual drag & paint interface</strong> makes the first step of planning intuitive and easy, helping you overcome the friction of getting started.
+          </p>
+        </div>
+
+        <!-- Card 2: Building Discipline & Seeing Results -->
+        <div class="p-8 rounded-xl transition duration-300 ease-in-out transform hover:-translate-y-2">
+          <div class="bg-penn-red rounded-full w-20 h-20 mx-auto flex items-center justify-center text-white text-4xl mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Proof of Progress</h3>
+          <p class="text-lg text-gray-700">
+            <strong>Powerful analytics</strong> give you a clear, visual dashboard of your success, showing you exactly how your hard work is paying off.
+          </p>
+        </div>
+
+        <!-- Card 3: Turning Setbacks into Growth -->
+        <div class="p-8 rounded-xl transition duration-300 ease-in-out transform hover:-translate-y-2">
+          <div class="bg-penn-red rounded-full w-20 h-20 mx-auto flex items-center justify-center text-white text-4xl mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Mindful Reflection</h3>
+          <p class="text-lg text-gray-700">
+            Our <strong>weekly check-ins</strong> and mood tracking help you turn every setback into a valuable lesson for your personal growth.
+          </p>
+        </div>
+
+        <!-- Card 4: A Tool That Works for Your Life -->
+        <div class="p-8 rounded-xl transition duration-300 ease-in-out transform hover:-translate-y-2">
+          <div class="bg-penn-red rounded-full w-20 h-20 mx-auto flex items-center justify-center text-white text-4xl mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18v-6a2 2 0 00-2-2H8M12 18a2 2 0 01-2-2m2 2l-2-2m-2-2l2-2m-2 2a2 2 0 01-2-2h-2a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Always Ready</h3>
+          <p class="text-lg text-gray-700">
+            Optimized for both desktop and mobile, Habitblock is always there for you, so you can plan on the go, anytime, anywhere.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Habitblock Beats Traditional Planners Section -->
+  <section class="py-20 px-6">
+    <div class="container mx-auto max-w-5xl">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-bold">Why Habitblock Beats Traditional Planners</h2>
+        <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-gray-700">
+          Ditch the old ways that hold you back. Habitblock is built for the way you actually live.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <!-- Benefit Card 1 -->
+        <div class="bg-card-gradient p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+          <h3 class="text-2xl font-bold text-penn-red mb-4">It's Visual</h3>
+          <p class="text-gray-700">
+            See your entire week at a glance with color-coded objectives and an intuitive visual calendar. No more endless lists or buried tasks.
+          </p>
+        </div>
+        <!-- Benefit Card 2 -->
+        <div class="bg-card-gradient p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+          <h3 class="text-2xl font-bold text-penn-red mb-4">It's Fast</h3>
+          <p class="text-gray-700">
+            Paint your plan in seconds, not minutes of form-filling. With smart shortcuts, you can plan your entire week faster than you can write it down.
+          </p>
+        </div>
+        <!-- Benefit Card 3 -->
+        <div class="bg-card-gradient p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+          <h3 class="text-2xl font-bold text-penn-red mb-4">It's Smart</h3>
+          <p class="text-gray-700">
+            Built-in analytics show you what actually works for your productivity. Gain data-driven insights into your habits and make informed decisions.
+          </p>
+        </div>
+        <!-- Benefit Card 4 -->
+        <div class="bg-card-gradient p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+          <h3 class="text-2xl font-bold text-penn-red mb-4">It's Secure</h3>
+          <p class="text-gray-700">
+            Your sensitive planning data is encrypted and privately stored. We use an enterprise-grade backend to ensure your information is always safe.
+          </p>
+        </div>
+        <!-- Benefit Card 5 -->
+        <div class="bg-card-gradient p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+          <h3 class="text-2xl font-bold text-penn-red mb-4">It's Flexible</h3>
+          <p class="text-gray-700">
+            Adapts to any schedule, any objective, any lifestyle. With flexible week views and an archive system, Habitblock grows with you.
+          </p>
+        </div>
+        <!-- Benefit Card 6 -->
+        <div class="bg-card-gradient p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+          <h3 class="text-2xl font-bold text-penn-red mb-4">It's Insightful</h3>
+          <p class="text-gray-700">
+            Weekly reflections turn planning into personal growth. Document what you're proud of and where you can improve to master your journey.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final Call to Action -->
+  <section class="py-20 px-6 text-center">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">
+        Transform Your Time Management from Chaos to Clarity.
+      </h2>
+      <p class="text-xl md:text-2xl max-w-2xl mx-auto text-gray-700 mb-10">
+        <strong>Make every week count with Habitblock.</strong>
+      </p>
+      <a href="../index.html" class="text-white font-bold py-4 px-12 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80" style="background-color: #D00000;">
+        Start 7-day free trial
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 text-center text-gray-500 text-sm">
+    <p>&copy; 2024 Brightsun AI Ltd. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('show');
+    }
+  </script>
+
+</body>
+</html>

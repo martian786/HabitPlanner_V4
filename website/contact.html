@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Habitblock</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --color-rich-black: #03071eff;
+      --color-chocolate-cosmos: #370617ff;
+      --color-rosewood: #6a040fff;
+      --color-penn-red: #9d0208ff;
+      --color-engineering-orange: #d00000ff;
+      --color-sinopia: #dc2f02ff;
+      --color-persimmon: #e85d04ff;
+      --color-princeton-orange: #f48c06ff;
+      --color-orange-web: #faa307ff;
+      --color-selective-yellow: #ffba08ff;
+    }
+
+    .bg-gradient-white-yellow {
+      background: linear-gradient(to bottom, white, var(--color-selective-yellow));
+    }
+
+    .bg-card-gradient {
+      background: linear-gradient(145deg, #FFF, #FFA770);
+    }
+
+    .bg-rich-black { background-color: var(--color-rich-black); }
+    .text-rich-black { color: var(--color-rich-black); }
+    .bg-penn-red { background-color: var(--color-penn-red); }
+    .text-penn-red { color: var(--color-penn-red); }
+    .bg-engineering-orange { background-color: var(--color-engineering-orange); }
+    .text-engineering-orange { color: var(--color-engineering-orange); }
+    .bg-persimmon { background-color: var(--color-persimmon); }
+    .text-persimmon { color: var(--color-persimmon); }
+    .bg-princeton-orange { background-color: var(--color-princeton-orange); }
+    .text-princeton-orange { color: var(--color-princeton-orange); }
+    .bg-orange-web { background-color: var(--color-orange-web); }
+    .text-orange-web { color: var(--color-orange-web); }
+    .bg-selective-yellow { background-color: var(--color-selective-yellow); }
+    .text-selective-yellow { color: var(--color-selective-yellow); }
+
+    .mobile-menu {
+      display: none;
+    }
+    .mobile-menu.show {
+      display: block;
+    }
+
+    .contact-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-input {
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--color-penn-red);
+      box-shadow: 0 0 0 3px rgba(157, 2, 8, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-gradient-white-yellow text-rich-black font-sans">
+
+  <!-- Header Section -->
+  <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center">
+      <div class="font-bold text-3xl">Habitblock</div>
+      <nav class="hidden md:flex space-x-8 text-lg font-medium">
+        <a href="index.html" class="hover:text-penn-red transition duration-300">Home</a>
+        <a href="features.html" class="hover:text-penn-red transition duration-300">Features</a>
+        <a href="pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+        <a href="about.html" class="hover:text-penn-red transition duration-300">About</a>
+        <a href="contact.html" class="text-penn-red font-semibold">Contact</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="../index.html" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300">
+          Login
+        </a>
+        <button class="md:hidden focus:outline-none" onclick="toggleMobileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rich-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4">
+      <nav class="flex flex-col space-y-4">
+        <a href="index.html" class="hover:text-penn-red transition duration-300">Home</a>
+        <a href="features.html" class="hover:text-penn-red transition duration-300">Features</a>
+        <a href="pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+        <a href="about.html" class="hover:text-penn-red transition duration-300">About</a>
+        <a href="contact.html" class="text-penn-red font-semibold">Contact</a>
+        <a href="../index.html" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300">
+          Login
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="py-20 px-6 text-center">
+    <div class="container mx-auto max-w-4xl">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6">
+        Get in <span class="text-penn-red">Touch</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto">
+        We'd love to hear from you. Whether you have questions, feedback, or need support, we're here to help.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Options Section -->
+  <section class="py-20 px-6">
+    <div class="container mx-auto max-w-6xl">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        
+        <!-- Support -->
+        <div class="contact-card bg-card-gradient p-8 rounded-2xl shadow-lg text-center">
+          <div class="text-5xl mb-4">🚀</div>
+          <h3 class="text-xl font-bold mb-4">Support</h3>
+          <p class="text-gray-700 mb-6">
+            Need help with your account, billing, or have technical questions? Our support team is here to help.
+          </p>
+          <p class="text-penn-red font-semibold mb-2">support@habitblock.com</p>
+          <p class="text-sm text-gray-600">Response within 24 hours</p>
+        </div>
+
+        <!-- Sales -->
+        <div class="contact-card bg-card-gradient p-8 rounded-2xl shadow-lg text-center">
+          <div class="text-5xl mb-4">💼</div>
+          <h3 class="text-xl font-bold mb-4">Sales</h3>
+          <p class="text-gray-700 mb-6">
+            Interested in Enterprise features or have questions about pricing? Let's discuss your needs.
+          </p>
+          <p class="text-penn-red font-semibold mb-2">sales@habitblock.com</p>
+          <p class="text-sm text-gray-600">Response within 4 hours</p>
+        </div>
+
+        <!-- General -->
+        <div class="contact-card bg-card-gradient p-8 rounded-2xl shadow-lg text-center">
+          <div class="text-5xl mb-4">📧</div>
+          <h3 class="text-xl font-bold mb-4">General</h3>
+          <p class="text-gray-700 mb-6">
+            Got feedback, suggestions, or just want to say hello? We love hearing from our community.
+          </p>
+          <p class="text-penn-red font-semibold mb-2">hello@habitblock.com</p>
+          <p class="text-sm text-gray-600">Response within 48 hours</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section class="py-20 px-6 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-6">Send Us a Message</h2>
+        <p class="text-lg text-gray-700">
+          Fill out the form below and we'll get back to you as soon as possible.
+        </p>
+      </div>
+
+      <form id="contactForm" class="max-w-2xl mx-auto" onsubmit="submitForm(event)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label for="firstName" class="block text-sm font-semibold mb-2">First Name *</label>
+            <input 
+              type="text" 
+              id="firstName" 
+              name="firstName" 
+              required 
+              class="form-input w-full px-4 py-3 rounded-lg border border-gray-300"
+              placeholder="Enter your first name"
+            >
+          </div>
+          <div>
+            <label for="lastName" class="block text-sm font-semibold mb-2">Last Name *</label>
+            <input 
+              type="text" 
+              id="lastName" 
+              name="lastName" 
+              required 
+              class="form-input w-full px-4 py-3 rounded-lg border border-gray-300"
+              placeholder="Enter your last name"
+            >
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label for="email" class="block text-sm font-semibold mb-2">Email Address *</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            required 
+            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300"
+            placeholder="Enter your email address"
+          >
+        </div>
+
+        <div class="mb-6">
+          <label for="company" class="block text-sm font-semibold mb-2">Company (Optional)</label>
+          <input 
+            type="text" 
+            id="company" 
+            name="company" 
+            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300"
+            placeholder="Enter your company name"
+          >
+        </div>
+
+        <div class="mb-6">
+          <label for="subject" class="block text-sm font-semibold mb-2">Subject *</label>
+          <select 
+            id="subject" 
+            name="subject" 
+            required 
+            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300"
+          >
+            <option value="">Select a subject</option>
+            <option value="support">Support Request</option>
+            <option value="sales">Sales Inquiry</option>
+            <option value="feature">Feature Request</option>
+            <option value="bug">Bug Report</option>
+            <option value="feedback">General Feedback</option>
+            <option value="partnership">Partnership</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="mb-8">
+          <label for="message" class="block text-sm font-semibold mb-2">Message *</label>
+          <textarea 
+            id="message" 
+            name="message" 
+            required 
+            rows="6"
+            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 resize-vertical"
+            placeholder="Tell us how we can help you..."
+          ></textarea>
+        </div>
+
+        <div class="mb-6">
+          <label class="flex items-start">
+            <input 
+              type="checkbox" 
+              id="subscribe" 
+              name="subscribe" 
+              class="mr-3 mt-1"
+            >
+            <span class="text-sm text-gray-700">
+              I'd like to receive updates about new features and product news. (You can unsubscribe anytime)
+            </span>
+          </label>
+        </div>
+
+        <div class="text-center">
+          <button 
+            type="submit" 
+            class="bg-penn-red text-white font-bold py-4 px-12 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80"
+          >
+            Send Message
+          </button>
+        </div>
+      </form>
+
+      <!-- Success Message (Initially Hidden) -->
+      <div id="successMessage" class="hidden max-w-2xl mx-auto mt-8 p-6 bg-green-50 border border-green-200 rounded-lg text-center">
+        <div class="text-green-600 text-4xl mb-4">✅</div>
+        <h3 class="text-xl font-bold text-green-800 mb-2">Message Sent Successfully!</h3>
+        <p class="text-green-700">
+          Thank you for contacting us. We've received your message and will get back to you as soon as possible.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-20 px-6">
+    <div class="container mx-auto max-w-4xl">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-6">Frequently Asked Questions</h2>
+        <p class="text-lg text-gray-700">
+          Quick answers to common questions. Can't find what you're looking for? Send us a message!
+        </p>
+      </div>
+
+      <div class="space-y-8">
+        <div class="border-b border-gray-200 pb-6">
+          <h3 class="text-xl font-semibold mb-3">How quickly do you respond to support requests?</h3>
+          <p class="text-gray-700">
+            We typically respond to support emails within 24 hours during business days. For sales inquiries, we usually respond within 4 hours. Enterprise customers receive priority support with faster response times.
+          </p>
+        </div>
+
+        <div class="border-b border-gray-200 pb-6">
+          <h3 class="text-xl font-semibold mb-3">Do you offer phone support?</h3>
+          <p class="text-gray-700">
+            Currently, we provide support primarily through email to ensure we can give you detailed, thoughtful responses. Enterprise customers do have access to phone support as part of their plan.
+          </p>
+        </div>
+
+        <div class="border-b border-gray-200 pb-6">
+          <h3 class="text-xl font-semibold mb-3">Can I request new features?</h3>
+          <p class="text-gray-700">
+            Absolutely! We love hearing feature requests from our users. While we can't implement every suggestion, user feedback heavily influences our product roadmap. Use the "Feature Request" subject when contacting us.
+          </p>
+        </div>
+
+        <div class="border-b border-gray-200 pb-6">
+          <h3 class="text-xl font-semibold mb-3">Where is your company located?</h3>
+          <p class="text-gray-700">
+            Brightsun AI Ltd is registered in England & Wales. We're a remote-first company with team members across the UK, but we serve customers worldwide and provide support in multiple timezones.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-semibold mb-3">Do you have a public roadmap?</h3>
+          <p class="text-gray-700">
+            We share major feature updates and upcoming developments through our product updates. For detailed roadmap information or to influence our priorities, reach out to us directly - especially if you're considering Enterprise features.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Alternative Contact Methods -->
+  <section class="py-20 px-6 bg-white">
+    <div class="container mx-auto max-w-6xl text-center">
+      <h2 class="text-4xl font-bold mb-12">Other Ways to Connect</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="contact-card bg-card-gradient p-8 rounded-2xl shadow-lg">
+          <div class="text-5xl mb-4">📚</div>
+          <h3 class="text-2xl font-bold mb-4">Help Documentation</h3>
+          <p class="text-gray-700 mb-6">
+            Looking for quick answers? Check out our comprehensive help documentation with tutorials, FAQs, and troubleshooting guides.
+          </p>
+          <a href="../index.html" class="inline-block bg-penn-red text-white font-bold py-3 px-6 rounded-full hover:bg-opacity-90 transition duration-300">
+            View Help Docs
+          </a>
+        </div>
+
+        <div class="contact-card bg-card-gradient p-8 rounded-2xl shadow-lg">
+          <div class="text-5xl mb-4">🎯</div>
+          <h3 class="text-2xl font-bold mb-4">Feature Requests</h3>
+          <p class="text-gray-700 mb-6">
+            Have an idea that could make Habitblock even better? We'd love to hear it. Your feedback shapes our product development.
+          </p>
+          <button 
+            onclick="document.getElementById('subject').value='feature'; document.getElementById('contactForm').scrollIntoView();"
+            class="inline-block bg-penn-red text-white font-bold py-3 px-6 rounded-full hover:bg-opacity-90 transition duration-300"
+          >
+            Submit Idea
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 text-center text-gray-500 text-sm">
+    <p>&copy; 2024 Brightsun AI Ltd. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('show');
+    }
+
+    function submitForm(event) {
+      event.preventDefault();
+      
+      // Get form data
+      const formData = new FormData(event.target);
+      const data = Object.fromEntries(formData);
+      
+      // Here you would typically send the data to your backend
+      // For now, we'll just simulate a successful submission
+      console.log('Form submitted with data:', data);
+      
+      // Hide form and show success message
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('successMessage').classList.remove('hidden');
+      
+      // Scroll to success message
+      document.getElementById('successMessage').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+      
+      // In a real implementation, you would:
+      // 1. Validate the form data
+      // 2. Send it to your backend API
+      // 3. Handle success/error responses
+      // 4. Show appropriate messages to the user
+    }
+  </script>
+
+</body>
+</html>
