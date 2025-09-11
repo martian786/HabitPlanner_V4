@@ -6,3 +6,9 @@ verify_jwt = false
 
 [functions.webhook-test]
 verify_jwt = false
+
+[functions.debug-env]
+verify_jwt = false
+
+[functions.test-insert]
+verify_jwt = false
