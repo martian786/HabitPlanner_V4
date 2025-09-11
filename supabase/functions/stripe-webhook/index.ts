@@ -75,85 +75,60 @@ async function upsertSubscription(payload: {
 }
 
 serve(async (req) => {
-  try {
-    console.log('🎣 Stripe webhook received');
-    console.log('🔧 Request method:', req.method);
-    console.log('🔧 Headers:', Object.fromEntries(req.headers.entries()));
-    
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-      return new Response('ok', {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST',
-          'Access-Control-Allow-Headers': 'stripe-signature, content-type',
-        },
-      });
-    }
-
-    // Debug environment
-    console.log('🔧 Environment check:');
-    console.log('- SUPABASE_URL exists:', !!supabaseUrl);
-    console.log('- SERVICE_ROLE_KEY exists:', !!serviceRoleKey);
-    console.log('- WEBHOOK_SECRET exists:', !!webhookSecret);
-
-    const sig = req.headers.get("Stripe-Signature");
-    if (!sig) {
-      console.error("❌ Missing Stripe-Signature header");
-      return new Response("Missing signature", { status: 400 });
-    }
-
-    const raw = await req.arrayBuffer();
-    console.log('📦 Received payload size:', raw.byteLength, 'bytes');
-    
-    let event: Stripe.Event;
-
+  // Always return 200 to Stripe immediately (fire-and-forget pattern)
+  const processWebhook = async () => {
     try {
-      event = await stripe.webhooks.constructEventAsync(
-        new Uint8Array(raw),
-        sig,
-        webhookSecret,
-      );
-      console.log('✅ Webhook signature verified, event type:', event.type);
-    } catch (err) {
-      console.error("❌ Webhook signature verification failed:", err);
-      console.error("❌ Webhook secret used:", webhookSecret ? `${webhookSecret.substring(0, 10)}...` : 'MISSING');
-      console.error("❌ Signature received:", sig);
-      return new Response(`Invalid signature: ${err}`, { status: 400 });
-    }
+      console.log('🎣 Stripe webhook received');
+      
+      // Handle preflight requests
+      if (req.method === 'OPTIONS') {
+        return;
+      }
 
-    try {
-      switch (event.type) {
-        case "checkout.session.completed": {
-          const session = event.data.object as Stripe.Checkout.Session;
-          console.log('💳 Checkout session completed:', session.id);
-          // no-op; the subscription.* events below will carry the full object
-          break;
+      // Validate environment
+      if (!supabaseUrl || !serviceRoleKey || !webhookSecret) {
+        console.error('❌ Missing required environment variables');
+        return;
+      }
+
+      const sig = req.headers.get("Stripe-Signature");
+      if (!sig) {
+        console.error("❌ Missing Stripe-Signature header");
+        return;
+      }
+
+      const raw = await req.arrayBuffer();
+      console.log('📦 Received payload size:', raw.byteLength, 'bytes');
+      
+      let event: Stripe.Event;
+
+      try {
+        event = await stripe.webhooks.constructEventAsync(
+          new Uint8Array(raw),
+          sig,
+          webhookSecret,
+        );
+        console.log('✅ Webhook signature verified, event type:', event.type);
+      } catch (err) {
+        console.error("❌ Webhook signature verification failed:", err);
+        return;
+      }
+
+      // Process subscription events
+      if (event.type.startsWith('customer.subscription.')) {
+        console.log(`🔔 Processing subscription ${event.type}`);
+        const sub = event.data.object as Stripe.Subscription;
+
+        const userId = sub.metadata?.user_id;
+        if (!userId) {
+          console.warn("❌ Missing user_id metadata on subscription", sub.id);
+          return;
         }
 
-        case "customer.subscription.created":
-        case "customer.subscription.updated":
-        case "customer.subscription.deleted": {
-          console.log(`🔔 Processing subscription ${event.type}`);
-          const sub = event.data.object as Stripe.Subscription;
-
-          // The user_id was put in metadata at checkout
-          const userId = (sub.metadata?.user_id ||
-            (sub.latest_invoice as any)?.metadata?.user_id) as string | undefined;
-
-          console.log('👤 Found user_id in metadata:', userId);
-          console.log('📋 Subscription metadata:', sub.metadata);
-
-          // If not in metadata, try by customer search (optional)
-          if (!userId) {
-            console.warn("❌ Missing user_id metadata on subscription", sub.id);
-            console.log('🔍 Full subscription object:', JSON.stringify(sub, null, 2));
-            break;
-          }
-
-          const item = sub.items.data[0]; // single price model
-          console.log('💰 Processing price:', item.price.id);
-          
+        const item = sub.items.data[0];
+        console.log('💰 Processing price:', item.price.id);
+        
+        try {
           await upsertSubscription({
             user_id: userId,
             stripe_customer_id: typeof sub.customer === "string"
@@ -164,21 +139,23 @@ serve(async (req) => {
             status: sub.status,
             current_period_end: sub.current_period_end!,
           });
-          break;
+          console.log('✅ Subscription processed successfully');
+        } catch (err) {
+          console.error("❌ Subscription processing failed:", err);
         }
-        default:
-          console.log('ℹ️ Ignoring event type:', event.type);
-          break;
+      } else {
+        console.log('ℹ️ Ignoring event type:', event.type);
       }
-
-      console.log('✅ Webhook processed successfully');
-      return new Response("ok", { status: 200 });
     } catch (err) {
-      console.error("❌ Webhook handler error:", err);
-      return new Response("Webhook error", { status: 500 });
+      console.error("❌ Webhook processing error:", err);
     }
-  } catch (err) {
-    console.error("❌ Global webhook error:", err);
-    return new Response(`Global error: ${err.message}`, { status: 400 });
-  }
+  };
+
+  // Fire and forget - process async but return 200 immediately
+  processWebhook().catch(err => {
+    console.error("❌ Async webhook processing error:", err);
+  });
+
+  // Always return 200 OK to Stripe
+  return new Response("ok", { status: 200 });
 });
