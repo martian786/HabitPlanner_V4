@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./lib/supabase";
+import habitblockLogo from "./assets/habitblock-logo.png";
 
 /*************************************************
  * Analytics Page (Week / Month / Year)
@@ -361,8 +362,8 @@ export default function Analytics(props: {
     return (
       <div className="min-h-screen w-full bg-slate-50 text-slate-900 flex items-center justify-center">
         <div className="max-w-md mx-auto p-8 bg-white rounded-2xl shadow-lg text-center">
-          <div className="h-16 w-16 rounded-xl bg-slate-900 text-white grid place-items-center font-bold mx-auto mb-4">AN</div>
-          <h1 className="text-2xl font-semibold mb-2">Analytics</h1>
+          <img src={habitblockLogo} alt="Habitblock" className="h-8 w-auto mx-auto mb-4" />
+          <h1 className="text-2xl font-semibold mb-2">Habitblock Analytics</h1>
           <p className="text-slate-600 mb-6">Sign in to view your time tracking analytics and insights.</p>
           <a
             href="/"
@@ -380,9 +381,9 @@ export default function Analytics(props: {
       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-xl bg-slate-900 text-white grid place-items-center font-bold">AN</div>
+            <img src={habitblockLogo} alt="Habitblock" className="h-8 w-auto" />
             <div>
-              <h1 className="text-xl font-semibold leading-tight">Analytics</h1>
+              <h1 className="text-xl font-semibold leading-tight">Habitblock Analytics</h1>
               <p className="text-xs text-slate-500">Planned vs actual by week, month, year</p>
             </div>
           </div>

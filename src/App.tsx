@@ -605,6 +605,12 @@ function AuthenticatedApp({ session }: { session: Session }) {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [overwriteNotification, setOverwriteNotification] = useState<string | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [navigationConfirm, setNavigationConfirm] = useState<{
+    show: boolean;
+    message: string;
+    onConfirm: () => void;
+  } | null>(null);
   
   // Persist sidebar state to localStorage
   useEffect(() => {
@@ -688,6 +694,11 @@ function AuthenticatedApp({ session }: { session: Session }) {
       const existing = prev[weekKey] || getDefaultReflection();
       return { ...prev, [weekKey]: { ...existing, [field]: value } };
     });
+    
+    // Immediately mark as having unsaved changes for reflections
+    setHasUnsavedChanges(true);
+    
+    // Note: Save will be triggered by the useEffect watching reflections with 1s debounce
   }
 
   // Normalize a cell entry to {id, completed}
@@ -747,7 +758,7 @@ function AuthenticatedApp({ session }: { session: Session }) {
   }
   function applyPaint(iso: string, slotIndex: number) {
     const b = brushRef.current;
-    console.log("Applying paint:", { iso, slotIndex, brush: b });
+    // console.log("Applying paint:", { iso, slotIndex, brush: b });
     
     if (b === "eraser" || !b) {
       console.log("Erasing cell");
@@ -772,7 +783,7 @@ function AuthenticatedApp({ session }: { session: Session }) {
         setTimeout(() => setOverwriteNotification(null), 3000);
         return;
       }
-      console.log("Painting with objective:", b);
+      // console.log("Painting with objective:", b);
       setCell(iso, slotIndex, b);
     }
   }
@@ -796,10 +807,48 @@ function AuthenticatedApp({ session }: { session: Session }) {
     // Safety checks already done in callers, just schedule the save
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
     
-    // Simple 500ms debounce
+    // Mark as having unsaved changes
+    setHasUnsavedChanges(true);
+    
+    // Different timing for desktop vs mobile
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const debounceTime = isMobile ? 5000 : 1000; // 5s for mobile (backup), 1s for desktop (normal)
+    
     saveTimerRef.current = window.setTimeout(() => {
       performSave(weekKey);
-    }, 500);
+    }, debounceTime);
+  }
+
+  // Manual save function (bypasses debounce)
+  async function manualSave() {
+    if (saveTimerRef.current) {
+      window.clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+    await performSave(weekKey);
+  }
+
+  // Safe navigation function that checks for unsaved changes
+  function safeNavigate(navigationAction: () => void, actionDescription: string = "navigate") {
+    if (hasUnsavedChanges) {
+      // Cancel pending auto-save to prevent race condition while dialog is open
+      if (saveTimerRef.current) {
+        window.clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
+      
+      setNavigationConfirm({
+        show: true,
+        message: `You have unsaved changes. ${actionDescription} without saving?`,
+        onConfirm: () => {
+          setHasUnsavedChanges(false); // Clear flag since user chose to discard
+          setNavigationConfirm(null);
+          navigationAction();
+        }
+      });
+    } else {
+      navigationAction();
+    }
   }
 
   // Perform save with basic protection
@@ -873,23 +922,39 @@ function AuthenticatedApp({ session }: { session: Session }) {
     );
 
     if (hasCalendarDataChanged) {
-      console.log("📅 CALENDAR CONTENT changed - saving");
+      // console.log("📅 CALENDAR CONTENT changed - saving");
       scheduleSave();
     }
   }, [schedule, planName]);
 
-  // Separate effect for reflections with longer debounce
+  // Reflection debounce timer (separate from calendar timer)
+  const reflectionTimerRef = useRef<number | null>(null);
+  
+  // Separate effect for reflections with proper debouncing
   useEffect(() => {
     if (!hasCompletedInitialLoadRef.current || isLoadingDataRef.current) {
       return;
     }
 
-    const timer = setTimeout(() => {
+    // Clear any existing reflection timer
+    if (reflectionTimerRef.current) {
+      clearTimeout(reflectionTimerRef.current);
+      reflectionTimerRef.current = null;
+    }
+
+    // Set new timer only after user stops typing
+    reflectionTimerRef.current = window.setTimeout(() => {
       console.log("💭 REFLECTIONS changed - saving");
       scheduleSave();
-    }, 1000); // 1 second debounce for reflections
+      reflectionTimerRef.current = null;
+    }, 2000); // 2 second debounce for better typing experience
 
-    return () => clearTimeout(timer);
+    return () => {
+      if (reflectionTimerRef.current) {
+        clearTimeout(reflectionTimerRef.current);
+        reflectionTimerRef.current = null;
+      }
+    };
   }, [reflections]);
 
   // Update filter tracking without saving (filters are just UI state)
@@ -937,6 +1002,8 @@ function AuthenticatedApp({ session }: { session: Session }) {
         visibleObjectives: [...visibleObjectives]
       };
       console.log(`Save successful for week ${weekISO}`);
+      // Clear unsaved changes flag after successful save
+      setHasUnsavedChanges(false);
     }
     
     return success;
@@ -1275,17 +1342,17 @@ function AuthenticatedApp({ session }: { session: Session }) {
   }
 
   /*********************** Render ************************/
-  // Debug logging (remove in production)
-  console.log("DataService state:", {
-    objectives: dataService.objectives.length,
-    objectiveIds: dataService.objectives.map(o => o.id),
-    visibleObjectives: visibleObjectives.length,
-    currentWeek: dataService.currentWeek ? "exists" : "null",
-    loading: dataService.loading,
-    errors: dataService.errors,
-    userPreferences: dataService.userPreferences ? "exists" : "null",
-    weekStart: toISODate(weekStart)
-  });
+  // Debug logging (commented out for performance)
+  // console.log("DataService state:", {
+  //   objectives: dataService.objectives.length,
+  //   objectiveIds: dataService.objectives.map(o => o.id),
+  //   visibleObjectives: visibleObjectives.length,
+  //   currentWeek: dataService.currentWeek ? "exists" : "null",
+  //   loading: dataService.loading,
+  //   errors: dataService.errors,
+  //   userPreferences: dataService.userPreferences ? "exists" : "null",
+  //   weekStart: toISODate(weekStart)
+  // });
 
   return (
     <div className="min-h-screen w-full bg-white text-slate-900">
@@ -1669,9 +1736,11 @@ function AuthenticatedApp({ session }: { session: Session }) {
                   // Throttle rapid navigation
                   if (!canNavigate()) return;
                   
-                  const newDate = new Date(weekStart);
-                  newDate.setDate(newDate.getDate() - 7);
-                  setWeekStart(getWeekStart(newDate, dataService.userPreferences?.week_starts_on || "Monday"));
+                  safeNavigate(() => {
+                    const newDate = new Date(weekStart);
+                    newDate.setDate(newDate.getDate() - 7);
+                    setWeekStart(getWeekStart(newDate, dataService.userPreferences?.week_starts_on || "Monday"));
+                  }, "Go to previous week");
                 }} 
                 className="p-2 hover:bg-gray-200 rounded-full transition-colors"
                 aria-label="Previous week"
@@ -1685,7 +1754,9 @@ function AuthenticatedApp({ session }: { session: Session }) {
                   // Throttle rapid navigation
                   if (!canNavigate()) return;
                   
-                  setWeekStart(getWeekStart(new Date(), dataService.userPreferences?.week_starts_on || "Monday"));
+                  safeNavigate(() => {
+                    setWeekStart(getWeekStart(new Date(), dataService.userPreferences?.week_starts_on || "Monday"));
+                  }, "Go to current week");
                 }} 
                 className="px-5 py-1.5 rounded-full bg-blue-500 text-white font-medium hover:bg-blue-600 transition-colors"
                 aria-label="Go to current week"
@@ -1697,9 +1768,11 @@ function AuthenticatedApp({ session }: { session: Session }) {
                   // Throttle rapid navigation
                   if (!canNavigate()) return;
                   
-                  const newDate = new Date(weekStart);
-                  newDate.setDate(newDate.getDate() + 7);
-                  setWeekStart(getWeekStart(newDate, dataService.userPreferences?.week_starts_on || "Monday"));
+                  safeNavigate(() => {
+                    const newDate = new Date(weekStart);
+                    newDate.setDate(newDate.getDate() + 7);
+                    setWeekStart(getWeekStart(newDate, dataService.userPreferences?.week_starts_on || "Monday"));
+                  }, "Go to next week");
                 }} 
                 className="p-2 hover:bg-gray-200 rounded-full transition-colors"
                 aria-label="Next week"
@@ -1831,6 +1904,23 @@ function AuthenticatedApp({ session }: { session: Session }) {
           </div>
 
           <div className="bg-white rounded-2xl shadow overflow-hidden">
+            {/* Save button above calendar - positioned above Sunday column */}
+            <div className="flex justify-end pb-2 pr-4">
+              <button
+                onClick={manualSave}
+                disabled={isSaving || !hasUnsavedChanges}
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 flex items-center gap-2"
+                aria-label={isSaving ? 'Saving...' : hasUnsavedChanges ? 'Save changes' : 'All changes saved'}
+              >
+                {isSaving ? (
+                  <>⏳ Saving...</>
+                ) : hasUnsavedChanges ? (
+                  <>❌ Blocks not saved</>
+                ) : (
+                  <>✅ Blocks saved</>
+                )}
+              </button>
+            </div>
             <div className="relative max-h-[70vh] overflow-auto">
               {/* Header Row */}
               <div className="grid sticky top-0 z-20 bg-slate-100" style={{ gridTemplateColumns: `5rem repeat(7, minmax(0, 1fr))` }}>
@@ -1916,7 +2006,23 @@ function AuthenticatedApp({ session }: { session: Session }) {
 
           {/* Weekly Reflection Widget */}
           <section className="mt-4 bg-white rounded-2xl shadow-lg p-4 space-y-3">
-            <h2 className="font-semibold bg-gray-100 -m-4 mb-3 p-4 rounded-t-2xl">Weekly Reflection</h2>
+            <div className="bg-gray-100 -m-4 mb-3 p-4 rounded-t-2xl flex items-center justify-between">
+              <h2 className="font-semibold">Weekly Reflection</h2>
+              <button
+                onClick={manualSave}
+                disabled={isSaving || !hasUnsavedChanges}
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 flex items-center gap-2 text-sm"
+                aria-label={isSaving ? 'Saving reflections...' : hasUnsavedChanges ? 'Save reflections' : 'Reflections saved'}
+              >
+                {isSaving ? (
+                  <>⏳ Saving...</>
+                ) : hasUnsavedChanges ? (
+                  <>❌ Reflections not saved</>
+                ) : (
+                  <>✅ Reflections saved</>
+                )}
+              </button>
+            </div>
             <div>
               <div className="text-base font-semibold text-slate-600 mb-2">How did this week feel?</div>
               <div className="flex items-center gap-3">
@@ -2172,6 +2278,39 @@ function AuthenticatedApp({ session }: { session: Session }) {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation confirmation dialog */}
+        {navigationConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+              <h3 className="text-lg font-semibold mb-3">Unsaved Changes</h3>
+              <p className="text-gray-600 mb-6">{navigationConfirm.message}</p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setNavigationConfirm(null)}
+                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    await manualSave(); // Save first
+                    navigationConfirm.onConfirm(); // Then navigate
+                  }}
+                  className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded"
+                >
+                  Save & Continue
+                </button>
+                <button
+                  onClick={navigationConfirm.onConfirm}
+                  className="px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded"
+                >
+                  Discard Changes
+                </button>
               </div>
             </div>
           </div>
