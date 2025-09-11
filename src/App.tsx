@@ -3,6 +3,9 @@ import { supabase } from "./lib/supabase";
 import type { Session } from "@supabase/supabase-js";
 import { useDataService } from "./hooks/useDataService";
 import { DataService, MAX_OBJECTIVE_NAME_LENGTH } from "./lib/dataService";
+import { useEntitlements } from "./hooks/useEntitlements";
+import { useSubscription } from "./hooks/useSubscription";
+import Paywall from "./components/Paywall";
 import habitblockLogo from "./assets/habitblock-logo.png";
 
 /*************************************************
@@ -266,13 +269,19 @@ function AuthScreen() {
   const [loading, setLoading] = useState(false);
 
   async function signInWithGoogle() {
+    // Preserve current path and query (e.g., ?plan=pro) through OAuth redirect
+    const url = new URL(window.location.href);
+    const hasPlan = url.searchParams.has('plan');
+    if (hasPlan) {
+      // Set a durable flag in both localStorage and URL for cross-tab/device
+      try { localStorage.setItem('auto_checkout', '1'); } catch {}
+      url.searchParams.set('auto_checkout', '1');
+    }
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { 
-        redirectTo: window.location.origin,
-        queryParams: {
-          prompt: 'select_account'
-        }
+        redirectTo: url.toString(),
+        queryParams: { prompt: 'select_account' }
       },
     });
   }
@@ -281,7 +290,17 @@ function AuthScreen() {
     setLoading(true);
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({ email, password });
+        // Preserve current URL (including ?plan=...) and add auto_checkout flag to the verification link
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('plan')) {
+          try { localStorage.setItem('auto_checkout', '1'); } catch {}
+          url.searchParams.set('auto_checkout', '1');
+        }
+        const { error } = await supabase.auth.signUp({ 
+          email, 
+          password,
+          options: { emailRedirectTo: url.toString() }
+        });
         if (error) throw error;
         alert("Check your email for verification link!");
       } else {
@@ -402,6 +421,13 @@ function LoadingSpinner({ size = 'sm' }: { size?: 'xs' | 'sm' | 'md' }) {
 
 function AuthenticatedApp({ session }: { session: Session }) {
   const userId = session.user.id;
+
+  // Check subscription status
+  const subscription = useSubscription(userId);
+  const { entitlements, loading: entitlementsLoading } = useEntitlements(userId);
+
+  // Debug subscription status
+  console.log('Subscription status:', { subscription, entitlements, userId });
 
   // New secure data service
   const dataService = useDataService(userId);
@@ -1353,6 +1379,23 @@ function AuthenticatedApp({ session }: { session: Session }) {
   //   userPreferences: dataService.userPreferences ? "exists" : "null",
   //   weekStart: toISODate(weekStart)
   // });
+
+  // Show loading while checking entitlements
+  if (entitlementsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto mb-4"></div>
+          <p className="text-slate-600">Checking subscription...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Enforce paywall - check both entitlements and subscription as fallback
+  if (!entitlements && !subscription) {
+    return <Paywall />;
+  }
 
   return (
     <div className="min-h-screen w-full bg-white text-slate-900">

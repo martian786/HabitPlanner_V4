@@ -14,6 +14,7 @@ import React, { Suspense, lazy, useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { supabase } from "./lib/supabase";
 import type { UserPreferences } from "./lib/dataService";
 import "./index.css";
@@ -73,25 +74,27 @@ export function AnalyticsWithPreferences() {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route 
-          path="/analytics" 
-          element={
-            <Suspense fallback={
-              <div className="min-h-screen w-full bg-slate-50 grid place-items-center">
-                <div className="text-center">
-                  <div className="h-8 w-8 rounded-xl bg-slate-900 text-white grid place-items-center font-bold mx-auto mb-2">AN</div>
-                  <div className="text-slate-600">Loading Analytics...</div>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route 
+            path="/analytics" 
+            element={
+              <Suspense fallback={
+                <div className="min-h-screen w-full bg-slate-50 grid place-items-center">
+                  <div className="text-center">
+                    <div className="h-8 w-8 rounded-xl bg-slate-900 text-white grid place-items-center font-bold mx-auto mb-2">AN</div>
+                    <div className="text-slate-600">Loading Analytics...</div>
+                  </div>
                 </div>
-              </div>
-            }>
-              <AnalyticsWithPreferences />
-            </Suspense>
-          } 
-        />
-      </Routes>
-    </BrowserRouter>
+              }>
+                <AnalyticsWithPreferences />
+              </Suspense>
+            } 
+          />
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>
 );
