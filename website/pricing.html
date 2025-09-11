@@ -1,442 +1,797 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pricing - Habitblock</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root {
-      --color-rich-black: #03071eff;
-      --color-chocolate-cosmos: #370617ff;
-      --color-rosewood: #6a040fff;
-      --color-penn-red: #9d0208ff;
-      --color-engineering-orange: #d00000ff;
-      --color-sinopia: #dc2f02ff;
-      --color-persimmon: #e85d04ff;
-      --color-princeton-orange: #f48c06ff;
-      --color-orange-web: #faa307ff;
-      --color-selective-yellow: #ffba08ff;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pricing - Habitblock</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --color-rich-black: #03071eff;
+        --color-chocolate-cosmos: #370617ff;
+        --color-rosewood: #6a040fff;
+        --color-penn-red: #9d0208ff;
+        --color-engineering-orange: #d00000ff;
+        --color-sinopia: #dc2f02ff;
+        --color-persimmon: #e85d04ff;
+        --color-princeton-orange: #f48c06ff;
+        --color-orange-web: #faa307ff;
+        --color-selective-yellow: #ffba08ff;
+      }
 
-    .bg-gradient-white-yellow {
-      background: linear-gradient(to bottom, white, var(--color-selective-yellow));
-    }
+      .bg-gradient-white-yellow {
+        background: linear-gradient(
+          to bottom,
+          white,
+          var(--color-selective-yellow)
+        );
+      }
 
-    .bg-card-gradient {
-      background: linear-gradient(145deg, #FFF, #FFA770);
-    }
+      .bg-card-gradient {
+        background: linear-gradient(145deg, #fff, #ffa770);
+      }
 
-    .bg-premium-gradient {
-      background: linear-gradient(145deg, var(--color-penn-red), var(--color-engineering-orange));
-    }
+      .bg-premium-gradient {
+        background: linear-gradient(
+          145deg,
+          var(--color-penn-red),
+          var(--color-engineering-orange)
+        );
+      }
 
-    .bg-rich-black { background-color: var(--color-rich-black); }
-    .text-rich-black { color: var(--color-rich-black); }
-    .bg-penn-red { background-color: var(--color-penn-red); }
-    .text-penn-red { color: var(--color-penn-red); }
-    .bg-engineering-orange { background-color: var(--color-engineering-orange); }
-    .text-engineering-orange { color: var(--color-engineering-orange); }
-    .bg-persimmon { background-color: var(--color-persimmon); }
-    .text-persimmon { color: var(--color-persimmon); }
-    .bg-princeton-orange { background-color: var(--color-princeton-orange); }
-    .text-princeton-orange { color: var(--color-princeton-orange); }
-    .bg-orange-web { background-color: var(--color-orange-web); }
-    .text-orange-web { color: var(--color-orange-web); }
-    .bg-selective-yellow { background-color: var(--color-selective-yellow); }
-    .text-selective-yellow { color: var(--color-selective-yellow); }
+      .bg-rich-black {
+        background-color: var(--color-rich-black);
+      }
+      .text-rich-black {
+        color: var(--color-rich-black);
+      }
+      .bg-penn-red {
+        background-color: var(--color-penn-red);
+      }
+      .text-penn-red {
+        color: var(--color-penn-red);
+      }
+      .bg-engineering-orange {
+        background-color: var(--color-engineering-orange);
+      }
+      .text-engineering-orange {
+        color: var(--color-engineering-orange);
+      }
+      .bg-persimmon {
+        background-color: var(--color-persimmon);
+      }
+      .text-persimmon {
+        color: var(--color-persimmon);
+      }
+      .bg-princeton-orange {
+        background-color: var(--color-princeton-orange);
+      }
+      .text-princeton-orange {
+        color: var(--color-princeton-orange);
+      }
+      .bg-orange-web {
+        background-color: var(--color-orange-web);
+      }
+      .text-orange-web {
+        color: var(--color-orange-web);
+      }
+      .bg-selective-yellow {
+        background-color: var(--color-selective-yellow);
+      }
+      .text-selective-yellow {
+        color: var(--color-selective-yellow);
+      }
 
-    .mobile-menu {
-      display: none;
-    }
-    .mobile-menu.show {
-      display: block;
-    }
+      .mobile-menu {
+        display: none;
+      }
+      .mobile-menu.show {
+        display: block;
+      }
 
-    .pricing-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+      .pricing-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
 
-    .pricing-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    }
+      .pricing-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
 
-    .popular-badge {
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--color-penn-red);
-      color: white;
-      padding: 5px 20px;
-      border-radius: 20px;
-      font-size: 0.875rem;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body class="bg-gradient-white-yellow text-rich-black font-sans">
-
-  <!-- Header Section -->
-  <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center">
-      <div class="font-bold text-3xl">Habitblock</div>
-      <nav class="hidden md:flex space-x-8 text-lg font-medium">
-        <a href="index.html" class="hover:text-penn-red transition duration-300">Home</a>
-        <a href="features.html" class="hover:text-penn-red transition duration-300">Features</a>
-        <a href="pricing.html" class="text-penn-red font-semibold">Pricing</a>
-        <a href="about.html" class="hover:text-penn-red transition duration-300">About</a>
-        <a href="contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
-      </nav>
-      <div class="flex items-center space-x-4">
-        <a href="https://app.habitblock.com" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300">
-          Login
-        </a>
-        <button class="md:hidden focus:outline-none" onclick="toggleMobileMenu()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rich-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-          </svg>
-        </button>
-      </div>
-    </div>
-    
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4">
-      <nav class="flex flex-col space-y-4">
-        <a href="index.html" class="hover:text-penn-red transition duration-300">Home</a>
-        <a href="features.html" class="hover:text-penn-red transition duration-300">Features</a>
-        <a href="pricing.html" class="text-penn-red font-semibold">Pricing</a>
-        <a href="about.html" class="hover:text-penn-red transition duration-300">About</a>
-        <a href="contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
-        <a href="https://app.habitblock.com" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300">
-          Login
-        </a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="py-20 px-6 text-center">
-    <div class="container mx-auto max-w-4xl">
-      <h1 class="text-5xl md:text-6xl font-bold mb-6">
-        Choose Your <span class="text-penn-red">Success Plan</span>
-      </h1>
-      <p class="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-8">
-        Start free and unlock powerful features as you grow. Every plan comes with a 14-day money-back guarantee.
-      </p>
-      
-      <!-- Billing Toggle -->
-      <div class="flex items-center justify-center mb-12">
-        <span class="mr-3 text-lg">Monthly</span>
-        <button id="billingToggle" class="relative bg-gray-300 w-16 h-8 rounded-full transition duration-300 focus:outline-none" onclick="toggleBilling()">
-          <div id="toggleCircle" class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow transition duration-300"></div>
-        </button>
-        <span class="ml-3 text-lg">Annual <span class="text-penn-red font-semibold">(Save 20%)</span></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Pricing Cards Section -->
-  <section class="py-20 px-6">
-    <div class="container mx-auto max-w-6xl">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        
-        <!-- Free Plan -->
-        <div class="pricing-card bg-white rounded-2xl p-8 shadow-lg relative">
-          <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold mb-4">Starter</h3>
-            <div class="mb-6">
-              <span class="text-5xl font-bold">£0</span>
-              <span class="text-gray-500">/month</span>
-            </div>
-            <p class="text-gray-600">Perfect for getting started with visual planning</p>
-          </div>
-          
-          <ul class="space-y-4 mb-8">
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Visual drag & paint planning</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Up to 5 objectives</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Basic weekly analytics</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Weekly reflection notes</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Mobile & desktop access</span>
-            </li>
-          </ul>
-          
-          <a href="https://app.habitblock.com" class="block w-full bg-gray-900 text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition duration-300">
-            Get Started Free
+      .popular-badge {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--color-penn-red);
+        color: white;
+        padding: 5px 20px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-white-yellow text-rich-black font-sans">
+    <!-- Header Section -->
+    <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center">
+        <div class="font-bold text-3xl">Habitblock</div>
+        <nav class="hidden md:flex space-x-8 text-lg font-medium">
+          <a
+            href="index.html"
+            class="hover:text-penn-red transition duration-300"
+            >Home</a
+          >
+          <a
+            href="features.html"
+            class="hover:text-penn-red transition duration-300"
+            >Features</a
+          >
+          <a href="pricing.html" class="text-penn-red font-semibold">Pricing</a>
+          <a
+            href="about.html"
+            class="hover:text-penn-red transition duration-300"
+            >About</a
+          >
+          <a
+            href="contact.html"
+            class="hover:text-penn-red transition duration-300"
+            >Contact</a
+          >
+        </nav>
+        <div class="flex items-center space-x-4">
+          <a
+            href="https://app.habitblock.com"
+            class="bg-penn-red text-white font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300"
+          >
+            Login
           </a>
+          <button
+            class="md:hidden focus:outline-none"
+            onclick="toggleMobileMenu()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-rich-black"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          </button>
         </div>
+      </div>
 
-        <!-- Pro Plan -->
-        <div class="pricing-card bg-white rounded-2xl p-8 shadow-lg relative border-4 border-penn-red">
-          <div class="popular-badge">Most Popular</div>
-          
-          <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold mb-4">Pro</h3>
-            <div class="mb-6">
-              <span id="proPrice" class="text-5xl font-bold">£9</span>
-              <span id="proPeriod" class="text-gray-500">/month</span>
+      <!-- Mobile Menu -->
+      <div
+        id="mobileMenu"
+        class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4"
+      >
+        <nav class="flex flex-col space-y-4">
+          <a
+            href="index.html"
+            class="hover:text-penn-red transition duration-300"
+            >Home</a
+          >
+          <a
+            href="features.html"
+            class="hover:text-penn-red transition duration-300"
+            >Features</a
+          >
+          <a href="pricing.html" class="text-penn-red font-semibold">Pricing</a>
+          <a
+            href="about.html"
+            class="hover:text-penn-red transition duration-300"
+            >About</a
+          >
+          <a
+            href="contact.html"
+            class="hover:text-penn-red transition duration-300"
+            >Contact</a
+          >
+          <a
+            href="https://app.habitblock.com"
+            class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300"
+          >
+            Login
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-20 pb-5 px-6 text-center">
+      <div class="container mx-auto max-w-4xl">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">
+          Choose Your <span class="text-penn-red">Success Plan</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-8">
+          Choose the plan that fits your needs. Upgrade anytime with our 7-day
+          free trial.
+        </p>
+
+        <!-- Billing Toggle - Hidden -->
+        <div class="hidden">
+          <span class="mr-3 text-lg">Monthly</span>
+          <button
+            id="billingToggle"
+            class="relative bg-gray-300 w-16 h-8 rounded-full transition duration-300 focus:outline-none"
+            onclick="toggleBilling()"
+          >
+            <div
+              id="toggleCircle"
+              class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow transition duration-300"
+            ></div>
+          </button>
+          <span class="ml-3 text-lg"
+            >Annual
+            <span class="text-penn-red font-semibold">(Save 20%)</span></span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Cards Section -->
+    <section class="py-10 px-6">
+      <div class="container mx-auto max-w-6xl">
+        <div class="flex flex-wrap justify-center gap-8">
+          <!-- Free Plan -->
+          <div class="pricing-card bg-white rounded-2xl p-8 shadow-lg relative">
+            <div class="text-center mb-8">
+              <h3 class="text-2xl font-bold mb-4">Habit Pro</h3>
+              <div class="mb-6">
+                <span class="text-5xl font-bold">£99</span>
+                <span class="text-gray-500">/year</span>
+              </div>
+              <p class="text-gray-600">
+                Perfect for getting started with visual planning
+              </p>
             </div>
-            <p class="text-gray-600">Everything you need for serious productivity</p>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Visual drag & paint planning</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Up to 5 objectives</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Basic weekly analytics</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Weekly reflection notes</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Mobile & desktop access</span>
+              </li>
+            </ul>
+
+            <a
+              href="https://app.habitblock.com"
+              class="block w-full bg-gray-900 text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition duration-300"
+            >
+              Start 7-Day Free Trial
+            </a>
           </div>
-          
-          <ul class="space-y-4 mb-8">
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span><strong>Everything in Starter, plus:</strong></span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Unlimited objectives</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Advanced analytics & charts</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Week copying & templates</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Data export (JSON)</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Priority email support</span>
-            </li>
-          </ul>
-          
-          <a href="https://app.habitblock.com" class="block w-full bg-penn-red text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300">
+
+          <!-- Pro Plan -->
+          <div
+            class="pricing-card bg-white rounded-2xl p-8 shadow-lg relative border-4 border-penn-red"
+          >
+            <div class="popular-badge">Most Popular</div>
+
+            <div class="text-center mb-8">
+              <h3 class="text-2xl font-bold mb-4">Habit Plus</h3>
+              <div class="mb-6">
+                <span id="proPrice" class="text-5xl font-bold">£149</span>
+                <span id="proPeriod" class="text-gray-500">/year</span>
+              </div>
+              <p class="text-gray-600">
+                Everything you need for serious productivity
+              </p>
+            </div>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span><strong>Everything in Starter, plus:</strong></span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Unlimited objectives</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Advanced analytics & charts</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Week copying & templates</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Data export (JSON)</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-500 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Priority email support</span>
+              </li>
+            </ul>
+
+            <a
+              href="https://app.habitblock.com"
+              class="block w-full bg-penn-red text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+            >
+              Start 7-Day Free Trial
+            </a>
+          </div>
+
+          <!-- Enterprise Plan -->
+          <div
+            class="pricing-card bg-premium-gradient rounded-2xl p-8 shadow-lg relative text-white hidden"
+          >
+            <div class="text-center mb-8">
+              <h3 class="text-2xl font-bold mb-4">Enterprise</h3>
+              <div class="mb-6">
+                <span class="text-2xl font-bold">Custom</span>
+              </div>
+              <p class="text-gray-100">For teams and organizations</p>
+            </div>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-300 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span><strong>Everything in Pro, plus:</strong></span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-300 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Team collaboration features</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-300 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Advanced team analytics</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-300 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>SSO integration</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-300 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Dedicated account manager</span>
+              </li>
+              <li class="flex items-start">
+                <svg
+                  class="w-5 h-5 text-green-300 mt-1 mr-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>24/7 phone & email support</span>
+              </li>
+            </ul>
+
+            <a
+              href="contact.html"
+              class="block w-full bg-white text-penn-red text-center font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition duration-300"
+            >
+              Contact Sales
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 px-6 bg-white">
+      <div class="container mx-auto max-w-4xl">
+        <h2 class="text-4xl font-bold text-center mb-12">
+          Frequently Asked Questions
+        </h2>
+
+        <div class="space-y-8">
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="text-xl font-semibold mb-3">
+              Is there really a free plan?
+            </h3>
+            <p class="text-gray-700">
+              Yes! Our Starter plan is completely free forever. You can create
+              up to 5 objectives and access all core planning features without
+              any time limits or credit card requirements.
+            </p>
+          </div>
+
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="text-xl font-semibold mb-3">Can I cancel anytime?</h3>
+            <p class="text-gray-700">
+              Absolutely. You can cancel your subscription at any time from your
+              account settings. Your plan will remain active until the end of
+              your current billing period, and you can always downgrade to our
+              free Starter plan.
+            </p>
+          </div>
+
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="text-xl font-semibold mb-3">
+              What's included in the free trial?
+            </h3>
+            <p class="text-gray-700">
+              Your 14-day free trial includes all Pro features: unlimited
+              objectives, advanced analytics, week copying, data export, and
+              priority support. No credit card required to start.
+            </p>
+          </div>
+
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="text-xl font-semibold mb-3">How secure is my data?</h3>
+            <p class="text-gray-700">
+              We use enterprise-grade security with Supabase backend, encrypted
+              data storage, and secure authentication. Your data is
+              automatically backed up and you can export it anytime as JSON.
+            </p>
+          </div>
+
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="text-xl font-semibold mb-3">
+              Do you offer student discounts?
+            </h3>
+            <p class="text-gray-700">
+              Yes! Students with a valid .edu email address can get 50% off any
+              paid plan. Contact our support team with proof of enrollment to
+              activate your discount.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-semibold mb-3">
+              What if I need more than Enterprise features?
+            </h3>
+            <p class="text-gray-700">
+              We offer custom solutions for large organizations with specific
+              needs like on-premise deployment, custom integrations, or advanced
+              compliance requirements. Contact our sales team to discuss your
+              needs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-6 text-center">
+      <div class="container mx-auto max-w-4xl">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">
+          Ready to <span class="text-penn-red">Transform</span> Your
+          Productivity?
+        </h2>
+        <p class="text-xl text-gray-700 mb-8">
+          Join thousands of users who have discovered the secret to effortless
+          planning.
+        </p>
+        <div class="flex justify-center space-x-6">
+          <a
+            href="https://app.habitblock.com"
+            class="bg-penn-red text-white font-bold py-4 px-10 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80"
+          >
             Start Free Trial
           </a>
-        </div>
-
-        <!-- Enterprise Plan -->
-        <div class="pricing-card bg-premium-gradient rounded-2xl p-8 shadow-lg relative text-white">
-          <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold mb-4">Enterprise</h3>
-            <div class="mb-6">
-              <span class="text-2xl font-bold">Custom</span>
-            </div>
-            <p class="text-gray-100">For teams and organizations</p>
-          </div>
-          
-          <ul class="space-y-4 mb-8">
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-300 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span><strong>Everything in Pro, plus:</strong></span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-300 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Team collaboration features</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-300 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Advanced team analytics</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-300 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>SSO integration</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-300 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Dedicated account manager</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-300 mt-1 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>24/7 phone & email support</span>
-            </li>
-          </ul>
-          
-          <a href="contact.html" class="block w-full bg-white text-penn-red text-center font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition duration-300">
+          <a
+            href="contact.html"
+            class="border-2 border-penn-red text-penn-red font-bold py-4 px-10 rounded-full transition duration-300 ease-in-out transform hover:bg-penn-red hover:text-white"
+          >
             Contact Sales
           </a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FAQ Section -->
-  <section class="py-20 px-6 bg-white">
-    <div class="container mx-auto max-w-4xl">
-      <h2 class="text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
-      
-      <div class="space-y-8">
-        <div class="border-b border-gray-200 pb-6">
-          <h3 class="text-xl font-semibold mb-3">Is there really a free plan?</h3>
-          <p class="text-gray-700">Yes! Our Starter plan is completely free forever. You can create up to 5 objectives and access all core planning features without any time limits or credit card requirements.</p>
+    <!-- Footer -->
+    <footer
+      class="py-16 px-6 text-white text-sm"
+      style="background-color: #370617"
+    >
+      <div class="container mx-auto max-w-6xl">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Navigation -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Navigation</h3>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="index.html"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="features.html"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Features</a
+                >
+              </li>
+              <li>
+                <a
+                  href="pricing.html"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Pricing</a
+                >
+              </li>
+              <li>
+                <a
+                  href="about.html"
+                  class="hover:text-gray-300 transition duration-300"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a
+                  href="contact.html"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Product -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Product</h3>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="https://app.habitblock.com"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Login</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://app.habitblock.com"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Start Free Trial</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/analytics"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Analytics</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Legal -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Legal</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Privacy Policy</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Terms and Conditions</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
-        
-        <div class="border-b border-gray-200 pb-6">
-          <h3 class="text-xl font-semibold mb-3">Can I cancel anytime?</h3>
-          <p class="text-gray-700">Absolutely. You can cancel your subscription at any time from your account settings. Your plan will remain active until the end of your current billing period, and you can always downgrade to our free Starter plan.</p>
-        </div>
-        
-        <div class="border-b border-gray-200 pb-6">
-          <h3 class="text-xl font-semibold mb-3">What's included in the free trial?</h3>
-          <p class="text-gray-700">Your 14-day free trial includes all Pro features: unlimited objectives, advanced analytics, week copying, data export, and priority support. No credit card required to start.</p>
-        </div>
-        
-        <div class="border-b border-gray-200 pb-6">
-          <h3 class="text-xl font-semibold mb-3">How secure is my data?</h3>
-          <p class="text-gray-700">We use enterprise-grade security with Supabase backend, encrypted data storage, and secure authentication. Your data is automatically backed up and you can export it anytime as JSON.</p>
-        </div>
-        
-        <div class="border-b border-gray-200 pb-6">
-          <h3 class="text-xl font-semibold mb-3">Do you offer student discounts?</h3>
-          <p class="text-gray-700">Yes! Students with a valid .edu email address can get 50% off any paid plan. Contact our support team with proof of enrollment to activate your discount.</p>
-        </div>
-        
-        <div>
-          <h3 class="text-xl font-semibold mb-3">What if I need more than Enterprise features?</h3>
-          <p class="text-gray-700">We offer custom solutions for large organizations with specific needs like on-premise deployment, custom integrations, or advanced compliance requirements. Contact our sales team to discuss your needs.</p>
+
+        <div class="border-t border-gray-600 mt-12 pt-8 text-center">
+          <p>&copy; 2024 Brightsun AI Ltd. All rights reserved.</p>
         </div>
       </div>
-    </div>
-  </section>
+    </footer>
 
-  <!-- CTA Section -->
-  <section class="py-20 px-6 text-center">
-    <div class="container mx-auto max-w-4xl">
-      <h2 class="text-4xl md:text-5xl font-bold mb-6">
-        Ready to <span class="text-penn-red">Transform</span> Your Productivity?
-      </h2>
-      <p class="text-xl text-gray-700 mb-8">
-        Join thousands of users who have discovered the secret to effortless planning.
-      </p>
-      <div class="flex justify-center space-x-6">
-        <a href="https://app.habitblock.com" class="bg-penn-red text-white font-bold py-4 px-10 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80">
-          Start Free Trial
-        </a>
-        <a href="contact.html" class="border-2 border-penn-red text-penn-red font-bold py-4 px-10 rounded-full transition duration-300 ease-in-out transform hover:bg-penn-red hover:text-white">
-          Contact Sales
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="py-16 px-6 text-white text-sm" style="background-color: #370617;">
-    <div class="container mx-auto max-w-6xl">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Navigation -->
-        <div>
-          <h3 class="text-lg font-semibold mb-4">Navigation</h3>
-          <ul class="space-y-2">
-            <li><a href="index.html" class="hover:text-gray-300 transition duration-300">Home</a></li>
-            <li><a href="features.html" class="hover:text-gray-300 transition duration-300">Features</a></li>
-            <li><a href="pricing.html" class="hover:text-gray-300 transition duration-300">Pricing</a></li>
-            <li><a href="about.html" class="hover:text-gray-300 transition duration-300">About</a></li>
-            <li><a href="contact.html" class="hover:text-gray-300 transition duration-300">Contact</a></li>
-          </ul>
-        </div>
-        
-        <!-- Product -->
-        <div>
-          <h3 class="text-lg font-semibold mb-4">Product</h3>
-          <ul class="space-y-2">
-            <li><a href="https://app.habitblock.com" class="hover:text-gray-300 transition duration-300">Login</a></li>
-            <li><a href="https://app.habitblock.com" class="hover:text-gray-300 transition duration-300">Start Free Trial</a></li>
-            <li><a href="/analytics" class="hover:text-gray-300 transition duration-300">Analytics</a></li>
-          </ul>
-        </div>
-        
-        <!-- Legal -->
-        <div>
-          <h3 class="text-lg font-semibold mb-4">Legal</h3>
-          <ul class="space-y-2">
-            <li><a href="#" class="hover:text-gray-300 transition duration-300">Privacy Policy</a></li>
-            <li><a href="#" class="hover:text-gray-300 transition duration-300">Terms and Conditions</a></li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="border-t border-gray-600 mt-12 pt-8 text-center">
-        <p>&copy; 2024 Brightsun AI Ltd. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      menu.classList.toggle('show');
-    }
-
-    let isAnnual = false;
-    
-    function toggleBilling() {
-      const toggle = document.getElementById('billingToggle');
-      const circle = document.getElementById('toggleCircle');
-      const proPrice = document.getElementById('proPrice');
-      const proPeriod = document.getElementById('proPeriod');
-      
-      isAnnual = !isAnnual;
-      
-      if (isAnnual) {
-        toggle.classList.add('bg-penn-red');
-        toggle.classList.remove('bg-gray-300');
-        circle.style.transform = 'translateX(2rem)';
-        proPrice.textContent = '£86';
-        proPeriod.textContent = '/year';
-      } else {
-        toggle.classList.remove('bg-penn-red');
-        toggle.classList.add('bg-gray-300');
-        circle.style.transform = 'translateX(0)';
-        proPrice.textContent = '£9';
-        proPeriod.textContent = '/month';
+    <script>
+      function toggleMobileMenu() {
+        const menu = document.getElementById("mobileMenu");
+        menu.classList.toggle("show");
       }
-    }
-  </script>
 
-</body>
+      let isAnnual = false;
+
+      function toggleBilling() {
+        const toggle = document.getElementById("billingToggle");
+        const circle = document.getElementById("toggleCircle");
+        const proPrice = document.getElementById("proPrice");
+        const proPeriod = document.getElementById("proPeriod");
+
+        isAnnual = !isAnnual;
+
+        if (isAnnual) {
+          toggle.classList.add("bg-penn-red");
+          toggle.classList.remove("bg-gray-300");
+          circle.style.transform = "translateX(2rem)";
+          proPrice.textContent = "£86";
+          proPeriod.textContent = "/year";
+        } else {
+          toggle.classList.remove("bg-penn-red");
+          toggle.classList.add("bg-gray-300");
+          circle.style.transform = "translateX(0)";
+          proPrice.textContent = "£9";
+          proPeriod.textContent = "/month";
+        }
+      }
+    </script>
+  </body>
 </html>
