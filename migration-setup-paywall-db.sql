@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS public.weeks (
   created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
   updated_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
   CONSTRAINT weeks_pkey PRIMARY KEY (id),
-  CONSTRAINT weeks_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+  CONSTRAINT weeks_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+  CONSTRAINT weeks_user_week_unique UNIQUE (user_id, week_start)
 );
 
 -- Enable RLS

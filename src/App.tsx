@@ -265,7 +265,10 @@ export default function App() {
 function AuthScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
+  // Default to signup if user came from marketing with plan, signin if explicit login
+  const urlParams = new URLSearchParams(window.location.search);
+  const defaultIsSignUp = urlParams.has('plan') ? true : false;
+  const [isSignUp, setIsSignUp] = useState(defaultIsSignUp);
   const [loading, setLoading] = useState(false);
 
   async function signInWithGoogle() {
