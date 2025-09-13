@@ -379,37 +379,41 @@ export default function Analytics(props: {
   return (
     <div className="min-h-screen w-full bg-slate-50 text-slate-900">
       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={habitblockLogo} alt="Habitblock" className="h-8 w-auto" />
-            <div>
-              <h1 className="text-xl font-semibold leading-tight">Habitblock Analytics</h1>
-              <p className="text-xs text-slate-500">Planned vs actual by week, month, year</p>
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <img src={habitblockLogo} alt="Habitblock" className="h-8 w-auto" />
+              <div>
+                <h1 className="text-xl font-semibold leading-tight">Habitblock Analytics</h1>
+                <p className="text-xs text-slate-500">Planned vs actual by week, month, year</p>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <a
-              href="/"
-              className="px-3 py-1.5 rounded-lg border hover:bg-slate-100 text-sm"
-              aria-label="Back to planner"
-            >
-              ← Back to Planner
-            </a>
-            <select
-              value={period}
-              onChange={(e) => setPeriod(e.target.value as Period)}
-              className="px-3 py-1.5 rounded-lg border"
-              aria-label="Period"
-            >
-              <option value="week">Week</option>
-              <option value="month">Month</option>
-              <option value="year">Year</option>
-            </select>
-            <button onClick={() => shift(-1)} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">◀</button>
-            <div className="text-sm text-slate-700 min-w-[10ch] text-center">{label}</div>
-            <button onClick={() => shift(1)} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">▶</button>
-            <button onClick={() => setAnchor(new Date())} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">This {period}</button>
+            <div className="flex flex-wrap items-center gap-2">
+              <a
+                href="/"
+                className="px-3 py-1.5 rounded-lg border hover:bg-slate-100 text-sm"
+                aria-label="Back to planner"
+              >
+                ← Back to Planner
+              </a>
+              <select
+                value={period}
+                onChange={(e) => setPeriod(e.target.value as Period)}
+                className="px-3 py-1.5 rounded-lg border"
+                aria-label="Period"
+              >
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+                <option value="year">Year</option>
+              </select>
+              <div className="flex items-center gap-2">
+                <button onClick={() => shift(-1)} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">◀</button>
+                <div className="text-sm text-slate-700 min-w-[10ch] text-center">{label}</div>
+                <button onClick={() => shift(1)} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">▶</button>
+              </div>
+              <button onClick={() => setAnchor(new Date())} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">This {period}</button>
+            </div>
           </div>
         </div>
       </header>
