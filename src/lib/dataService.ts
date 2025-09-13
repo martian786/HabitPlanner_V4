@@ -410,36 +410,49 @@ export class DataService {
     
     const cacheKey = `preferences:${this.userId}`
     const cached = cache.get(cacheKey) as UserPreferences | null
-    if (cached) return cached
+    
+    // TEMPORARY: Always bypass cache to test database operations
+    console.log('🔍 [DEBUG] getUserPreferences - bypassing cache for testing')
+    console.log('🔍 [DEBUG] Cached data exists?', !!cached)
 
     return withRetry(async () => {
+      console.log('🔍 [DEBUG] Making direct database query for user:', this.userId)
       const { data, error } = await supabase
         .from('user_preferences')
         .select('*')
         .eq('user_id', this.userId)
-        .single()
+        .maybeSingle()
+
+      console.log('🔍 [DEBUG] Database response - data:', data, 'error:', error)
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          // No preferences found, create default
-          const defaultPrefs: UserPreferences = {
-            show_archived: false,
-            delete_mode: 'soft',
-            start_minutes: 6 * 60, // 6:00 AM
-            end_minutes: 22 * 60, // 10:00 PM  
-            slot_minutes: 20,
-            week_starts_on: 'Monday',
-            max_objectives: 6,
-            tick_color: '#16a34a',
-            show_objective_names: true,
-            prevent_overwrite: true
-          }
-          await this.updateUserPreferences(defaultPrefs)
-          return defaultPrefs
-        }
+        console.error('❌ [DEBUG] Database error:', error)
         handleDatabaseError(error, 'getUserPreferences')
       }
 
+      if (!data) {
+        console.log('📝 [DEBUG] No preferences found in database, creating defaults')
+        // No preferences found, create default
+        const defaultPrefs: UserPreferences = {
+          show_archived: false,
+          delete_mode: 'soft',
+          start_minutes: 6 * 60, // 6:00 AM
+          end_minutes: 22 * 60, // 10:00 PM  
+          slot_minutes: 20,
+          week_starts_on: 'Monday',
+          max_objectives: 6,
+          tick_color: '#16a34a',
+          show_objective_names: true,
+          prevent_overwrite: true
+        }
+        console.log('🔧 [DEBUG] Calling updateUserPreferences with:', defaultPrefs)
+        await this.updateUserPreferences(defaultPrefs)
+        console.log('✅ [DEBUG] updateUserPreferences completed, caching result')
+        cache.set(cacheKey, defaultPrefs)
+        return defaultPrefs
+      }
+
+      console.log('✅ [DEBUG] Found existing preferences in database:', data)
       const preferences = data as UserPreferences
       cache.set(cacheKey, preferences)
       return preferences
@@ -449,46 +462,65 @@ export class DataService {
   async updateUserPreferences(updates: Partial<UserPreferences>): Promise<void> {
     this.checkRateLimit('updateUserPreferences')
     
+    console.log('🔧 [DEBUG] updateUserPreferences called with:', updates)
+    console.log('🔧 [DEBUG] User ID:', this.userId)
+    
     // Validate updates
     if (updates.delete_mode && !['soft', 'hard'].includes(updates.delete_mode)) {
       throw new ValidationError('Delete mode must be "soft" or "hard"', 'delete_mode')
     }
 
     return withRetry(async () => {
-      // Use update instead of upsert to only modify specific fields
-      const { error } = await supabase
+      console.log('🔧 [DEBUG] Attempting UPDATE with .select() to check affected rows')
+      const { data, error } = await supabase
         .from('user_preferences')
         .update(updates)
         .eq('user_id', this.userId)
+        .select()
+
+      console.log('🔧 [DEBUG] UPDATE response - data:', data, 'error:', error)
 
       if (error) {
-        // If no record exists yet, create one with defaults + updates
-        if (error.code === 'PGRST116') {
-          const { error: insertError } = await supabase
-            .from('user_preferences')
-            .insert({
-              user_id: this.userId,
-              show_archived: false,
-              delete_mode: 'soft',
-              start_minutes: 6 * 60, // 6:00 AM
-              end_minutes: 22 * 60, // 10:00 PM  
-              slot_minutes: 20,
-              week_starts_on: 'Monday',
-              max_objectives: 6,
-              tick_color: '#16a34a',
-              show_objective_names: true,
-              prevent_overwrite: true,
-              ...updates
-            })
-          
-          if (insertError) {
-            handleDatabaseError(insertError, 'updateUserPreferences insert')
-          }
-        } else {
-          handleDatabaseError(error, 'updateUserPreferences')
-        }
+        console.error('❌ [DEBUG] UPDATE failed with error:', error)
+        handleDatabaseError(error, 'updateUserPreferences')
       }
 
+      // Check if any rows were actually updated
+      if (!data || data.length === 0) {
+        console.log('📝 [DEBUG] UPDATE affected 0 rows - no existing record, creating with INSERT')
+        const insertData = {
+          user_id: this.userId,
+          show_archived: false,
+          delete_mode: 'soft',
+          start_minutes: 6 * 60, // 6:00 AM
+          end_minutes: 22 * 60, // 10:00 PM  
+          slot_minutes: 20,
+          week_starts_on: 'Monday',
+          max_objectives: 6,
+          tick_color: '#16a34a',
+          show_objective_names: true,
+          prevent_overwrite: true,
+          ...updates
+        }
+        console.log('💾 [DEBUG] INSERT data:', insertData)
+        
+        const { error: insertError } = await supabase
+          .from('user_preferences')
+          .insert(insertData)
+        
+        console.log('💾 [DEBUG] INSERT response - error:', insertError)
+        
+        if (insertError) {
+          console.error('❌ [DEBUG] INSERT failed:', insertError)
+          handleDatabaseError(insertError, 'updateUserPreferences insert')
+        } else {
+          console.log('✅ [DEBUG] INSERT successful!')
+        }
+      } else {
+        console.log('✅ [DEBUG] UPDATE successful, affected rows:', data.length)
+      }
+
+      console.log('🗑️ [DEBUG] Clearing cache for user:', this.userId)
       cache.invalidate(`preferences:${this.userId}`)
     })
   }

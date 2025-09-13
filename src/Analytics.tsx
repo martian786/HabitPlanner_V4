@@ -214,9 +214,9 @@ export default function Analytics(props: {
           .from("user_preferences")
           .select("show_archived,delete_mode")
           .eq("user_id", session.user.id)
-          .single();
+          .maybeSingle();
           
-        if (error && error.code !== "PGRST116") { // PGRST116 = no rows returned
+        if (error) {
           console.error("Error fetching preferences:", error);
           return;
         }
@@ -224,6 +224,7 @@ export default function Analytics(props: {
         if (data) {
           setUserPreferences(data);
         }
+        // If no data, keep default preferences
       } catch (err: unknown) {
         console.error("Failed to load user preferences:", err);
       }
@@ -409,7 +410,30 @@ export default function Analytics(props: {
               </select>
               <div className="flex items-center gap-2">
                 <button onClick={() => shift(-1)} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">◀</button>
-                <div className="text-sm text-slate-700 min-w-[10ch] text-center">{label}</div>
+                <div className="relative">
+                  <button
+                    onClick={() => {
+                      const input = document.getElementById('analytics-date-picker') as HTMLInputElement;
+                      if (input) input.showPicker();
+                    }}
+                    className="text-sm text-slate-700 min-w-[10ch] text-center px-2 py-1 rounded hover:bg-slate-100 transition-colors cursor-pointer"
+                    aria-label="Select date to jump to"
+                    title="Click to select a date"
+                  >
+                    {label}
+                  </button>
+                  <input
+                    id="analytics-date-picker"
+                    aria-label="Jump to date"
+                    type="date"
+                    value={toISODate(anchor)}
+                    onChange={(e) => {
+                      const selectedDate = new Date(e.target.value);
+                      setAnchor(selectedDate);
+                    }}
+                    className="absolute opacity-0 pointer-events-none"
+                  />
+                </div>
                 <button onClick={() => shift(1)} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">▶</button>
               </div>
               <button onClick={() => setAnchor(new Date())} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">This {period}</button>

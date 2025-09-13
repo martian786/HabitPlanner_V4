@@ -28,25 +28,26 @@ export function AnalyticsWithPreferences() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        // Fetch user preferences
-        supabase
-          .from('user_preferences')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .single()
-          .then(({ data, error }) => {
-            if (!error && data) {
-              setUserPreferences(data);
-            }
-            setLoading(false);
-          });
-      } else {
+    const fetchPreferences = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const { data } = await supabase
+            .from('user_preferences')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+          
+          setUserPreferences(data);
+        }
+      } catch (error) {
+        console.error('Error fetching preferences:', error);
+      } finally {
         setLoading(false);
       }
-    });
+    };
+
+    fetchPreferences();
   }, []);
 
   if (loading) {
