@@ -242,6 +242,7 @@ const cache = new SimpleCache()
 // Data service class
 export class DataService {
   private userId: string
+  private loadingPreferences: Promise<UserPreferences> | null = null
 
   constructor(userId: string) {
     if (!userId) {
@@ -414,23 +415,45 @@ export class DataService {
     // TEMPORARY: Always bypass cache to test database operations
     console.log('🔍 [DEBUG] getUserPreferences - bypassing cache for testing')
     console.log('🔍 [DEBUG] Cached data exists?', !!cached)
+    
+    // Prevent concurrent calls - if already loading, return the same promise
+    if (this.loadingPreferences) {
+      console.log('🔄 [DEBUG] Already loading preferences, returning existing promise')
+      return this.loadingPreferences
+    }
 
-    return withRetry(async () => {
+    // Create and store the loading promise
+    this.loadingPreferences = withRetry(async () => {
       console.log('🔍 [DEBUG] Making direct database query for user:', this.userId)
-      const { data, error } = await supabase
+      
+      // Add timeout to detect hanging queries
+      const queryPromise = supabase
         .from('user_preferences')
         .select('*')
         .eq('user_id', this.userId)
         .maybeSingle()
 
-      console.log('🔍 [DEBUG] Database response - data:', data, 'error:', error)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Query timeout after 10s')), 10000)
+      )
 
-      if (error) {
-        console.error('❌ [DEBUG] Database error:', error)
-        handleDatabaseError(error, 'getUserPreferences')
-      }
+      try {
+        console.log('🔍 [DEBUG] Query started, waiting for response...')
+        const result = await Promise.race([queryPromise, timeoutPromise]) as { data: any, error: any }
+        const { data, error } = result
+        console.log('🔍 [DEBUG] Database response - data:', data, 'error:', error)
+        
+        // Additional check - ensure we got a proper response
+        if (data === undefined && error === undefined) {
+          throw new Error('Invalid database response - both data and error are undefined')
+        }
 
-      if (!data) {
+        if (error) {
+          console.error('❌ [DEBUG] Database error:', error)
+          handleDatabaseError(error, 'getUserPreferences')
+        }
+
+        if (!data) {
         console.log('📝 [DEBUG] No preferences found in database, creating defaults')
         // No preferences found, create default
         const defaultPrefs: UserPreferences = {
@@ -452,11 +475,22 @@ export class DataService {
         return defaultPrefs
       }
 
-      console.log('✅ [DEBUG] Found existing preferences in database:', data)
-      const preferences = data as UserPreferences
-      cache.set(cacheKey, preferences)
-      return preferences
+        console.log('✅ [DEBUG] Found existing preferences in database:', data)
+        console.log('🔍 [DEBUG] CRITICAL - Record ID:', data?.id, 'Created at:', data?.created_at)
+        console.log('🔍 [DEBUG] CRITICAL - This should match database records!')
+        const preferences = data as UserPreferences
+        cache.set(cacheKey, preferences)
+        return preferences
+      } catch (timeoutError) {
+        console.error('❌ [DEBUG] Query timeout or error:', timeoutError)
+        throw timeoutError
+      } finally {
+        // Clear the loading promise regardless of success/failure
+        this.loadingPreferences = null
+      }
     })
+
+    return this.loadingPreferences
   }
 
   async updateUserPreferences(updates: Partial<UserPreferences>): Promise<void> {
@@ -512,9 +546,12 @@ export class DataService {
         
         if (insertError) {
           console.error('❌ [DEBUG] INSERT failed:', insertError)
+          console.error('❌ [DEBUG] INSERT error details:', JSON.stringify(insertError, null, 2))
           handleDatabaseError(insertError, 'updateUserPreferences insert')
         } else {
           console.log('✅ [DEBUG] INSERT successful!')
+          console.log('🔍 [DEBUG] CRITICAL - INSERT completed, record should exist in database now!')
+          console.log('🔍 [DEBUG] CRITICAL - Check database for user_id:', this.userId)
         }
       } else {
         console.log('✅ [DEBUG] UPDATE successful, affected rows:', data.length)
