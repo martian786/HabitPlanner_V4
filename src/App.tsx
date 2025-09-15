@@ -6,6 +6,8 @@ import { DataService, MAX_OBJECTIVE_NAME_LENGTH } from "./lib/dataService";
 import { useEntitlements } from "./hooks/useEntitlements";
 import { useSubscription } from "./hooks/useSubscription";
 import Paywall from "./components/Paywall";
+import MFAChallenge from "./components/MFAChallenge";
+import AccountSettings from "./components/AccountSettings";
 import habitblockLogo from "./assets/habitblock-logo.png";
 
 /*************************************************
@@ -135,6 +137,7 @@ export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [needsMFAChallenge, setNeedsMFAChallenge] = useState(false);
 
   // Session validation and token refresh
   const validateSession = async (currentSession: Session | null) => {
@@ -257,12 +260,31 @@ export default function App() {
     );
   }
 
-  if (!session) return <AuthScreen />;
+  if (!session) return <AuthScreen setNeedsMFAChallenge={setNeedsMFAChallenge} />;
 
-  return <AuthenticatedApp session={session} />;
+  return (
+    <>
+      <AuthenticatedApp
+        session={session}
+        setNeedsMFAChallenge={setNeedsMFAChallenge}
+      />
+
+      {/* MFA Challenge Modal */}
+      {needsMFAChallenge && (
+        <MFAChallenge
+          onSuccess={() => setNeedsMFAChallenge(false)}
+          onCancel={() => {
+            // User cancelled MFA, sign them out for security
+            sessionStorage.removeItem('mfa_completed');
+            supabase.auth.signOut();
+          }}
+        />
+      )}
+    </>
+  );
 }
 
-function AuthScreen() {
+function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: boolean) => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // Default to signup if user came from marketing with plan, signin if explicit login
@@ -277,7 +299,7 @@ function AuthScreen() {
     const hasPlan = url.searchParams.has('plan');
     if (hasPlan) {
       // Set a durable flag in both localStorage and URL for cross-tab/device
-      try { localStorage.setItem('auto_checkout', '1'); } catch {}
+      try { localStorage.setItem('auto_checkout', '1'); } catch { /* ignore localStorage errors */ }
       url.searchParams.set('auto_checkout', '1');
     }
     await supabase.auth.signInWithOAuth({
@@ -293,17 +315,28 @@ function AuthScreen() {
     setLoading(true);
     try {
       if (isSignUp) {
-        // Execute reCAPTCHA v3 before signup
+        // Load and execute reCAPTCHA v3 before signup
         const recaptchaToken = await new Promise<string>((resolve, reject) => {
+          // Load reCAPTCHA script dynamically if not already loaded
           if (typeof window.grecaptcha === 'undefined') {
-            reject(new Error('reCAPTCHA not loaded'));
-            return;
+            const script = document.createElement('script');
+            script.src = `https://www.google.com/recaptcha/api.js?render=${import.meta.env.VITE_RECAPTCHA_SITE_KEY}`;
+            script.onload = () => {
+              window.grecaptcha.ready(() => {
+                window.grecaptcha.execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, { action: 'signup' })
+                  .then(resolve)
+                  .catch(reject);
+              });
+            };
+            script.onerror = () => reject(new Error('Failed to load reCAPTCHA'));
+            document.head.appendChild(script);
+          } else {
+            window.grecaptcha.ready(() => {
+              window.grecaptcha.execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, { action: 'signup' })
+                .then(resolve)
+                .catch(reject);
+            });
           }
-          window.grecaptcha.ready(() => {
-            window.grecaptcha.execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, { action: 'signup' })
-              .then(resolve)
-              .catch(reject);
-          });
         });
 
         // Verify reCAPTCHA with our edge function
@@ -322,7 +355,7 @@ function AuthScreen() {
         // Preserve current URL (including ?plan=...) and add auto_checkout flag to the verification link
         const url = new URL(window.location.href);
         if (url.searchParams.has('plan')) {
-          try { localStorage.setItem('auto_checkout', '1'); } catch {}
+          try { localStorage.setItem('auto_checkout', '1'); } catch { /* ignore localStorage errors */ }
           url.searchParams.set('auto_checkout', '1');
         }
         const { error } = await supabase.auth.signUp({
@@ -333,8 +366,18 @@ function AuthScreen() {
         if (error) throw error;
         alert("Check your email for verification link!");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+
+        // Check if user has MFA enabled after successful password authentication
+        if (data.session) {
+          const { data: factors } = await supabase.auth.mfa.listFactors();
+          if (factors && factors.totp && factors.totp.length > 0) {
+            // User has MFA enabled - trigger MFA challenge
+            setNeedsMFAChallenge(true);
+            return; // Don't complete login yet, wait for MFA
+          }
+        }
       }
     } catch (error: unknown) {
       alert(error instanceof Error ? error.message : 'Authentication failed');
@@ -448,7 +491,13 @@ function LoadingSpinner({ size = 'sm' }: { size?: 'xs' | 'sm' | 'md' }) {
   )
 }
 
-function AuthenticatedApp({ session }: { session: Session }) {
+function AuthenticatedApp({
+  session,
+  setNeedsMFAChallenge
+}: {
+  session: Session;
+  setNeedsMFAChallenge: (value: boolean) => void;
+}) {
   const userId = session.user.id;
 
   // Check subscription status
@@ -458,8 +507,38 @@ function AuthenticatedApp({ session }: { session: Session }) {
   // Debug subscription status
   console.log('Subscription status:', { subscription, entitlements, userId });
 
+  // Settings state
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
+
   // New secure data service
   const dataService = useDataService(userId);
+
+  // Check MFA requirement on session load
+  useEffect(() => {
+    const checkMFARequirement = async () => {
+      try {
+        // Check if user has MFA enabled and current session requires challenge
+        const currentAAL = (session as { aal?: string }).aal || 'aal1';
+
+        // Check if MFA challenge is needed (only once per session)
+        if (currentAAL === 'aal1') {
+          const { data: factors } = await supabase.auth.mfa.listFactors();
+          if (factors && factors.totp && factors.totp.length > 0) {
+            // User has MFA enabled but current session is only AAL1
+            // Only trigger if we haven't already completed MFA in this session
+            const mfaCompleted = sessionStorage.getItem('mfa_completed');
+            if (!mfaCompleted) {
+              setNeedsMFAChallenge(true);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error checking MFA requirement:', error);
+      }
+    };
+
+    checkMFARequirement();
+  }, [session]);
 
   // Reset safety flags when user changes
   useEffect(() => {
@@ -1478,11 +1557,23 @@ function AuthenticatedApp({ session }: { session: Session }) {
                       </div>
                       <div className="p-1">
                         <button
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            setShowAccountSettings(true);
+                          }}
+                          className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md"
+                          aria-label="Account Settings"
+                        >
+                          ⚙️ Account Settings
+                        </button>
+                        <button
                           onClick={async () => {
                             setUserMenuOpen(false);
                             console.log("Signing out and clearing all data");
                             // Clear all localStorage data
                             localStorage.clear();
+                            // Clear MFA session flag
+                            sessionStorage.removeItem('mfa_completed');
                             // Sign out from Supabase with Google session clearing
                             await supabase.auth.signOut({
                               scope: 'global' // This attempts to clear Google session too
@@ -1493,7 +1584,7 @@ function AuthenticatedApp({ session }: { session: Session }) {
                           className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md"
                           aria-label="Sign out"
                         >
-                          Sign out
+                          🚪 Sign out
                         </button>
                       </div>
                     </div>
@@ -1553,11 +1644,23 @@ function AuthenticatedApp({ session }: { session: Session }) {
                     </div>
                     <div className="p-1">
                       <button
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          setShowAccountSettings(true);
+                        }}
+                        className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md"
+                        aria-label="Account Settings"
+                      >
+                        ⚙️ Account Settings
+                      </button>
+                      <button
                         onClick={async () => {
                           setUserMenuOpen(false);
                           console.log("Signing out and clearing all data");
                           // Clear all localStorage data
                           localStorage.clear();
+                          // Clear MFA session flag
+                          sessionStorage.removeItem('mfa_completed');
                           // Sign out from Supabase with Google session clearing
                           await supabase.auth.signOut({
                             scope: 'global' // This attempts to clear Google session too
@@ -1568,7 +1671,7 @@ function AuthenticatedApp({ session }: { session: Session }) {
                         className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md"
                         aria-label="Sign out"
                       >
-                        Sign out
+                        🚪 Sign out
                       </button>
                     </div>
                   </div>
@@ -2393,6 +2496,14 @@ function AuthenticatedApp({ session }: { session: Session }) {
           <div className="fixed bottom-4 right-4 bg-slate-900 text-white px-3 py-2 rounded-lg shadow" role="status" aria-live="polite">{notice}</div>
         )}
       </main>
+
+      {/* Account Settings Modal */}
+      {showAccountSettings && (
+        <AccountSettings
+          session={session}
+          onClose={() => setShowAccountSettings(false)}
+        />
+      )}
     </div>
   );
 }
