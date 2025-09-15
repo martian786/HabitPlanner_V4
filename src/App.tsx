@@ -293,14 +293,40 @@ function AuthScreen() {
     setLoading(true);
     try {
       if (isSignUp) {
+        // Execute reCAPTCHA v3 before signup
+        const recaptchaToken = await new Promise<string>((resolve, reject) => {
+          if (typeof window.grecaptcha === 'undefined') {
+            reject(new Error('reCAPTCHA not loaded'));
+            return;
+          }
+          window.grecaptcha.ready(() => {
+            window.grecaptcha.execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, { action: 'signup' })
+              .then(resolve)
+              .catch(reject);
+          });
+        });
+
+        // Verify reCAPTCHA with our edge function
+        const verifyResponse = await supabase.functions.invoke('verify-recaptcha', {
+          body: { token: recaptchaToken, action: 'signup' }
+        });
+
+        if (verifyResponse.error) {
+          throw new Error(verifyResponse.error.message || 'reCAPTCHA verification failed');
+        }
+
+        if (!verifyResponse.data?.success) {
+          throw new Error('Bot detection: Please try again');
+        }
+
         // Preserve current URL (including ?plan=...) and add auto_checkout flag to the verification link
         const url = new URL(window.location.href);
         if (url.searchParams.has('plan')) {
           try { localStorage.setItem('auto_checkout', '1'); } catch {}
           url.searchParams.set('auto_checkout', '1');
         }
-        const { error } = await supabase.auth.signUp({ 
-          email, 
+        const { error } = await supabase.auth.signUp({
+          email,
           password,
           options: { emailRedirectTo: url.toString() }
         });
