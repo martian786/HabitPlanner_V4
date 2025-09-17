@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Habitblock - Your Secret to Success</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="config.js"></script>
     <style>
       /* Custom color palette from user-provided hex values */
       :root {
@@ -120,7 +121,8 @@
         </nav>
         <div class="flex items-center space-x-4">
           <a
-            href="http://localhost:5173/?mode=signin"
+            href="#"
+            onclick="window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
             class="font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300 text-white"
             style="background-color: #d00000"
           >
@@ -180,7 +182,8 @@
             >Contact</a
           >
           <a
-            href="http://localhost:5173/?mode=signin"
+            href="#"
+            onclick="window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
             class="text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300"
             style="background-color: #d00000"
           >
@@ -205,7 +208,8 @@
         </p>
         <div class="mt-10 flex justify-center">
           <a
-            href="http://localhost:5173"
+            href="#"
+            onclick="window.location.href = window.websiteConfig.getAppUrl()"
             class="text-white font-bold py-4 px-12 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80"
             style="background-color: #d00000"
           >
@@ -439,7 +443,8 @@
           <strong>Make every week count with Habitblock.</strong>
         </p>
         <a
-          href="http://localhost:5173"
+          href="#"
+          onclick="window.location.href = window.websiteConfig.getAppUrl()"
           class="text-white font-bold py-4 px-12 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80"
           style="background-color: #d00000"
         >
@@ -503,14 +508,16 @@
             <ul class="space-y-2">
               <li>
                 <a
-                  href="http://localhost:5173/?mode=signin"
+                  href="#"
+                  onclick="window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
                   class="hover:text-gray-300 transition duration-300"
                   >Login</a
                 >
               </li>
               <li>
                 <a
-                  href="http://localhost:5173/?mode=signin"
+                  href="#"
+                  onclick="window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
                   class="hover:text-gray-300 transition duration-300"
                   >Start Free Trial</a
                 >
