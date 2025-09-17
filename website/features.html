@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Features - Habitblock</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Optional: your own config; safe fallback below if absent -->
     <script src="config.js"></script>
+    <script>
+      // Safe fallback so Login works even if config.js isn't present.
+      window.websiteConfig = window.websiteConfig || {
+        getAppUrl: (suffix = "") => "https://app.habitblock.com" + suffix,
+      };
+    </script>
     <style>
       :root {
         --color-rich-black: #03071eff;
@@ -27,7 +34,6 @@
           var(--color-selective-yellow)
         );
       }
-
       .bg-card-gradient {
         background: linear-gradient(145deg, #fff, #ffa770);
       }
@@ -80,6 +86,63 @@
       }
       .mobile-menu.show {
         display: block;
+      }
+    </style>
+
+    <style>
+      /* Floating CTA sizing & balance */
+      #ctaFloat .shell {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #fff;
+        border: 1px solid rgba(3, 7, 30, 0.08);
+        border-radius: 9999px;
+        box-shadow: 0 10px 25px rgba(3, 7, 30, 0.15);
+        padding: 6px; /* symmetric padding for desktop */
+      }
+      #ctaFloat a.cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px; /* consistent height */
+        padding: 0 18px; /* horizontal padding */
+        border-radius: 9999px;
+        background: #d00000;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 16px;
+        line-height: 1; /* remove extra white above text */
+      }
+      #ctaFloat button.close {
+        width: 36px;
+        height: 36px;
+        border-radius: 9999px;
+      }
+
+      /* Mobile: keep it as a compact pill, not full-width */
+      @media (max-width: 640px) {
+        #ctaFloat {
+          left: 12px;
+          right: 12px;
+          bottom: 12px;
+        }
+        #ctaFloat .shell {
+          width: clamp(260px, 92vw, 420px); /* limit width */
+          margin: 0 auto; /* center the pill */
+          padding: 4px;
+          padding-bottom: calc(4px + env(safe-area-inset-bottom));
+        }
+        #ctaFloat a.cta {
+          height: 40px;
+          padding: 0 14px;
+          font-size: 15px;
+        }
+        #ctaFloat button.close {
+          width: 32px;
+          height: 32px;
+        }
       }
     </style>
   </head>
@@ -176,9 +239,8 @@
             href="#"
             onclick="window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
             class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300"
+            >Login</a
           >
-            Login
-          </a>
         </nav>
       </div>
     </header>
@@ -309,8 +371,7 @@
               Our <strong>Lightning-Fast Productivity Tools</strong> eliminate
               the small hesitations that lead to procrastination. With simple
               keyboard shortcuts and batch operations, you can build an entire
-              week in a few clicks. It gets you from idea to action without a
-              second thought.
+              week in a few clicks.
             </p>
             <div class="flex flex-wrap justify-center gap-8 mb-12">
               <div class="flex items-center">
@@ -426,8 +487,7 @@
               Our <strong>Powerful Analytics & Insights</strong> give you a
               clear, visual dashboard of your success. You don't have to just
               hope you're improving—you can see exactly how many hours you
-              invested and your completion rates, which provides tangible proof
-              that your hard work is paying off.
+              invested and your completion rates.
             </p>
             <div class="flex flex-wrap justify-center gap-8 mb-12">
               <div class="flex items-center">
@@ -520,7 +580,7 @@
               The <strong>Visual Charts</strong> transform your discipline into
               a rewarding journey. Seeing your progress over time makes it
               easier to stay consistent and gives you a reason to celebrate your
-              wins, no matter how small.
+              wins.
             </p>
             <div class="flex flex-wrap justify-center gap-8 mb-12">
               <div class="flex items-center">
@@ -593,7 +653,7 @@
               </video>
             </div>
             <div class="p-8">
-              <p class="text-center text-gray-700 italic text-lg">
+              <p class="text-center text-gray-700 italic">
                 "Seeing your progress over time makes it easier to stay
                 consistent and gives you reasons to celebrate your wins."
               </p>
@@ -623,8 +683,8 @@
           </h2>
           <p class="text-xl text-gray-700 max-w-4xl mx-auto">
             Everyone has off days. People who are trying to be more structured
-            often feel immense guilt or failure when they fall off track, which
-            can cause them to give up entirely.
+            often feel guilt when they fall off track, which can cause them to
+            give up entirely.
           </p>
         </div>
 
@@ -636,8 +696,7 @@
             <p class="text-lg text-gray-700 mb-6">
               Our <strong>Built-in Reflection System</strong> guides you to
               think about what went well and what you can improve. Instead of
-              just tracking what you did, you'll learn why you did it, turning
-              every setback into a valuable lesson for your personal growth.
+              just tracking what you did, you'll learn why you did it.
             </p>
             <ul class="space-y-4">
               <li class="flex items-start">
@@ -718,9 +777,8 @@
               💙 Connecting Habits to How You Feel
             </h3>
             <p class="text-lg text-gray-700 mb-6">
-              By tracking your mood alongside your productivity, you can learn
-              to recognize patterns and build a routine that genuinely makes you
-              feel better, not just one you feel obligated to follow.
+              Track mood alongside productivity to recognize patterns and build
+              a routine that genuinely makes you feel better.
             </p>
             <ul class="space-y-4">
               <li class="flex items-start">
@@ -799,10 +857,8 @@
               🎛️ Adapting to Your Style
             </h3>
             <p class="text-lg text-gray-700 mb-6">
-              Our <strong>Advanced Planning Features</strong> allow you to
-              customize everything from your week's start day to your time
-              slots. You can make it your own, ensuring the tool helps you, not
-              the other way around.
+              Customize your week's start day and time slots. Make it your own
+              so the tool bends to your life.
             </p>
             <ul class="space-y-4">
               <li class="flex items-start">
@@ -857,9 +913,8 @@
               📱 Being There for You, Everywhere
             </h3>
             <p class="text-lg text-gray-700 mb-6">
-              With its <strong>Mobile-Optimized Experience</strong> and
-              Real-time Sync, Habitblock is ready whenever you are, whether
-              you're planning at your desk or checking your progress on the go.
+              Mobile-optimized experience with real-time sync — plan at your
+              desk or check progress on the go.
             </p>
             <ul class="space-y-4">
               <li class="flex items-start">
@@ -1028,8 +1083,10 @@
         </p>
 
         <div class="flex justify-center space-x-6">
+          <!-- Tag so the floating CTA hides when this is visible -->
           <a
             href="pricing.html"
+            data-primary-cta
             class="bg-penn-red text-white font-bold py-4 px-10 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80"
           >
             Start 7-Day Free Trial
@@ -1038,6 +1095,28 @@
       </div>
     </section>
 
+    <!-- Floating CTA -->
+    <div
+      id="ctaFloat"
+      class="fixed inset-x-4 bottom-4 md:inset-x-auto md:right-6 md:bottom-6 z-40 transition transform translate-y-24 opacity-0 pointer-events-none"
+    >
+      <div class="shell">
+        <a
+          href="pricing.html"
+          class="cta flex-1"
+          aria-label="Start 7-day free trial"
+        >
+          Start 7-Day Free Trial
+        </a>
+        <button
+          id="ctaFloatClose"
+          class="close hover:bg-gray-100"
+          aria-label="Dismiss floating button"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
     <!-- Footer -->
     <footer
       class="py-16 px-6 text-white text-sm"
@@ -1045,7 +1124,6 @@
     >
       <div class="container mx-auto max-w-6xl">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Navigation -->
           <div>
             <h3 class="text-lg font-semibold mb-4">Navigation</h3>
             <ul class="space-y-2">
@@ -1087,7 +1165,6 @@
             </ul>
           </div>
 
-          <!-- Product -->
           <div>
             <h3 class="text-lg font-semibold mb-4">Product</h3>
             <ul class="space-y-2">
@@ -1108,7 +1185,6 @@
             </ul>
           </div>
 
-          <!-- Legal -->
           <div>
             <h3 class="text-lg font-semibold mb-4">Legal</h3>
             <ul class="space-y-2">
@@ -1141,6 +1217,79 @@
         const menu = document.getElementById("mobileMenu");
         menu.classList.toggle("show");
       }
+    </script>
+
+    <!-- Floating CTA logic -->
+    <script>
+      (function () {
+        // Avoid on pricing or signin pages if you reuse this snippet elsewhere
+        if (
+          location.pathname.includes("pricing") ||
+          location.search.includes("mode=signin")
+        )
+          return;
+
+        const floater = document.getElementById("ctaFloat");
+        const closeBtn = document.getElementById("ctaFloatClose");
+        const footer = document.querySelector("footer");
+        const ctas = document.querySelectorAll("[data-primary-cta]");
+        const SHOW_AFTER_PX = 400;
+
+        if (!floater || !closeBtn) return;
+
+        let dismissed = localStorage.getItem("ctaFloatDismissed") === "1";
+        let anyCtaVisible = false;
+        let footerVisible = false;
+
+        function updateFloaterVisibility() {
+          const scrolledEnough = window.scrollY > SHOW_AFTER_PX;
+          const shouldShow =
+            scrolledEnough && !dismissed && !anyCtaVisible && !footerVisible;
+
+          floater.classList.toggle("translate-y-0", shouldShow);
+          floater.classList.toggle("opacity-100", shouldShow);
+          floater.classList.toggle("pointer-events-auto", shouldShow);
+
+          floater.classList.toggle("translate-y-24", !shouldShow);
+          floater.classList.toggle("opacity-0", !shouldShow);
+          floater.classList.toggle("pointer-events-none", !shouldShow);
+        }
+
+        const ctaObserver = new IntersectionObserver(
+          (entries) => {
+            anyCtaVisible = entries.some((e) => e.isIntersecting);
+            updateFloaterVisibility();
+          },
+          { threshold: 0.2 }
+        );
+
+        ctas.forEach((el) => ctaObserver.observe(el));
+
+        if (footer) {
+          const footerObserver = new IntersectionObserver(
+            (entries) => {
+              footerVisible = entries.some((e) => e.isIntersecting);
+              updateFloaterVisibility();
+            },
+            { threshold: 0.01 }
+          );
+          footerObserver.observe(footer);
+        }
+
+        window.addEventListener("scroll", updateFloaterVisibility, {
+          passive: true,
+        });
+        window.addEventListener("resize", updateFloaterVisibility);
+
+        closeBtn.addEventListener("click", () => {
+          dismissed = true;
+          localStorage.setItem("ctaFloatDismissed", "1");
+          updateFloaterVisibility();
+        });
+
+        // First paint
+        updateFloaterVisibility();
+      })();
     </script>
   </body>
 </html>
