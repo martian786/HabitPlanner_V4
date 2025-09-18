@@ -42,11 +42,13 @@ export function useEntitlements(userId?: string) {
   };
 
   useEffect(() => {
+    console.log('🎯 [DEBUG] useEntitlements main useEffect triggered for userId:', userId);
     fetchEntitlements();
   }, [userId]);
 
   // Poll for entitlements after potential payment completion
   useEffect(() => {
+    console.log('💳 [DEBUG] useEntitlements payment polling useEffect triggered - userId:', userId, 'ent exists:', !!ent);
     if (!userId) return;
     
     // Check if we just came back from a payment (URL contains stripe session)

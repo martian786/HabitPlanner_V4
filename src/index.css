@@ -114,3 +114,29 @@ button.bg-slate-900:hover,
   color: white !important;
 }
 
+/* Save button overrides */
+button.bg-green-500 {
+  background-color: #059669 !important;
+  color: white !important;
+}
+
+button.bg-green-500:hover {
+  background-color: #047857 !important;
+  color: white !important;
+}
+
+button.bg-red-500 {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+button.bg-red-500:hover {
+  background-color: #dc2626 !important;
+  color: white !important;
+}
+
+button.bg-blue-500:hover {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+

@@ -5,6 +5,7 @@ export function useSubscription(userId?: string) {
   const [sub, setSub] = useState<any>(null);
 
   useEffect(() => {
+    console.log('📋 [DEBUG] useSubscription useEffect triggered for userId:', userId);
     if (!userId) return;
     (async () => {
       const { data, error } = await supabase

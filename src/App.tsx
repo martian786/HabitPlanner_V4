@@ -430,12 +430,45 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
         <p className="text-center text-sm">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
-            onClick={() => setIsSignUp(!isSignUp)}
+            onClick={() => {
+              if (isSignUp) {
+                setIsSignUp(false);
+              } else {
+                // Redirect to pricing page for package selection
+                const isDev = window.location.hostname === 'localhost';
+                const pricingUrl = isDev
+                  ? 'http://localhost:8080/pricing.html'
+                  : 'https://habitblock.com/pricing.html';
+                window.location.href = pricingUrl;
+              }
+            }}
             className="text-blue-600 hover:underline"
           >
             {isSignUp ? "Sign in" : "Sign up"}
           </button>
         </p>
+
+        {isSignUp && (
+          <div className="text-center text-xs text-gray-500 space-x-4">
+            <a
+              href="https://habitblock.com/privacy-policy.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              Privacy Policy
+            </a>
+            <span>•</span>
+            <a
+              href="https://habitblock.com/terms-of-service.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              Terms of Service
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -504,8 +537,12 @@ function AuthenticatedApp({
   const subscription = useSubscription(userId);
   const { entitlements, loading: entitlementsLoading } = useEntitlements(userId);
 
-  // Debug subscription status
-  console.log('Subscription status:', { subscription, entitlements, userId });
+  // Debug subscription status (throttled)
+  React.useEffect(() => {
+    if (subscription || entitlements) {
+      console.log('Subscription status:', { subscription, entitlements, userId });
+    }
+  }, [subscription?.id, entitlements?.plan_code, userId]);
 
   // Settings state
   const [showAccountSettings, setShowAccountSettings] = useState(false);
@@ -662,12 +699,14 @@ function AuthenticatedApp({
   // Load data from database when week changes  
   useEffect(() => {
     const weekISO = toISODate(weekStart);
+    console.log('📅 [DEBUG] Week load useEffect triggered - weekISO:', weekISO);
     // Always load week when weekStart changes, regardless of currentWeek state
     dataService.loadWeek(weekISO);
   }, [weekStart, dataService.loadWeek]);
 
-  // Sync state with database data - handle both existing and new weeks  
+  // Sync state with database data - handle both existing and new weeks
   useEffect(() => {
+    console.log('🔄 [DEBUG] Data sync useEffect triggered - loading.week:', dataService.loading.week, 'currentWeek exists:', !!dataService.currentWeek);
     // Only process when we've attempted to load the week (not still loading)
     if (!dataService.loading.week) {
       // Set loading flag to prevent autosave during data loading
@@ -2078,21 +2117,27 @@ function AuthenticatedApp({
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow overflow-hidden">
+          <div className="bg-white rounded-2xl shadow overflow-hidden border border-gray-300">
             {/* Save button above calendar - positioned above Sunday column */}
-            <div className="flex justify-end pb-2 pr-4">
+            <div className="flex justify-end pb-2 pt-2 pr-4">
               <button
                 onClick={manualSave}
                 disabled={isSaving || !hasUnsavedChanges}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 flex items-center gap-2"
+                className={`px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium transition-all duration-200 ${
+                  isSaving
+                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    : hasUnsavedChanges
+                      ? 'bg-red-500 text-white hover:bg-red-600'
+                      : 'bg-green-500 text-white hover:bg-green-600'
+                }`}
                 aria-label={isSaving ? 'Saving...' : hasUnsavedChanges ? 'Save changes' : 'All changes saved'}
               >
                 {isSaving ? (
-                  <>⏳ Saving...</>
+                  <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div> Saving...</>
                 ) : hasUnsavedChanges ? (
-                  <>❌ Blocks not saved</>
+                  <><svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/></svg> Blocks not saved</>
                 ) : (
-                  <>✅ Blocks saved</>
+                  <><svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg> Blocks saved</>
                 )}
               </button>
             </div>
@@ -2180,21 +2225,27 @@ function AuthenticatedApp({
           </div>
 
           {/* Weekly Reflection Widget */}
-          <section className="mt-4 bg-white rounded-2xl shadow-lg p-4 space-y-3">
+          <section className="mt-4 bg-white rounded-2xl shadow-lg p-4 space-y-3 border border-gray-300">
             <div className="bg-gray-100 -m-4 mb-3 p-4 rounded-t-2xl flex items-center justify-between">
               <h2 className="font-semibold">Weekly Reflection</h2>
               <button
                 onClick={manualSave}
                 disabled={isSaving || !hasUnsavedChanges}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 flex items-center gap-2 text-sm"
+                className={`px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium transition-all duration-200 ${
+                  isSaving
+                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    : hasUnsavedChanges
+                      ? 'bg-red-500 text-white hover:bg-red-600'
+                      : 'bg-green-500 text-white hover:bg-green-600'
+                }`}
                 aria-label={isSaving ? 'Saving reflections...' : hasUnsavedChanges ? 'Save reflections' : 'Reflections saved'}
               >
                 {isSaving ? (
-                  <>⏳ Saving...</>
+                  <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div> Saving...</>
                 ) : hasUnsavedChanges ? (
-                  <>❌ Reflections not saved</>
+                  <><svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/></svg> Reflections not saved</>
                 ) : (
-                  <>✅ Reflections saved</>
+                  <><svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg> Reflections saved</>
                 )}
               </button>
             </div>
@@ -2501,7 +2552,12 @@ function AuthenticatedApp({
       {showAccountSettings && (
         <AccountSettings
           session={session}
-          onClose={() => setShowAccountSettings(false)}
+          onClose={() => {
+            setShowAccountSettings(false);
+            // Reload current week data when returning from settings
+            const weekISO = toISODate(weekStart);
+            dataService.loadWeek(weekISO);
+          }}
         />
       )}
     </div>
