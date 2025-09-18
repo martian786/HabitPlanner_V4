@@ -202,7 +202,14 @@ export default function App() {
     const { data: sub } = supabase.auth.onAuthStateChange(async (event, s) => {
       console.log('Auth state change:', event);
 
-      // Handle password recovery - form will be shown via URL detection
+      // Handle password recovery - skip MFA during password reset
+      if (event === 'PASSWORD_RECOVERY') {
+        // Skip MFA and other validations during password recovery
+        if (mounted) {
+          setSession(s);
+        }
+        return;
+      }
 
       // Clear any previous errors
       setAuthError(null);
@@ -335,7 +342,7 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
     setIsResettingPassword(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: `${window.location.origin}`
       });
 
       if (error) throw error;
