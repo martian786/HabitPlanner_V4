@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Habitblock - Paint your week. Build habits that stick.</title>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // Default consent settings
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied'
+      });
+
+      gtag('config', 'G-Y24D5E5VZ7');
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="config.js"></script>
     <style>
@@ -122,7 +137,7 @@
         <div class="flex items-center space-x-4">
           <a
             href="#"
-            onclick="window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
+            onclick="gtag('event', 'login_attempt', { event_category: 'conversion', event_label: 'header_login' }); window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
             class="font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300 text-white"
             style="background-color: #d00000"
           >
@@ -183,7 +198,7 @@
           >
           <a
             href="#"
-            onclick="window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
+            onclick="gtag('event', 'login_attempt', { event_category: 'conversion', event_label: 'mobile_login' }); window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
             class="text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300"
             style="background-color: #d00000"
           >
@@ -199,11 +214,13 @@
         <h1
           class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight"
         >
-          Paint your week.
+          Paint your week <br />
+          <br />
           <span class="block"
             >Build habits that stick — and hit the goals that matter.</span
           >
         </h1>
+
         <p class="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-gray-700">
           Visual time-blocking by objective, plus weekly check-ins and analytics
           to keep you consistent.
@@ -212,6 +229,7 @@
         <div class="mt-10 flex justify-center gap-4">
           <a
             href="pricing.html"
+            onclick="gtag('event', 'trial_start', { event_category: 'conversion', event_label: 'hero_cta', value: 1 })"
             class="text-white font-bold py-4 px-12 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80"
             style="background-color: #d00000"
           >
@@ -511,7 +529,7 @@
               <li>
                 <a
                   href="#"
-                  onclick="window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
+                  onclick="gtag('event', 'login_attempt', { event_category: 'conversion', event_label: 'footer_login' }); window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
                   class="hover:text-gray-300 transition duration-300"
                   >Login</a
                 >
@@ -519,6 +537,7 @@
               <li>
                 <a
                   href="pricing.html"
+                  onclick="gtag('event', 'trial_start', { event_category: 'conversion', event_label: 'footer_trial' })"
                   class="hover:text-gray-300 transition duration-300"
                   >Start 7-Day Free Trial</a
                 >
@@ -554,11 +573,55 @@
       </div>
     </footer>
 
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50" style="display: none;">
+      <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+        <p class="text-sm mb-4 sm:mb-0">
+          We use cookies to analyze website traffic and optimize your experience.
+          <a href="privacy-policy.html" class="underline hover:text-gray-300">Privacy Policy</a>
+        </p>
+        <div class="flex gap-3">
+          <button onclick="acceptCookies()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium">
+            Accept
+          </button>
+          <button onclick="declineCookies()" class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm">
+            Decline
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
       function toggleMobileMenu() {
         const menu = document.getElementById("mobileMenu");
         menu.classList.toggle("show");
       }
+
+      // Cookie consent functionality
+      function showCookieConsent() {
+        if (!localStorage.getItem('cookieConsent')) {
+          document.getElementById('cookieConsent').style.display = 'block';
+        }
+      }
+
+      function acceptCookies() {
+        localStorage.setItem('cookieConsent', 'accepted');
+        document.getElementById('cookieConsent').style.display = 'none';
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted'
+        });
+      }
+
+      function declineCookies() {
+        localStorage.setItem('cookieConsent', 'declined');
+        document.getElementById('cookieConsent').style.display = 'none';
+        gtag('consent', 'update', {
+          'analytics_storage': 'denied'
+        });
+      }
+
+      // Initialize cookie consent on page load
+      window.addEventListener('load', showCookieConsent);
     </script>
   </body>
 </html>
