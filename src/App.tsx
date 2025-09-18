@@ -306,6 +306,7 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   // Check URL immediately to prevent race condition with auth state
   const urlHash = typeof window !== 'undefined' ? window.location.hash : '';
+  console.log('URL Hash:', urlHash, 'Contains recovery:', urlHash.includes('type=recovery'));
   const [showResetForm, setShowResetForm] = useState(urlHash.includes('type=recovery'));
   const [newPassword, setNewPassword] = useState('');
 
