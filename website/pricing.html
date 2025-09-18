@@ -348,7 +348,7 @@
 
             <a
               href="#"
-              onclick="window.location.href = window.websiteConfig.getAppUrl('?plan=pro')"
+              onclick="gtag('event', 'sign_up', { method: 'trial', plan: 'pro' }); window.location.href = window.websiteConfig.getAppUrl('?plan=pro')"
               class="block w-full bg-gray-900 text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition duration-300"
             >
               Start 7-Day Free Trial
@@ -461,7 +461,7 @@
 
             <a
               href="#"
-              onclick="window.location.href = window.websiteConfig.getAppUrl('?plan=plus')"
+              onclick="gtag('event', 'sign_up', { method: 'trial', plan: 'plus' }); window.location.href = window.websiteConfig.getAppUrl('?plan=plus')"
               class="block w-full bg-penn-red text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
             >
               Start 7-Day Free Trial
@@ -651,6 +651,7 @@
         <div class="flex justify-center">
           <a
             href="#top"
+            onclick="gtag('event', 'sign_up', { method: 'trial', plan: 'cta' });"
             class="bg-penn-red text-white font-bold py-4 px-10 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80"
           >
             Start 7-Day Free Trial
