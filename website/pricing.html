@@ -788,6 +788,51 @@
           proPeriod.textContent = "/month";
         }
       }
+
+      // Cookie consent functionality
+      function showCookieConsent() {
+        if (!localStorage.getItem('cookieConsent')) {
+          const banner = document.getElementById('cookieConsent');
+          if (banner) banner.style.display = 'block';
+        }
+      }
+
+      function acceptCookies() {
+        localStorage.setItem('cookieConsent', 'accepted');
+        document.getElementById('cookieConsent').style.display = 'none';
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted'
+        });
+      }
+
+      function declineCookies() {
+        localStorage.setItem('cookieConsent', 'declined');
+        document.getElementById('cookieConsent').style.display = 'none';
+        gtag('consent', 'update', {
+          'analytics_storage': 'denied'
+        });
+      }
+
+      // Initialize cookie consent on page load
+      window.addEventListener('load', showCookieConsent);
     </script>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50" style="display: none;">
+      <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+        <p class="text-sm mb-4 sm:mb-0">
+          We use cookies to analyze website traffic and optimize your experience.
+          <a href="privacy-policy.html" class="underline hover:text-gray-300">Privacy Policy</a>
+        </p>
+        <div class="flex gap-3">
+          <button onclick="acceptCookies()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium">
+            Accept
+          </button>
+          <button onclick="declineCookies()" class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm">
+            Decline
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
