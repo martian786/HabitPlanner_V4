@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import type { AuthMFAChallengeResponse } from '@supabase/supabase-js';
 
 interface MFAChallengeProps {
   onSuccess?: () => void;
@@ -42,8 +41,8 @@ export default function MFAChallenge({ onSuccess, onCancel }: MFAChallengeProps)
 
       if (challengeError) throw challengeError;
 
-      const challengeResponse = challenge as AuthMFAChallengeResponse;
-      setChallengeId(challengeResponse.id);
+      // Challenge is already destructured from the response data
+      setChallengeId(challenge.id);
     } catch (err: any) {
       setError(err.message || 'Failed to initialize MFA challenge');
     } finally {
@@ -61,7 +60,7 @@ export default function MFAChallenge({ onSuccess, onCancel }: MFAChallengeProps)
       setVerifying(true);
       setError('');
 
-      const { data, error } = await supabase.auth.mfa.verify({
+      const { error } = await supabase.auth.mfa.verify({
         factorId,
         challengeId,
         code: verificationCode

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import MFAEnrollment from './MFAEnrollment';
 import type { Factor } from '@supabase/supabase-js';
