@@ -611,27 +611,6 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
           </p>
         )}
 
-        {isSignUp && (
-          <div className="text-center text-xs text-gray-500 space-x-4">
-            <a
-              href="https://habitblock.com/privacy-policy.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              Privacy Policy
-            </a>
-            <span>•</span>
-            <a
-              href="https://habitblock.com/terms-of-service.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              Terms of Service
-            </a>
-          </div>
-        )}
       </div>
     </div>
   );
