@@ -202,20 +202,7 @@ export default function App() {
     const { data: sub } = supabase.auth.onAuthStateChange(async (event, s) => {
       console.log('Auth state change:', event);
 
-      // Handle password recovery
-      if (event === 'PASSWORD_RECOVERY') {
-        // User clicked reset password link - prompt for new password
-        const newPassword = prompt('Enter your new password:');
-        if (newPassword) {
-          try {
-            const { error } = await supabase.auth.updateUser({ password: newPassword });
-            if (error) throw error;
-            alert('Password updated successfully!');
-          } catch (error: unknown) {
-            alert(error instanceof Error ? error.message : 'Failed to update password');
-          }
-        }
-      }
+      // Handle password recovery - form will be shown via URL detection
 
       // Clear any previous errors
       setAuthError(null);
@@ -310,6 +297,16 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+
+  // Check if we're in password reset mode based on URL hash
+  React.useEffect(() => {
+    const hash = window.location.hash;
+    if (hash.includes('type=recovery') || hash.includes('recovery')) {
+      setShowResetForm(true);
+    }
+  }, []);
 
   async function signInWithGoogle() {
     // Preserve current path and query (e.g., ?plan=pro) through OAuth redirect
@@ -347,6 +344,25 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
       alert(error instanceof Error ? error.message : 'Failed to send reset email');
     }
     setIsResettingPassword(false);
+  }
+
+  async function handlePasswordUpdate() {
+    if (!newPassword.trim()) {
+      alert('Please enter a new password');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      alert('Password updated successfully!');
+      setShowResetForm(false);
+      setNewPassword('');
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Failed to update password');
+    }
+    setLoading(false);
   }
 
   async function handleEmailAuth() {
@@ -437,6 +453,48 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
       alert(error instanceof Error ? error.message : 'Authentication failed');
     }
     setLoading(false);
+  }
+
+  // Show password reset form if in reset mode
+  if (showResetForm) {
+    return (
+      <div className="min-h-screen grid place-items-center p-8 bg-pink-100">
+        <div className="rounded-2xl border-pink-300 border-2 p-6 max-w-sm w-full space-y-4 bg-pink-50 shadow-lg">
+          <h1 className="text-xl font-semibold">Reset Password</h1>
+
+          <div className="space-y-3">
+            <input
+              type="password"
+              placeholder="Enter new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2"
+            />
+
+            <button
+              onClick={handlePasswordUpdate}
+              disabled={loading || !newPassword}
+              className="w-full rounded-lg bg-slate-900 text-white px-3 py-2 hover:bg-slate-800 disabled:opacity-50"
+            >
+              {loading ? "Updating..." : "Update Password"}
+            </button>
+          </div>
+
+          <p className="text-center text-sm">
+            <button
+              onClick={() => {
+                setShowResetForm(false);
+                setNewPassword('');
+                window.history.replaceState({}, document.title, window.location.pathname);
+              }}
+              className="text-blue-600 hover:underline"
+            >
+              Back to Sign In
+            </button>
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
