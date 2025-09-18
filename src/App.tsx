@@ -138,6 +138,26 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
   const [needsMFAChallenge, setNeedsMFAChallenge] = useState(false);
+  const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+
+  // Password reset handler
+  const handlePasswordReset = async () => {
+    if (!newPassword.trim()) {
+      alert('Please enter a new password');
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      alert('Password updated successfully!');
+      setShowPasswordResetModal(false);
+      setNewPassword('');
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Failed to update password');
+    }
+  };
 
   // Session validation and token refresh
   const validateSession = async (currentSession: Session | null) => {
@@ -202,18 +222,9 @@ export default function App() {
     const { data: sub } = supabase.auth.onAuthStateChange(async (event, s) => {
       console.log('Auth state change:', event);
 
-      // Handle password recovery with simple prompt
+      // Handle password recovery with modal
       if (event === 'PASSWORD_RECOVERY') {
-        const newPassword = prompt('Please enter your new password:');
-        if (newPassword && newPassword.trim()) {
-          try {
-            const { error } = await supabase.auth.updateUser({ password: newPassword });
-            if (error) throw error;
-            alert('Password updated successfully!');
-          } catch (error: unknown) {
-            alert(error instanceof Error ? error.message : 'Failed to update password');
-          }
-        }
+        setShowPasswordResetModal(true);
         return;
       }
 
@@ -294,6 +305,45 @@ export default function App() {
             supabase.auth.signOut();
           }}
         />
+      )}
+
+      {/* Password Reset Modal */}
+      {showPasswordResetModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+            <h2 className="text-lg font-semibold mb-4">Reset Password</h2>
+
+            <div className="space-y-4">
+              <input
+                type="password"
+                placeholder="Enter new password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                autoFocus
+              />
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handlePasswordReset}
+                  disabled={!newPassword.trim()}
+                  className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                >
+                  Update Password
+                </button>
+                <button
+                  onClick={() => {
+                    setShowPasswordResetModal(false);
+                    setNewPassword('');
+                  }}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
