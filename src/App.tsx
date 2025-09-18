@@ -201,7 +201,22 @@ export default function App() {
 
     const { data: sub } = supabase.auth.onAuthStateChange(async (event, s) => {
       console.log('Auth state change:', event);
-      
+
+      // Handle password recovery
+      if (event === 'PASSWORD_RECOVERY') {
+        // User clicked reset password link - prompt for new password
+        const newPassword = prompt('Enter your new password:');
+        if (newPassword) {
+          try {
+            const { error } = await supabase.auth.updateUser({ password: newPassword });
+            if (error) throw error;
+            alert('Password updated successfully!');
+          } catch (error: unknown) {
+            alert(error instanceof Error ? error.message : 'Failed to update password');
+          }
+        }
+      }
+
       // Clear any previous errors
       setAuthError(null);
       
@@ -294,6 +309,7 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
   const [loading, setLoading] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
 
   async function signInWithGoogle() {
     // Preserve current path and query (e.g., ?plan=pro) through OAuth redirect
@@ -311,6 +327,26 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
         queryParams: { prompt: 'select_account' }
       },
     });
+  }
+
+  async function handleForgotPassword() {
+    if (!email.trim()) {
+      alert('Please enter your email address first');
+      return;
+    }
+
+    setIsResettingPassword(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+
+      if (error) throw error;
+      alert('Password reset email sent! Check your email for instructions.');
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Failed to send reset email');
+    }
+    setIsResettingPassword(false);
   }
 
   async function handleEmailAuth() {
@@ -512,6 +548,18 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
             {isSignUp ? "Sign in" : "Sign up"}
           </button>
         </p>
+
+        {!isSignUp && (
+          <p className="text-center text-sm">
+            <button
+              onClick={handleForgotPassword}
+              disabled={isResettingPassword}
+              className="text-blue-600 hover:underline disabled:opacity-50"
+            >
+              {isResettingPassword ? "Sending..." : "Forgot password?"}
+            </button>
+          </p>
+        )}
 
         {isSignUp && (
           <div className="text-center text-xs text-gray-500 space-x-4">
