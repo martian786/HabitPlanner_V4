@@ -304,16 +304,10 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
-  const [showResetForm, setShowResetForm] = useState(false);
+  // Check URL immediately to prevent race condition with auth state
+  const urlHash = typeof window !== 'undefined' ? window.location.hash : '';
+  const [showResetForm, setShowResetForm] = useState(urlHash.includes('type=recovery'));
   const [newPassword, setNewPassword] = useState('');
-
-  // Check if we're in password reset mode based on URL hash
-  React.useEffect(() => {
-    const hash = window.location.hash;
-    if (hash.includes('type=recovery') || hash.includes('recovery')) {
-      setShowResetForm(true);
-    }
-  }, []);
 
   async function signInWithGoogle() {
     // Preserve current path and query (e.g., ?plan=pro) through OAuth redirect
