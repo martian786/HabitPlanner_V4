@@ -292,6 +292,8 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
   const defaultIsSignUp = urlParams.has('plan') ? true : false;
   const [isSignUp, setIsSignUp] = useState(defaultIsSignUp);
   const [loading, setLoading] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   async function signInWithGoogle() {
     // Preserve current path and query (e.g., ?plan=pro) through OAuth redirect
@@ -315,6 +317,12 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
     setLoading(true);
     try {
       if (isSignUp) {
+        // Validate consent before proceeding
+        if (!privacyAccepted || !termsAccepted) {
+          alert('You must accept both the Privacy Policy and Terms of Service to sign up.');
+          setLoading(false);
+          return;
+        }
         // Load and execute reCAPTCHA v3 before signup
         const recaptchaToken = await new Promise<string>((resolve, reject) => {
           // Load reCAPTCHA script dynamically if not already loaded
@@ -361,7 +369,17 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: url.toString() }
+          options: {
+            emailRedirectTo: url.toString(),
+            data: {
+              privacy_policy_accepted: privacyAccepted,
+              privacy_policy_accepted_at: privacyAccepted ? new Date().toISOString() : null,
+              privacy_policy_version: '1.0',
+              terms_accepted: termsAccepted,
+              terms_accepted_at: termsAccepted ? new Date().toISOString() : null,
+              terms_version: '1.0'
+            }
+          }
         });
         if (error) throw error;
         alert("Check your email for verification link!");
@@ -405,9 +423,56 @@ function AuthScreen({ setNeedsMFAChallenge }: { setNeedsMFAChallenge: (value: bo
             onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-lg border px-3 py-2"
           />
+
+          {isSignUp && (
+            <div className="space-y-3">
+              <div className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  id="privacy-policy"
+                  checked={privacyAccepted}
+                  onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                  className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="privacy-policy" className="text-sm text-gray-700">
+                  I accept the{" "}
+                  <a
+                    href="https://habitblock.com/privacy-policy.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Privacy Policy
+                  </a>
+                </label>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  id="terms-of-service"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="terms-of-service" className="text-sm text-gray-700">
+                  I accept the{" "}
+                  <a
+                    href="https://habitblock.com/terms-of-service.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Terms of Service
+                  </a>
+                </label>
+              </div>
+            </div>
+          )}
+
           <button
             onClick={handleEmailAuth}
-            disabled={loading || !email || !password}
+            disabled={loading || !email || !password || (isSignUp && (!privacyAccepted || !termsAccepted))}
             className="w-full rounded-lg bg-slate-900 text-white px-3 py-2 hover:bg-slate-800 disabled:opacity-50"
           >
             {loading ? "Loading..." : (isSignUp ? "Sign up" : "Sign in")}
