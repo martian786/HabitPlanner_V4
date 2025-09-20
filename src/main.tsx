@@ -65,7 +65,7 @@ export function AnalyticsWithPreferences() {
     <Analytics 
       settings={{
         weekStartsOn: userPreferences?.week_starts_on || "Monday",
-        slotMinutes: userPreferences?.slot_minutes || 20,
+        slotMinutes: userPreferences?.slot_minutes || 15,
         startMinutes: userPreferences?.start_minutes || 6 * 60,
         endMinutes: userPreferences?.end_minutes || 22 * 60,
       }}

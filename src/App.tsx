@@ -989,14 +989,14 @@ function AuthenticatedApp({
   const slotCount = useMemo(() => {
     const startMinutes = dataService.userPreferences?.start_minutes || 6 * 60;
     const endMinutes = dataService.userPreferences?.end_minutes || 22 * 60;
-    const slotMinutes = dataService.userPreferences?.slot_minutes || 20;
+    const slotMinutes = dataService.userPreferences?.slot_minutes || 15;
     const total = endMinutes - startMinutes;
     return Math.max(0, Math.floor(total / slotMinutes));
   }, [dataService.userPreferences?.end_minutes, dataService.userPreferences?.start_minutes, dataService.userPreferences?.slot_minutes]);
 
   const slotStarts = useMemo(() => {
     const startMinutes = dataService.userPreferences?.start_minutes || 6 * 60;
-    const slotMinutes = dataService.userPreferences?.slot_minutes || 20;
+    const slotMinutes = dataService.userPreferences?.slot_minutes || 15;
     return Array.from({ length: slotCount }, (_, i) => startMinutes + i * slotMinutes);
   }, [slotCount, dataService.userPreferences?.start_minutes, dataService.userPreferences?.slot_minutes]);
 
@@ -1598,7 +1598,7 @@ function AuthenticatedApp({
       settings: {
         startMinutes: dataService.userPreferences?.start_minutes || 6 * 60,
         endMinutes: dataService.userPreferences?.end_minutes || 22 * 60,
-        slotMinutes: dataService.userPreferences?.slot_minutes || 20,
+        slotMinutes: dataService.userPreferences?.slot_minutes || 15,
         weekStartsOn: dataService.userPreferences?.week_starts_on || "Monday",
         tickColor: dataService.userPreferences?.tick_color || "#16a34a",
         showObjectiveNames: dataService.userPreferences?.show_objective_names || false
@@ -1641,7 +1641,7 @@ function AuthenticatedApp({
   const weeklyStats = useMemo(() => {
     const daysISO = days.map((d) => toISODate(d));
     const filteredObjectives = dataService.objectives.filter(o => dataService.userPreferences?.show_archived || !o.archived);
-    return computeWeeklyStats(filteredObjectives, daysISO, schedule, dataService.userPreferences?.slot_minutes || 20);
+    return computeWeeklyStats(filteredObjectives, daysISO, schedule, dataService.userPreferences?.slot_minutes || 15);
   }, [dataService.objectives, days, schedule, dataService.userPreferences]);
 
   const visibleSet = useMemo(() => new Set(visibleObjectives), [visibleObjectives]);
@@ -1709,7 +1709,18 @@ function AuthenticatedApp({
                   📊
                 </a>
                 <button
-                  onClick={() => setSettingsPanelOpen(!settingsPanelOpen)}
+                  onClick={() => {
+                    const willOpen = !settingsPanelOpen;
+                    setSettingsPanelOpen(willOpen);
+                    // Refresh hasAnyWeeks when opening settings panel
+                    if (willOpen) {
+                      if (dataService.checkHasAnyWeeks) {
+                        // Clear cache to ensure fresh database check
+                        dataService.clearCache();
+                        dataService.checkHasAnyWeeks();
+                      }
+                    }
+                  }}
                   className="p-2 rounded-lg border hover:bg-slate-100"
                   aria-label="Toggle settings"
                 >
@@ -1794,7 +1805,18 @@ function AuthenticatedApp({
                 📊 Analytics
               </a>
               <button
-                onClick={() => setSettingsPanelOpen(!settingsPanelOpen)}
+                onClick={() => {
+                  const willOpen = !settingsPanelOpen;
+                  setSettingsPanelOpen(willOpen);
+                  // Refresh hasAnyWeeks when opening settings panel
+                  if (willOpen) {
+                    if (dataService.checkHasAnyWeeks) {
+                      // Clear cache to ensure fresh database check
+                      dataService.clearCache();
+                      dataService.checkHasAnyWeeks();
+                    }
+                  }
+                }}
                 className="p-2 rounded-lg border hover:bg-slate-100"
                 aria-label="Toggle settings"
                 title="Settings"
@@ -2510,15 +2532,15 @@ function AuthenticatedApp({
                   <div className="grid grid-cols-1 gap-3 text-sm">
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">
                       <span>Start time</span>
-                      <input aria-label="Start time" type="time" value={minutesToTimeStr(dataService.userPreferences?.start_minutes || 6 * 60)} onChange={(e) => { const v = timeStrToMinutes(e.target.value); dataService.updateUserPreferences({ start_minutes: v }); }} className="outline-none" />
+                      <input aria-label="Start time" type="time" value={minutesToTimeStr(dataService.userPreferences?.start_minutes || 6 * 60)} onChange={(e) => { const v = timeStrToMinutes(e.target.value); dataService.updateUserPreferences({ start_minutes: v }); }} className="outline-none disabled:bg-gray-100 disabled:text-gray-400" disabled={dataService.hasAnyWeeks === true} />
                     </label>
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">
                       <span>End time</span>
-                      <input aria-label="End time" type="time" value={minutesToTimeStr(dataService.userPreferences?.end_minutes || 22 * 60)} onChange={(e) => { const v = timeStrToMinutes(e.target.value); dataService.updateUserPreferences({ end_minutes: v }); }} className="outline-none" />
+                      <input aria-label="End time" type="time" value={minutesToTimeStr(dataService.userPreferences?.end_minutes || 22 * 60)} onChange={(e) => { const v = timeStrToMinutes(e.target.value); dataService.updateUserPreferences({ end_minutes: v }); }} className="outline-none disabled:bg-gray-100 disabled:text-gray-400" disabled={dataService.hasAnyWeeks === true} />
                     </label>
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">
                       <span>Slot minutes</span>
-                      <select aria-label="Slot minutes" value={dataService.userPreferences?.slot_minutes || 20} onChange={(e) => dataService.updateUserPreferences({ slot_minutes: Number(e.target.value) })} className="outline-none">{[10, 15, 20, 30, 60].map((n) => <option key={n} value={n}>{n}</option>)}</select>
+                      <select aria-label="Slot minutes" value={dataService.userPreferences?.slot_minutes || 15} onChange={(e) => dataService.updateUserPreferences({ slot_minutes: Number(e.target.value) })} className="outline-none">{[15, 30, 60].map((n) => <option key={n} value={n}>{n}</option>)}</select>
                     </label>
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">
                       <span>Week starts on</span>
@@ -2543,7 +2565,7 @@ function AuthenticatedApp({
                     </label>
                     {dataService.hasAnyWeeks === true && (
                       <div className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-2 mt-1">
-                        <strong>Note:</strong> Week start day cannot be changed when you have calendar entries. Clear all your calendar data to modify this setting.
+                        <strong>Note:</strong> Start time, end time, and week start day cannot be changed when you have calendar entries. Clear all your calendar data to modify these settings.
                       </div>
                     )}
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">

@@ -50,6 +50,7 @@ export interface DataServiceActions {
   clearErrors: () => void
   clearCache: () => void
   retry: (operation: string) => Promise<void>
+  checkHasAnyWeeks: () => Promise<void>
 }
 
 export type UseDataServiceReturn = DataServiceState & DataServiceActions
@@ -312,6 +313,8 @@ export function useDataService(userId: string | null): UseDataServiceReturn {
       
       // Refresh hasAnyWeeks after deleting objectives (might affect calendar entries)
       try {
+        // Clear cache to ensure fresh database check
+        globalDataService.clearCache()
         const hasCalendarEntries = await globalDataService.hasAnyCalendarEntries()
         setState(prev => ({
           ...prev,
@@ -372,7 +375,7 @@ export function useDataService(userId: string | null): UseDataServiceReturn {
                 delete_mode: 'soft',
                 start_minutes: 6 * 60, // 6:00 AM
                 end_minutes: 22 * 60, // 10:00 PM  
-                slot_minutes: 20,
+                slot_minutes: 15,
                 week_starts_on: 'Monday',
                 max_objectives: 6,
                 tick_color: '#16a34a',
@@ -440,6 +443,8 @@ export function useDataService(userId: string | null): UseDataServiceReturn {
       }))
       
       // Refresh hasAnyWeeks to keep it accurate
+      // Clear cache to ensure fresh database check
+      globalDataService.clearCache()
       const hasCalendarEntries = await globalDataService.hasAnyCalendarEntries()
       setState(prev => ({
         ...prev,
@@ -612,6 +617,7 @@ export function useDataService(userId: string | null): UseDataServiceReturn {
     saveWeek,
     clearErrors,
     clearCache,
-    retry
+    retry,
+    checkHasAnyWeeks
   }
 }
