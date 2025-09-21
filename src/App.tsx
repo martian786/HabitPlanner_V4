@@ -1072,7 +1072,9 @@ function AuthenticatedApp({
       const desired = entry ? !entry.completed : true;
       setCompleted(iso, slotIndex, desired);
       paintingRef.current = true;
-      markingRef.current = { active: true, to: desired };
+      // Mobile: each tap independent, Desktop: allow drag marking
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      markingRef.current = { active: !isMobile, to: desired };
       return;
     }
     
@@ -2342,7 +2344,7 @@ function AuthenticatedApp({
 
               {/* Grid */}
               <div
-                className="grid select-none touch-none"
+                className="grid select-none touch-pan-y"
                 style={{ gridTemplateColumns: `5rem repeat(7, minmax(0, 1fr))` }}
               >
                 {/* Time labels column - Allow scrolling here */}
@@ -2375,7 +2377,7 @@ function AuthenticatedApp({
                         return (
                           <div
                             key={rowIdx}
-                            className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group`}
+                            className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group touch-none`}
                             onMouseDown={(e) => handleCellMouseDown(iso, rowIdx, e)}
                             onMouseEnter={() => handleCellEnter(iso, rowIdx)}
                             onTouchStart={() => handleCellMouseDown(iso, rowIdx)}
