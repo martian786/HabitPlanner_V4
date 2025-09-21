@@ -2375,7 +2375,7 @@ function AuthenticatedApp({
                         return (
                           <div
                             key={rowIdx}
-                            className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group`}
+                            className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group touch-none`}
                             onMouseDown={(e) => handleCellMouseDown(iso, rowIdx, e)}
                             onMouseEnter={() => handleCellEnter(iso, rowIdx)}
                             onTouchStart={() => handleCellMouseDown(iso, rowIdx)}
