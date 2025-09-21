@@ -2399,8 +2399,15 @@ function AuthenticatedApp({
                                   <div
                                     className="absolute inset-0 z-0"
                                     style={{
-                                      backgroundImage: `repeating-linear-gradient(45deg, ${tickColor}33 0 8px, transparent 8px 16px)`,
-                                      ...(needsBlendFallback ? { opacity: 0.15 } : { mixBlendMode: 'multiply' }),
+                                      ...(needsBlendFallback ? {
+                                        // Safari: Striped pattern with solid tick color
+                                        backgroundImage: `repeating-linear-gradient(45deg, ${tickColor} 0 2px, rgba(255,255,255,0.4) 2px 6px)`,
+                                        opacity: 0.4
+                                      } : {
+                                        // Other browsers: Keep original stripe pattern with blend mode
+                                        backgroundImage: `repeating-linear-gradient(45deg, ${tickColor}33 0 8px, transparent 8px 16px)`,
+                                        mixBlendMode: 'multiply'
+                                      }),
                                       pointerEvents: 'none'
                                     }}
                                   />
