@@ -1141,7 +1141,7 @@ function AuthenticatedApp({
     
     // Different timing for desktop vs mobile
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const debounceTime = isMobile ? 5000 : 1000; // 5s for mobile (backup), 1s for desktop (normal)
+    const debounceTime = isMobile ? 1000 : 1000; // 1s for both mobile and desktop
     
     saveTimerRef.current = window.setTimeout(() => {
       performSave(weekKey);
