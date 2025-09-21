@@ -767,8 +767,7 @@ function AuthenticatedApp({
   const paintingRef = useRef(false);
   const markingRef = useRef<{ active: boolean; to?: boolean }>({ active: false, to: undefined });
 
-  // Track whether a touch paint gesture is currently active
-  const [isTouchPainting, setIsTouchPainting] = useState(false);
+  // Touch painting state removed - using simpler scroll zones approach
 
   // Detect Safari on macOS and all iOS/iPadOS browsers (which are always WebKit)
   const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
@@ -910,7 +909,6 @@ function AuthenticatedApp({
       paintingRef.current = false;
       markingRef.current.active = false;
       markingRef.current.to = undefined;
-      setIsTouchPainting(false); // Re-enable pan after a touch paint
     };
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
@@ -2344,11 +2342,11 @@ function AuthenticatedApp({
 
               {/* Grid */}
               <div
-                className={`grid select-none ${isTouchPainting ? 'touch-none' : 'touch-pan-y'}`}
+                className="grid select-none touch-none"
                 style={{ gridTemplateColumns: `5rem repeat(7, minmax(0, 1fr))` }}
               >
-                {/* Time labels column */}
-                <div className="relative sticky left-0 z-10 bg-white">
+                {/* Time labels column - Allow scrolling here */}
+                <div className="relative sticky left-0 z-10 bg-white touch-pan-y">
                   {slotStarts.map((m, rowIdx) => {
                     const { time, period } = formatTimeLabel(m);
                     return (
@@ -2380,10 +2378,7 @@ function AuthenticatedApp({
                             className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group`}
                             onMouseDown={(e) => handleCellMouseDown(iso, rowIdx, e)}
                             onMouseEnter={() => handleCellEnter(iso, rowIdx)}
-                            onTouchStart={() => {
-                              setIsTouchPainting(true);        // Disable pan while painting
-                              handleCellMouseDown(iso, rowIdx);
-                            }}
+                            onTouchStart={() => handleCellMouseDown(iso, rowIdx)}
                             onTouchMove={handleTouchMove}
                             data-rowidx={rowIdx}
                             data-iso={iso}
