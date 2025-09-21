@@ -770,6 +770,12 @@ function AuthenticatedApp({
   // Track whether a touch paint gesture is currently active
   const [isTouchPainting, setIsTouchPainting] = useState(false);
 
+  // Detect Safari on macOS and all iOS/iPadOS browsers (which are always WebKit)
+  const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+  const isIOS = /iPad|iPhone|iPod/i.test(ua);
+  const isMacSafari = /Safari/i.test(ua) && !/Chrome|Chromium|Edg/i.test(ua);
+  const needsBlendFallback = isIOS || isMacSafari;
+
   // Selected brush (objective id or "eraser")
   const [brush, setBrush] = useState<string | null>(null);
   const brushRef = useRef<string | null>(brush);
@@ -2385,16 +2391,37 @@ function AuthenticatedApp({
                             title={titleText}
                           >
                             {objective && isVisible && (
-                              <div className="h-full w-full" style={{ background: objective.color, pointerEvents: 'none', position: 'relative' }}>
+                              <div
+                                className="h-full w-full isolate"
+                                style={{ background: objective.color, pointerEvents: 'none', position: 'relative' }}
+                              >
                                 {completed && (
-                                  <div style={{ position: 'absolute', inset: 0, backgroundImage: `repeating-linear-gradient(45deg, ${tickColor}33 0 8px, transparent 8px 16px)`, mixBlendMode: 'multiply', pointerEvents: 'none' }} />
+                                  <div
+                                    className="absolute inset-0 z-0"
+                                    style={{
+                                      backgroundImage: `repeating-linear-gradient(45deg, ${tickColor}33 0 8px, transparent 8px 16px)`,
+                                      ...(needsBlendFallback ? { opacity: 0.15 } : { mixBlendMode: 'multiply' }),
+                                      pointerEvents: 'none'
+                                    }}
+                                  />
                                 )}
-                                {dataService.userPreferences?.show_objective_names && (
-                                  <div className="absolute inset-0 flex items-center justify-center">
-                                    <span className="text-[10px] text-white font-semibold drop-shadow-md px-1 text-center leading-tight truncate w-full">
-                                      {objective.name}
-                                    </span>
-                                  </div>
+                                {/* Text rendering: Safari gets simple path, others get complex layering */}
+                                {dataService.userPreferences?.show_objective_names && objective && (
+                                  needsBlendFallback ? (
+                                    // Safari/iOS: Simple positioning, no z-index complexity, no drop-shadow
+                                    <div className="relative h-full w-full flex items-center justify-center pointer-events-none">
+                                      <span className="text-[10px] text-white font-bold px-1 text-center leading-tight truncate w-full">
+                                        {objective.name}
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    // Chrome/Edge/Firefox: Keep existing complex layering
+                                    <div className="absolute inset-0 z-10 flex items-center justify-center" style={{WebkitTransform: 'translateZ(0)'}}>
+                                      <span className="text-[10px] text-white font-semibold drop-shadow-md px-1 text-center leading-tight truncate w-full">
+                                        {objective.name}
+                                      </span>
+                                    </div>
+                                  )
                                 )}
                               </div>
                             )}
