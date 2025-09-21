@@ -1072,9 +1072,7 @@ function AuthenticatedApp({
       const desired = entry ? !entry.completed : true;
       setCompleted(iso, slotIndex, desired);
       paintingRef.current = true;
-      // Mobile: each tap independent, Desktop: allow drag marking
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      markingRef.current = { active: !isMobile, to: desired };
+      markingRef.current = { active: true, to: desired };
       return;
     }
     
