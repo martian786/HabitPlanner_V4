@@ -767,6 +767,9 @@ function AuthenticatedApp({
   const paintingRef = useRef(false);
   const markingRef = useRef<{ active: boolean; to?: boolean }>({ active: false, to: undefined });
 
+  // Track whether a touch paint gesture is currently active
+  const [isTouchPainting, setIsTouchPainting] = useState(false);
+
   // Selected brush (objective id or "eraser")
   const [brush, setBrush] = useState<string | null>(null);
   const brushRef = useRef<string | null>(brush);
@@ -897,12 +900,19 @@ function AuthenticatedApp({
 
   // Mouse up listener to stop painting
   useEffect(() => {
-    const onUp = () => { paintingRef.current = false; markingRef.current.active = false; markingRef.current.to = undefined; };
+    const onUp = () => {
+      paintingRef.current = false;
+      markingRef.current.active = false;
+      markingRef.current.to = undefined;
+      setIsTouchPainting(false); // Re-enable pan after a touch paint
+    };
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
+    window.addEventListener("touchcancel", onUp);
     return () => {
       window.removeEventListener("mouseup", onUp);
       window.removeEventListener("touchend", onUp);
+      window.removeEventListener("touchcancel", onUp);
     };
   }, []);
 
@@ -2305,7 +2315,16 @@ function AuthenticatedApp({
                 )}
               </button>
             </div>
-            <div className="relative max-h-[70vh] overflow-auto">
+            <div className="relative max-h-[70vh] overflow-auto pr-6">
+              {/* Scroll handle gutter (mobile-friendly) */}
+              <div
+                aria-label="Scroll"
+                className="pointer-events-auto touch-pan-y absolute right-0 top-0 bottom-0 w-6 z-30
+                           bg-gradient-to-l from-slate-200/60 to-transparent opacity-40 hover:opacity-70
+                           rounded-l"
+                title="Scroll"
+              ></div>
+
               {/* Header Row */}
               <div className="grid sticky top-0 z-20 bg-slate-100" style={{ gridTemplateColumns: `5rem repeat(7, minmax(0, 1fr))` }}>
                 <div className="bg-slate-100 border-b border-slate-200 p-3 text-sm font-medium">Time</div>
@@ -2318,7 +2337,10 @@ function AuthenticatedApp({
               </div>
 
               {/* Grid */}
-              <div className="grid select-none touch-none" style={{ gridTemplateColumns: `5rem repeat(7, minmax(0, 1fr))` }}>
+              <div
+                className={`grid select-none ${isTouchPainting ? 'touch-none' : 'touch-pan-y'}`}
+                style={{ gridTemplateColumns: `5rem repeat(7, minmax(0, 1fr))` }}
+              >
                 {/* Time labels column */}
                 <div className="relative sticky left-0 z-10 bg-white">
                   {slotStarts.map((m, rowIdx) => {
@@ -2352,7 +2374,10 @@ function AuthenticatedApp({
                             className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group`}
                             onMouseDown={(e) => handleCellMouseDown(iso, rowIdx, e)}
                             onMouseEnter={() => handleCellEnter(iso, rowIdx)}
-                            onTouchStart={() => handleCellMouseDown(iso, rowIdx)}
+                            onTouchStart={() => {
+                              setIsTouchPainting(true);        // Disable pan while painting
+                              handleCellMouseDown(iso, rowIdx);
+                            }}
                             onTouchMove={handleTouchMove}
                             data-rowidx={rowIdx}
                             data-iso={iso}
