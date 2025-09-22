@@ -1066,15 +1066,15 @@ function AuthenticatedApp({
 
   // Painting + Marking
   function handleCellMouseDown(iso: string, slotIndex: number, e?: React.MouseEvent) {
+    // Ignore the synthetic mousedown that follows a touch, but only for Done/Alt toggle
+    if ((isDoneMode || e?.altKey) && e?.type === 'mousedown' && Date.now() - lastTouchTimeRef.current < 700) {
+      e.preventDefault?.();
+      return;
+    }
     console.log("Cell mouse down:", { iso, slotIndex, altKey: e?.altKey, isDoneMode });
-    
+
     // Done mode or Alt+Click - toggle completion
     if (isDoneMode || e?.altKey) {
-      // If this mousedown immediately follows a touch, it's a ghost event — ignore it
-      if (e?.type === 'mousedown' && Date.now() - lastTouchTimeRef.current < 700) {
-        e.preventDefault?.();
-        return;
-      }
       const entry = normEntry(getDayMap(iso)[slotIndex]);
       const desired = entry ? !entry.completed : true;
       setCompleted(iso, slotIndex, desired);
@@ -2385,11 +2385,7 @@ function AuthenticatedApp({
                             className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group touch-none`}
                             onMouseDown={(e) => handleCellMouseDown(iso, rowIdx, e)}
                             onMouseEnter={() => handleCellEnter(iso, rowIdx)}
-                            onTouchStart={(e) => {
-                              lastTouchTimeRef.current = Date.now();
-                              if (e.cancelable) e.preventDefault(); // stop the ghost click/mouse
-                              handleCellMouseDown(iso, rowIdx);
-                            }}
+                            onTouchStart={() => { lastTouchTimeRef.current = Date.now(); handleCellMouseDown(iso, rowIdx); }}
                             onTouchMove={handleTouchMove}
                             data-rowidx={rowIdx}
                             data-iso={iso}
