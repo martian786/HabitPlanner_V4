@@ -8,6 +8,7 @@ import { useSubscription } from "./hooks/useSubscription";
 import Paywall from "./components/Paywall";
 import MFAChallenge from "./components/MFAChallenge";
 import AccountSettings from "./components/AccountSettings";
+import { SWATCH_PALETTE } from "./components/SwatchPicker";
 import habitblockLogo from "./assets/habitblock-logo.png";
 // NOTE: ColorField swatch picker available - see SWATCH_PICKER.md for activation
 
@@ -36,6 +37,27 @@ function getWeekStart(date: Date, weekStartsOn: "Monday" | "Sunday" = "Monday") 
   d.setDate(d.getDate() - diff);
   d.setHours(0, 0, 0, 0);
   return d;
+}
+
+function nextPaletteColor(existingColors: string[], palette = SWATCH_PALETTE): string {
+  const norm = (s: string) => (s || "").toLowerCase();
+  const used = new Map<string, number>();
+  for (const c of existingColors) {
+    const k = norm(c);
+    if (!k) continue;
+    used.set(k, (used.get(k) || 0) + 1);
+  }
+  // 1) First unused colour in palette order
+  for (const c of palette) {
+    if (!used.has(norm(c))) return c;
+  }
+  // 2) Otherwise the least-used colour (tie-break: palette order)
+  let best = palette[0], bestCount = Infinity;
+  for (const c of palette) {
+    const cnt = used.get(norm(c)) ?? 0;
+    if (cnt < bestCount) { best = c; bestCount = cnt; }
+  }
+  return best;
 }
 
 function formatTimeLabel(totalMinutes: number) {
@@ -749,7 +771,14 @@ function AuthenticatedApp({
   });
 
   const [newObjName, setNewObjName] = useState("");
-  const [newObjColor, setNewObjColor] = useState("#10b981");
+
+  // Gather current objective colors for smart color selection
+  const objectiveColors = React.useMemo(
+    () => (dataService.objectives || []).map(o => o.color).filter(Boolean),
+    [dataService.objectives]
+  );
+
+  const [newObjColor, setNewObjColor] = useState(() => nextPaletteColor(objectiveColors));
 
   const tickColor = dataService.userPreferences?.tick_color || "#16a34a";
 
@@ -1015,14 +1044,14 @@ function AuthenticatedApp({
   const slotCount = useMemo(() => {
     const startMinutes = dataService.userPreferences?.start_minutes || 6 * 60;
     const endMinutes = dataService.userPreferences?.end_minutes || 22 * 60;
-    const slotMinutes = dataService.userPreferences?.slot_minutes || 15;
+    const slotMinutes = dataService.userPreferences?.slot_minutes || 30;
     const total = endMinutes - startMinutes;
     return Math.max(0, Math.floor(total / slotMinutes));
   }, [dataService.userPreferences?.end_minutes, dataService.userPreferences?.start_minutes, dataService.userPreferences?.slot_minutes]);
 
   const slotStarts = useMemo(() => {
     const startMinutes = dataService.userPreferences?.start_minutes || 6 * 60;
-    const slotMinutes = dataService.userPreferences?.slot_minutes || 15;
+    const slotMinutes = dataService.userPreferences?.slot_minutes || 30;
     return Array.from({ length: slotCount }, (_, i) => startMinutes + i * slotMinutes);
   }, [slotCount, dataService.userPreferences?.start_minutes, dataService.userPreferences?.slot_minutes]);
 
@@ -1381,11 +1410,16 @@ function AuthenticatedApp({
     if (activeObjectivesCount >= maxObjectives) return;
     const name = newObjName.trim();
     if (!name) return;
-    
-    const obj = await dataService.createObjective(name, newObjColor || "#10b981");
+
+    const color = newObjColor || nextPaletteColor(objectiveColors);
+    const obj = await dataService.createObjective(name, color);
     if (obj) {
       setBrush(obj.id);
       setNewObjName("");
+
+      // Prepare next default color for the following objective
+      const nextColor = nextPaletteColor([...objectiveColors, color]);
+      setNewObjColor(nextColor);
       // Add the new objective to visible objectives so it shows up immediately
       setVisibleObjectives(prev => [...prev, obj.id]);
       flash(`Added "${obj.name}"`);
@@ -1647,7 +1681,7 @@ function AuthenticatedApp({
       settings: {
         startMinutes: dataService.userPreferences?.start_minutes || 6 * 60,
         endMinutes: dataService.userPreferences?.end_minutes || 22 * 60,
-        slotMinutes: dataService.userPreferences?.slot_minutes || 15,
+        slotMinutes: dataService.userPreferences?.slot_minutes || 30,
         weekStartsOn: dataService.userPreferences?.week_starts_on || "Monday",
         tickColor: dataService.userPreferences?.tick_color || "#16a34a",
         showObjectiveNames: dataService.userPreferences?.show_objective_names || false
@@ -1690,7 +1724,7 @@ function AuthenticatedApp({
   const weeklyStats = useMemo(() => {
     const daysISO = days.map((d) => toISODate(d));
     const filteredObjectives = dataService.objectives.filter(o => dataService.userPreferences?.show_archived || !o.archived);
-    return computeWeeklyStats(filteredObjectives, daysISO, schedule, dataService.userPreferences?.slot_minutes || 15);
+    return computeWeeklyStats(filteredObjectives, daysISO, schedule, dataService.userPreferences?.slot_minutes || 30);
   }, [dataService.objectives, days, schedule, dataService.userPreferences]);
 
   const visibleSet = useMemo(() => new Set(visibleObjectives), [visibleObjectives]);
@@ -2633,7 +2667,7 @@ function AuthenticatedApp({
                     </label>
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">
                       <span>Slot minutes</span>
-                      <select aria-label="Slot minutes" value={dataService.userPreferences?.slot_minutes || 15} onChange={(e) => dataService.updateUserPreferences({ slot_minutes: Number(e.target.value) })} className="outline-none">{[15, 30, 60].map((n) => <option key={n} value={n}>{n}</option>)}</select>
+                      <select aria-label="Slot minutes" value={dataService.userPreferences?.slot_minutes || 30} onChange={(e) => dataService.updateUserPreferences({ slot_minutes: Number(e.target.value) })} className="outline-none">{[15, 30, 60].map((n) => <option key={n} value={n}>{n}</option>)}</select>
                     </label>
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">
                       <span>Week starts on</span>

@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-const DEFAULT_PALETTE = [
+export const SWATCH_PALETTE = [
   // App default colors (from dataService.ts)
   "#1d4ed8", "#fb923c", "#22c55e",
   // Common reds
@@ -32,7 +32,7 @@ type Props = {
 export default function SwatchPicker({
   value,
   onChange,
-  colors = DEFAULT_PALETTE,
+  colors = SWATCH_PALETTE,
   columns = 8,
   showCustom = false,
   size = 24,

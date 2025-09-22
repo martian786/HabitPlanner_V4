@@ -375,7 +375,7 @@ export function useDataService(userId: string | null): UseDataServiceReturn {
                 delete_mode: 'soft',
                 start_minutes: 6 * 60, // 6:00 AM
                 end_minutes: 22 * 60, // 10:00 PM  
-                slot_minutes: 15,
+                slot_minutes: 30,
                 week_starts_on: 'Monday',
                 max_objectives: 6,
                 tick_color: '#16a34a',

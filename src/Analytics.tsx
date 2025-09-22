@@ -182,7 +182,7 @@ export default function Analytics(props: {
   settings?: Partial<Settings>;
 }) {
   /*** Settings ***/
-  const slotMinutes = props.settings?.slotMinutes ?? 20;
+  const slotMinutes = props.settings?.slotMinutes ?? 30;
   const weekStartsOn = (props.settings?.weekStartsOn ?? "Monday") as "Monday" | "Sunday";
 
   type Period = "week" | "month" | "year";
