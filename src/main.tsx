@@ -32,13 +32,17 @@ export function AnalyticsWithPreferences() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          const { data } = await supabase
+          const { data, error } = await supabase
             .from('user_preferences')
             .select('*')
             .eq('user_id', session.user.id)
-            .single();
-          
-          setUserPreferences(data);
+            .maybeSingle();
+
+          if (error) {
+            console.error('Error fetching preferences:', error);
+          }
+
+          setUserPreferences(data); // data will be null for new users, object for existing
         }
       } catch (error) {
         console.error('Error fetching preferences:', error);
@@ -76,11 +80,11 @@ export function AnalyticsWithPreferences() {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route 
-            path="/analytics" 
+          <Route
+            path="/analytics"
             element={
               <Suspense fallback={
                 <div className="min-h-screen w-full bg-slate-50 grid place-items-center">
@@ -92,8 +96,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               }>
                 <AnalyticsWithPreferences />
               </Suspense>
-            } 
+            }
           />
+          <Route path="*" element={<App />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
