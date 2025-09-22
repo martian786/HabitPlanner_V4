@@ -768,6 +768,9 @@ function AuthenticatedApp({
   const markingRef = useRef<{ active: boolean; to?: boolean }>({ active: false, to: undefined });
   // Track last touch to ignore the synthetic mouse event that follows on mobile
   const lastTouchTimeRef = useRef(0);
+  // iOS Safari painting optimization
+  const touchRafIdRef = useRef<number | null>(null);
+  const touchedCellsRef = useRef<Set<string>>(new Set());
 
   // Touch painting state removed - using simpler scroll zones approach
 
@@ -911,6 +914,12 @@ function AuthenticatedApp({
       paintingRef.current = false;
       markingRef.current.active = false;
       markingRef.current.to = undefined;
+      // iOS Safari painting optimization cleanup
+      if (touchRafIdRef.current) {
+        cancelAnimationFrame(touchRafIdRef.current);
+        touchRafIdRef.current = null;
+      }
+      touchedCellsRef.current.clear();
     };
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
@@ -1124,14 +1133,32 @@ function AuthenticatedApp({
     }
   }
 
-  // Touch paint support
+  // iOS Safari optimized touch paint support
   function handleTouchMove(e: React.TouchEvent) {
-    const touch = e.touches[0];
-    const el = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement | null;
-    if (!el) return;
-    const row = el.getAttribute ? el.getAttribute("data-rowidx") : null;
-    const iso = el.getAttribute ? el.getAttribute("data-iso") : null;
-    if (row != null && iso) handleCellEnter(iso, Number(row));
+    // Cancel previous rAF if still pending
+    if (touchRafIdRef.current) {
+      cancelAnimationFrame(touchRafIdRef.current);
+    }
+
+    // Schedule the actual work for next frame
+    touchRafIdRef.current = requestAnimationFrame(() => {
+      const touch = e.touches[0];
+      if (!touch) return;
+
+      const el = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement | null;
+      if (!el) return;
+
+      const row = el.getAttribute ? el.getAttribute("data-rowidx") : null;
+      const iso = el.getAttribute ? el.getAttribute("data-iso") : null;
+      if (row != null && iso) {
+        const cellKey = `${iso}-${row}`;
+        // Deduplicate: only paint if we haven't touched this cell in current gesture
+        if (!touchedCellsRef.current.has(cellKey)) {
+          touchedCellsRef.current.add(cellKey);
+          handleCellEnter(iso, Number(row));
+        }
+      }
+    });
   }
 
   /************** Supabase integration **************/
@@ -2385,7 +2412,11 @@ function AuthenticatedApp({
                             className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group touch-none`}
                             onMouseDown={(e) => handleCellMouseDown(iso, rowIdx, e)}
                             onMouseEnter={() => handleCellEnter(iso, rowIdx)}
-                            onTouchStart={() => { lastTouchTimeRef.current = Date.now(); handleCellMouseDown(iso, rowIdx); }}
+                            onTouchStart={() => {
+                              lastTouchTimeRef.current = Date.now();
+                              touchedCellsRef.current.clear(); // Reset touched cells for new gesture
+                              handleCellMouseDown(iso, rowIdx);
+                            }}
                             onTouchMove={handleTouchMove}
                             data-rowidx={rowIdx}
                             data-iso={iso}
