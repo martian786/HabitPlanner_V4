@@ -872,9 +872,9 @@ function AuthenticatedApp({
       // DON'T load visibleObjectives from week data - it should persist across weeks as user preference
       // const newVisibleObjectives = dataService.currentWeek?.visible_objectives || [];
 
-      setSchedule(newSchedule);
-      setPlanName(newPlanName);
-      setReflections(newReflections);
+      setSchedule((prev) => JSON.stringify(prev) === JSON.stringify(newSchedule) ? prev : newSchedule);
+      setPlanName((prev) => prev === newPlanName ? prev : newPlanName);
+      setReflections((prev) => JSON.stringify(prev) === JSON.stringify(newReflections) ? prev : newReflections);
       // setVisibleObjectives(newVisibleObjectives); // REMOVED - keep current filter
 
       // Update last saved state to match loaded data - will be updated separately for visibleObjectives
@@ -1646,10 +1646,10 @@ function AuthenticatedApp({
       try {
         const obj = JSON.parse(e.target?.result as string);
         // Note: settings and objectives import now handled via database preferences
-        if (obj.schedule) setSchedule(obj.schedule);
+        if (obj.schedule) setSchedule((prev) => JSON.stringify(prev) === JSON.stringify(obj.schedule) ? prev : obj.schedule);
         if (obj.weekStartISO) setWeekStart(fromISODate(obj.weekStartISO));
-        if (typeof obj.planName === "string") setPlanName(obj.planName);
-        if (obj.reflections) setReflections(obj.reflections);
+        if (typeof obj.planName === "string") setPlanName((prev) => prev === obj.planName ? prev : obj.planName);
+        if (obj.reflections) setReflections((prev) => JSON.stringify(prev) === JSON.stringify(obj.reflections) ? prev : obj.reflections);
         if (Array.isArray(obj.visibleObjectives)) setVisibleObjectives(obj.visibleObjectives);
         flash("Imported JSON");
       } catch {
