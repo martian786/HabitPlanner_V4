@@ -9,6 +9,7 @@ import Paywall from "./components/Paywall";
 import MFAChallenge from "./components/MFAChallenge";
 import AccountSettings from "./components/AccountSettings";
 import habitblockLogo from "./assets/habitblock-logo.png";
+// NOTE: ColorField swatch picker available - see SWATCH_PICKER.md for activation
 
 /*************************************************
  * Habitblock + Supabase (Auth + DB)
@@ -2506,10 +2507,10 @@ function AuthenticatedApp({
               </button>
             </div>
             <div>
-              <div className="text-base font-semibold text-slate-600 mb-2">How did this week feel?</div>
+              <div className="text-base font-semibold text-slate-600 mb-2">How was your week?</div>
               <div className="flex items-center gap-3">
                 {[
-                  { key: 'happy', label: 'Happy/Productive', emoji: '😊' },
+                  { key: 'happy', label: 'Productive', emoji: '😊' },
                   { key: 'sad', label: 'Unproductive', emoji: '🙁' },
                   { key: 'neutral', label: 'Not sure', emoji: '😐' },
                 ].map((m) => (
@@ -2549,7 +2550,7 @@ function AuthenticatedApp({
             </div>
             <label className="flex flex-col gap-1">
               <div className="flex justify-between items-center">
-                <span className="text-base font-semibold text-slate-600">Results</span>
+                <span className="text-base font-semibold text-slate-600">Outcome for this week</span>
                 <span className="text-xs text-slate-400">{(currentReflection.results || '').length}/250</span>
               </div>
               <textarea 
@@ -2562,7 +2563,7 @@ function AuthenticatedApp({
             </label>
             <label className="flex flex-col gap-1">
               <div className="flex justify-between items-center">
-                <span className="text-base font-semibold text-slate-600">Free notes / thoughts</span>
+                <span className="text-base font-semibold text-slate-600">Your notes and thoughts</span>
                 <span className="text-xs text-slate-400">{currentReflection.thought.length}/1000</span>
               </div>
               <textarea 

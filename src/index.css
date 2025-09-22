@@ -140,3 +140,9 @@ button.bg-blue-500:hover {
   color: white !important;
 }
 
+/* Hide the disclosure triangle for custom swatch picker */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+
