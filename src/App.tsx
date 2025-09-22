@@ -766,6 +766,8 @@ function AuthenticatedApp({
   // Painting state
   const paintingRef = useRef(false);
   const markingRef = useRef<{ active: boolean; to?: boolean }>({ active: false, to: undefined });
+  // Track last touch to ignore the synthetic mouse event that follows on mobile
+  const lastTouchTimeRef = useRef(0);
 
   // Touch painting state removed - using simpler scroll zones approach
 
@@ -1068,6 +1070,11 @@ function AuthenticatedApp({
     
     // Done mode or Alt+Click - toggle completion
     if (isDoneMode || e?.altKey) {
+      // If this mousedown immediately follows a touch, it's a ghost event — ignore it
+      if (e?.type === 'mousedown' && Date.now() - lastTouchTimeRef.current < 700) {
+        e.preventDefault?.();
+        return;
+      }
       const entry = normEntry(getDayMap(iso)[slotIndex]);
       const desired = entry ? !entry.completed : true;
       setCompleted(iso, slotIndex, desired);
@@ -2378,7 +2385,11 @@ function AuthenticatedApp({
                             className={`relative h-10 border-b border-l border-slate-100 cursor-crosshair group touch-none`}
                             onMouseDown={(e) => handleCellMouseDown(iso, rowIdx, e)}
                             onMouseEnter={() => handleCellEnter(iso, rowIdx)}
-                            onTouchStart={() => handleCellMouseDown(iso, rowIdx)}
+                            onTouchStart={(e) => {
+                              lastTouchTimeRef.current = Date.now();
+                              if (e.cancelable) e.preventDefault(); // stop the ghost click/mouse
+                              handleCellMouseDown(iso, rowIdx);
+                            }}
                             onTouchMove={handleTouchMove}
                             data-rowidx={rowIdx}
                             data-iso={iso}
