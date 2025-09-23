@@ -413,8 +413,11 @@ export default function Analytics(props: {
                 <div className="relative">
                   <button
                     onClick={() => {
-                      const input = document.getElementById('analytics-date-picker') as HTMLInputElement;
-                      if (input) input.showPicker();
+                      const input = document.getElementById('analytics-date-picker') as HTMLInputElement | null;
+                      if (!input) return;
+                      // iOS: showPicker may be unsupported; click() works if the input is interactive
+                      if (typeof (input as any).showPicker === 'function') (input as any).showPicker();
+                      else input.click();
                     }}
                     className="text-sm text-slate-700 min-w-[10ch] text-center px-2 py-1 rounded hover:bg-slate-100 transition-colors cursor-pointer"
                     aria-label="Select date to jump to"
@@ -431,7 +434,7 @@ export default function Analytics(props: {
                       const selectedDate = new Date(e.target.value);
                       setAnchor(selectedDate);
                     }}
-                    className="absolute opacity-0 pointer-events-none"
+                    className="absolute inset-0 z-10 opacity-0"
                   />
                 </div>
                 <button onClick={() => shift(1)} className="px-3 py-1.5 rounded-lg border hover:bg-slate-100">▶</button>

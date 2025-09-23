@@ -2246,8 +2246,11 @@ function AuthenticatedApp({
               <div className="ml-2 sm:ml-8 relative">
                 <button
                   onClick={() => {
-                    const input = document.getElementById('week-date-picker') as HTMLInputElement;
-                    if (input) input.showPicker();
+                    const input = document.getElementById('week-date-picker') as HTMLInputElement | null;
+                    if (!input) return;
+                    // iOS: showPicker may be unsupported; click() works if the input is interactive
+                    if (typeof (input as any).showPicker === 'function') (input as any).showPicker();
+                    else input.click();
                   }}
                   className="px-3 sm:px-5 py-1.5 bg-gray-200 text-gray-800 rounded-full font-medium flex items-center gap-2 hover:bg-gray-300 transition-colors text-sm sm:text-base"
                   aria-label="Select week date range"
@@ -2279,7 +2282,7 @@ function AuthenticatedApp({
                     const d = fromISODate(e.target.value); 
                     setWeekStart(getWeekStart(d, dataService.userPreferences?.week_starts_on || "Monday")); 
                   }} 
-                  className="absolute opacity-0 pointer-events-none" 
+                  className="absolute inset-0 z-10 opacity-0" 
                 />
               </div>
 
