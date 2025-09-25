@@ -2914,3 +2914,14 @@ function runSelfTests() {
 if (typeof window !== 'undefined') {
   setTimeout(runSelfTests, 0);
 }
+
+export {
+  getWeekStart,
+  formatTimeLabel,
+  timeStrToMinutes,
+  minutesToTimeStr,
+  nextPaletteColor,
+  computeWeeklyStats,
+  countWeekBlocks,
+  buildCopyWeekPatch,
+};
