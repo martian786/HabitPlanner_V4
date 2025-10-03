@@ -355,7 +355,7 @@ export default function Analytics(props: {
     else setAnchor(new Date(anchor.getFullYear() + n, 0, 1));
   }
 
-  const formatHours = (h: number) => `${h.toFixed(1)}h`;
+  const formatHours = (h: number) => `${h.toFixed(1)} hr`;
   const pct = (p: number) => `${Math.round(p)}%`;
 
   // Show sign-in requirement for unauthenticated users
@@ -558,9 +558,9 @@ export default function Analytics(props: {
                 <thead>
                   <tr className="text-slate-500">
                     <th className="text-left py-2 px-2">Objective</th>
-                    <th className="text-right py-2 px-2">Planned (h)</th>
-                    <th className="text-right py-2 px-2">Actual (h)</th>
-                    <th className="text-right py-2 px-2">Diff (h)</th>
+                    <th className="text-right py-2 px-2">Planned (hr)</th>
+                    <th className="text-right py-2 px-2">Actual (hr)</th>
+                    <th className="text-right py-2 px-2">Diff (hr)</th>
                     <th className="text-right py-2 px-2">% Done</th>
                   </tr>
                 </thead>

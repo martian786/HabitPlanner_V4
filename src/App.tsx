@@ -2668,7 +2668,7 @@ function AuthenticatedApp({
                       <input aria-label="End time" type="time" value={minutesToTimeStr(dataService.userPreferences?.end_minutes || 22 * 60)} onChange={(e) => { const v = timeStrToMinutes(e.target.value); dataService.updateUserPreferences({ end_minutes: v }); }} className="outline-none disabled:bg-gray-100 disabled:text-gray-400" disabled={dataService.hasAnyWeeks === true} />
                     </label>
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">
-                      <span>Slot minutes</span>
+                      <span>Slot interval (minutes)</span>
                       <select aria-label="Slot minutes" value={dataService.userPreferences?.slot_minutes || 30} onChange={(e) => dataService.updateUserPreferences({ slot_minutes: Number(e.target.value) })} className="outline-none">{[15, 30, 60].map((n) => <option key={n} value={n}>{n}</option>)}</select>
                     </label>
                     <label className="flex items-center justify-between gap-2 border rounded-xl px-3 py-2">
