@@ -505,56 +505,35 @@ export class DataService {
     }
 
     return withRetry(async () => {
-      console.log('🔧 [DEBUG] Attempting UPDATE with .select() to check affected rows')
-      const { data, error } = await supabase
-        .from('user_preferences')
-        .update(updates)
-        .eq('user_id', this.userId)
-        .select()
+      console.log('🔧 [DEBUG] Attempting UPSERT for user:', this.userId)
 
-      console.log('🔧 [DEBUG] UPDATE response - data:', data, 'error:', error)
-
-      if (error) {
-        console.error('❌ [DEBUG] UPDATE failed with error:', error)
-        handleDatabaseError(error, 'updateUserPreferences')
+      const upsertData = {
+        user_id: this.userId,
+        show_archived: false,
+        delete_mode: 'soft',
+        start_minutes: 6 * 60, // 6:00 AM
+        end_minutes: 22 * 60, // 10:00 PM
+        slot_minutes: 30,
+        week_starts_on: 'Monday',
+        max_objectives: 6,
+        tick_color: '#16a34a',
+        show_objective_names: true,
+        prevent_overwrite: true,
+        ...updates
       }
 
-      // Check if any rows were actually updated
-      if (!data || data.length === 0) {
-        console.log('📝 [DEBUG] UPDATE affected 0 rows - no existing record, creating with INSERT')
-        const insertData = {
-          user_id: this.userId,
-          show_archived: false,
-          delete_mode: 'soft',
-          start_minutes: 6 * 60, // 6:00 AM
-          end_minutes: 22 * 60, // 10:00 PM  
-          slot_minutes: 30,
-          week_starts_on: 'Monday',
-          max_objectives: 6,
-          tick_color: '#16a34a',
-          show_objective_names: true,
-          prevent_overwrite: true,
-          ...updates
-        }
-        console.log('💾 [DEBUG] INSERT data:', insertData)
-        
-        const { error: insertError } = await supabase
-          .from('user_preferences')
-          .insert(insertData)
-        
-        console.log('💾 [DEBUG] INSERT response - error:', insertError)
-        
-        if (insertError) {
-          console.error('❌ [DEBUG] INSERT failed:', insertError)
-          console.error('❌ [DEBUG] INSERT error details:', JSON.stringify(insertError, null, 2))
-          handleDatabaseError(insertError, 'updateUserPreferences insert')
-        } else {
-          console.log('✅ [DEBUG] INSERT successful!')
-          console.log('🔍 [DEBUG] CRITICAL - INSERT completed, record should exist in database now!')
-          console.log('🔍 [DEBUG] CRITICAL - Check database for user_id:', this.userId)
-        }
+      const { data, error } = await supabase
+        .from('user_preferences')
+        .upsert(upsertData, { onConflict: 'user_id' })
+        .select()
+
+      console.log('🔧 [DEBUG] UPSERT response - data:', data, 'error:', error)
+
+      if (error) {
+        console.error('❌ [DEBUG] UPSERT failed:', error)
+        handleDatabaseError(error, 'updateUserPreferences')
       } else {
-        console.log('✅ [DEBUG] UPDATE successful, affected rows:', data.length)
+        console.log('✅ [DEBUG] UPSERT successful!')
       }
 
       console.log('🗑️ [DEBUG] Clearing cache for user:', this.userId)
@@ -577,19 +556,17 @@ export class DataService {
         .select('*')
         .eq('user_id', this.userId)
         .eq('week_start', weekStart)
-        .single()
+        .maybeSingle()
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          // No week found
-          return null
-        }
         handleDatabaseError(error, 'getWeek')
       }
 
-      const week = data as Week
-      cache.set(cacheKey, week, 60000) // Cache for 1 minute
-      return week
+      if (data) {
+        cache.set(cacheKey, data, 60000) // Cache for 1 minute
+      }
+
+      return data as Week | null
     })
   }
 

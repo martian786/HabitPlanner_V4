@@ -17,18 +17,30 @@ async function upsertSubscription(payload: {
   stripe_subscription_id: string;
   price_id: string;
   status: string;
-  current_period_end: number; // seconds
+  current_period_end?: number; // seconds - optional because it might be null for incomplete subscriptions
 }) {
   console.log('🔄 Attempting to upsert subscription for user:', payload.user_id);
   console.log('📋 Raw payload received:', JSON.stringify(payload, null, 2));
-  
+
+  // Handle missing or invalid current_period_end (e.g., incomplete subscriptions)
+  let periodEndISO: string;
+  if (payload.current_period_end && !isNaN(payload.current_period_end)) {
+    periodEndISO = new Date(payload.current_period_end * 1000).toISOString();
+  } else {
+    // Default to 1 year from now for incomplete subscriptions
+    const oneYearFromNow = new Date();
+    oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+    periodEndISO = oneYearFromNow.toISOString();
+    console.log('⚠️ Missing current_period_end, using default:', periodEndISO);
+  }
+
   const body = {
     user_id: payload.user_id,
     stripe_customer_id: payload.stripe_customer_id,
     stripe_subscription_id: payload.stripe_subscription_id,
     price_id: payload.price_id,
     status: payload.status,
-    current_period_end: new Date(payload.current_period_end * 1000).toISOString(),
+    current_period_end: periodEndISO,
   };
 
   console.log('📋 Subscription data to insert:', JSON.stringify(body, null, 2));
