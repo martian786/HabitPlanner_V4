@@ -1,11 +1,2 @@
-# Temporarily block all web crawlers from all content
-# Remove this file when ready to go live
-
 User-agent: *
-Disallow: /
-
-# When ready to launch, replace above with:
-# User-agent: *
-# Allow: /
-#
-# Sitemap: https://yourdomain.com/sitemap.xml
+Allow: /
