@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /categories.json
+Disallow: /index.html
