@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Habitblock Writer Portal — Covers + Categories</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --text: #0a0a23;
+        --muted: #52525b;
+        --accent: #e00000; /* red */
+        --success: #0a7f2e; /* green for connected */
+        --card: #fff;
+        --border: #e5e7eb;
+        --radius: 14px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Roboto, system-ui, sans-serif;
+        background: #fff7e3;
+        margin: 0;
+        color: var(--text);
+      }
+      header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        background: #fff3dd;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin: 8px 0 6px;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font: inherit;
+        background: #fff;
+      }
+      textarea {
+        min-height: 280px;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 10px 0 16px;
+        align-items: center;
+      }
+
+      .btn {
+        border: none;
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+        cursor: pointer;
+        color: #fff;
+        transition: filter 0.12s ease, opacity 0.12s ease, transform 0.02s ease;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn.accent {
+        background: var(--accent);
+      } /* red */
+      .btn.success {
+        background: var(--success);
+      } /* green */
+      .btn.secondary {
+        background: #0a0a23;
+        color: #fff;
+      }
+      .btn[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        filter: grayscale(0.15);
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .ok {
+        color: #0a7f2e;
+      }
+      .err {
+        color: #b00020;
+      }
+
+      .preview {
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        background: #fff;
+        flex: 1 1 auto;
+        min-height: 0;
+        max-height: none;
+        overflow: auto;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .kbd {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0 6px;
+        background: #fff;
+        font-family: ui-monospace, Menlo, monospace;
+      }
+      .thumb {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+      }
+      code {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 2px 6px;
+      }
+      dialog {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+      }
+      .dialog-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
+      .btn.ghost {
+        background: #fff;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      /* Inner form rows (Date + Category) at 1fr/1fr */
+      .card .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 640px) {
+        .card .two {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Wider editor + preview */
+      @media (min-width: 1100px) {
+        main {
+          max-width: 1600px;
+        }
+        main > .two {
+          display: grid;
+          grid-template-columns: minmax(820px, 1fr) 640px;
+          gap: 24px;
+          align-items: start;
+        }
+      }
+      @media (min-width: 1440px) {
+        main {
+          max-width: 1800px;
+        }
+        main > .two {
+          grid-template-columns: minmax(900px, 1fr) 720px;
+        }
+      }
+      @media (max-width: 1099px) and (min-width: 900px) {
+        main > .two {
+          grid-template-columns: minmax(620px, 1fr) 420px;
+        }
+      }
+      @media (max-width: 899px) {
+        main > .two {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      main > .two {
+        align-items: stretch;
+      }
+      main > .two > .card:last-child {
+        display: flex;
+        flex-direction: column;
+      }
+      @media (min-width: 1100px) {
+        main > .two > .card:last-child {
+          position: sticky;
+          top: 84px;
+          height: calc(100vh - 84px);
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Habitblock Writer Portal</h1>
+      <div class="muted">
+        Title, Date, <strong>Category</strong>, Tags, Excerpt, Content +
+        optional Cover → <span class="kbd">Publish</span>.
+      </div>
+    </header>
+
+    <main>
+      <div class="controls">
+        <!-- NOTE: starts red (.accent). Will turn green (.success) when connected -->
+        <button id="pick" class="btn accent" title="Choose your /blog folder">
+          1) Choose /blog folder
+        </button>
+        <button
+          id="publish"
+          class="btn accent"
+          title="Publish to /blog"
+          disabled
+        >
+          2) Publish
+        </button>
+        <button
+          id="download"
+          class="btn secondary"
+          title="Download files if you can't grant folder access"
+          disabled
+        >
+          Download files instead
+        </button>
+        <button
+          id="editExisting"
+          class="btn secondary"
+          title="Load an existing post to edit"
+          disabled
+        >
+          Edit existing
+        </button>
+        <button
+          id="newPost"
+          class="btn secondary"
+          title="Clear the form and start a new draft"
+          disabled
+        >
+          New post
+        </button>
+        <span id="status" class="muted" aria-live="polite"></span>
+      </div>
+
+      <div class="two">
+        <div class="card">
+          <label>Title</label>
+          <input id="title" placeholder="e.g., How to Time-Block Your Week" />
+
+          <div class="two">
+            <div>
+              <label>Date</label>
+              <input
+                id="date"
+                type="date"
+                required
+                min="2020-01-01"
+                max="2100-12-31"
+              />
+            </div>
+            <div>
+              <label>Category</label>
+              <input
+                id="category"
+                list="hb-categories"
+                placeholder="Productivity & Focus, Digital Wellbeing, Investing…"
+              />
+              <!-- categories now come from categories.json -->
+              <datalist id="hb-categories"></datalist>
+            </div>
+          </div>
+
+          <label>Tags (comma separated)</label>
+          <input id="tags" placeholder="productivity, focus" />
+
+          <label>
+            Excerpt
+            <span
+              id="excerptCounter"
+              class="muted"
+              aria-live="polite"
+              style="float: right"
+            >
+              200 characters left
+            </span>
+          </label>
+          <input
+            id="excerpt"
+            maxlength="200"
+            placeholder="Short summary that appears on the tile…"
+          />
+
+          <label>Cover image</label>
+          <div class="row">
+            <input
+              id="image"
+              type="file"
+              accept=".png,.jpg,.jpeg,.webp,.svg"
+              style="flex: 1"
+            />
+            <img id="imagePreview" class="thumb" alt="" />
+          </div>
+
+          <label>Content (Markdown supported)</label>
+          <textarea
+            id="content"
+            rows="100"
+            placeholder="# Heading&#10;Your post body..."
+          ></textarea>
+
+          <!-- hidden fields for edit state -->
+          <input type="hidden" id="originalUrl" />
+          <input type="hidden" id="originalImage" />
+          <input type="hidden" id="originalId" />
+        </div>
+
+        <div class="card">
+          <label>Preview (HTML)</label>
+          <div id="preview" class="preview"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 16px">
+        <label>Generated paths</label>
+        <div class="muted">
+          Post file: <code id="postPath">/blog/posts/YYYY-MM-DD-slug.html</code
+          ><br />
+          Post URL: <code id="jsonUrl">posts/YYYY-MM-DD-slug.html</code><br />
+          Image path:
+          <code id="imgPath">assets/covers/YYYY-MM-DD-slug.ext</code>
+        </div>
+      </div>
+
+      <!-- Picker dialog for "Edit existing" -->
+      <dialog id="pickerDialog">
+        <form method="dialog" style="min-width: min(520px, 90vw)">
+          <h3 style="margin: 0 0 10px">Select a post to edit</h3>
+          <input
+            id="pickerSearch"
+            type="search"
+            placeholder="Search by title…"
+            style="
+              width: 100%;
+              padding: 10px;
+              border: 1px solid #e5e7eb;
+              border-radius: 10px;
+            "
+          />
+          <div
+            id="pickerList"
+            style="
+              max-height: 50vh;
+              overflow: auto;
+              margin-top: 10px;
+              border: 1px solid #e5e7eb;
+              border-radius: 10px;
+              background: #fff;
+            "
+          ></div>
+          <div class="dialog-actions">
+            <button value="cancel" class="btn ghost" type="submit">
+              Close
+            </button>
+          </div>
+        </form>
+      </dialog>
+
+      <!-- Unsaved changes dialog -->
+      <dialog id="unsavedDialog">
+        <form method="dialog" style="min-width: min(520px, 90vw)">
+          <h3 style="margin: 0 0 8px">You have unsaved changes</h3>
+          <p class="muted" style="margin: 0 0 10px">
+            Do you want to save before continuing?
+          </p>
+          <div class="dialog-actions">
+            <button
+              id="unsavedCancel"
+              class="btn ghost"
+              value="cancel"
+              type="submit"
+            >
+              Cancel
+            </button>
+            <button
+              id="unsavedDiscard"
+              class="btn secondary"
+              value="discard"
+              type="button"
+            >
+              Continue (don’t save)
+            </button>
+            <button
+              id="unsavedSave"
+              class="btn accent"
+              value="save"
+              type="button"
+            >
+              Save & continue
+            </button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script>
+      (function () {
+        const md = window.markdownit({
+          html: false,
+          linkify: true,
+          typographer: true,
+        });
+
+        // UI refs
+        const pickBtn = document.getElementById("pick");
+        const pubBtn = document.getElementById("publish");
+        const dlBtn = document.getElementById("download");
+        const editBtn = document.getElementById("editExisting");
+        const newBtn = document.getElementById("newPost");
+        const status = document.getElementById("status");
+
+        const titleEl = document.getElementById("title");
+        const dateEl = document.getElementById("date");
+        const categoryEl = document.getElementById("category");
+        const tagsEl = document.getElementById("tags");
+        const excerptEl = document.getElementById("excerpt");
+        const contentEl = document.getElementById("content");
+
+        const imageEl = document.getElementById("image");
+        theImagePreview = document.getElementById("imagePreview");
+
+        const preview = document.getElementById("preview");
+        const postPathEl = document.getElementById("postPath");
+        const jsonUrlEl = document.getElementById("jsonUrl");
+        const imgPathEl = document.getElementById("imgPath");
+
+        // NEW: excerpt counter ref + config
+        const excerptCounter = document.getElementById("excerptCounter");
+        const EXCERPT_MAX = 200;
+
+        // edit-state fields
+        const originalUrlEl = document.getElementById("originalUrl");
+        const originalImageEl = document.getElementById("originalImage");
+        const originalIdEl = document.getElementById("originalId");
+
+        // picker + unsaved
+        const pickerDialog = document.getElementById("pickerDialog");
+        const pickerSearch = document.getElementById("pickerSearch");
+        const pickerList = document.getElementById("pickerList");
+        const unsavedDialog = document.getElementById("unsavedDialog");
+        const unsavedSaveBtn = document.getElementById("unsavedSave");
+        const unsavedDiscardBtn = document.getElementById("unsavedDiscard");
+
+        // FS handles
+        let blogDir = null,
+          postsDir = null,
+          coversDir = null;
+
+        // state
+        let hasNewUpload = false;
+        let dirty = false;
+        let isConnected = false;
+        let isBusy = false;
+
+        // -----------------------------
+        // CATEGORIES: load from JSON
+        // -----------------------------
+        const CATS_URL = "categories.json"; // adjust path if this file lives elsewhere
+        const defaultCategories = [
+          "Productivity & Focus",
+          "Digital Wellbeing",
+          "Investing",
+          "Habits",
+          "Use Cases",
+          "Announcements",
+        ];
+
+        async function loadCategories() {
+          try {
+            const res = await fetch(CATS_URL, { cache: "no-cache" });
+            const data = res.ok ? await res.json() : defaultCategories;
+            const names = Array.isArray(data)
+              ? data.map((c) =>
+                  typeof c === "string" ? c : (c && (c.name || c.title)) || ""
+                )
+              : defaultCategories;
+
+            const seen = new Set();
+            const deduped = names
+              .map((s) => (s || "").trim())
+              .filter((s) => s && !seen.has(s) && seen.add(s));
+
+            const dl = document.getElementById("hb-categories");
+            dl.innerHTML = "";
+            deduped.forEach((name) => {
+              const opt = document.createElement("option");
+              opt.value = name;
+              dl.appendChild(opt);
+            });
+          } catch {
+            // fallback to defaults
+            const dl = document.getElementById("hb-categories");
+            dl.innerHTML = "";
+            defaultCategories.forEach((name) => {
+              const opt = document.createElement("option");
+              opt.value = name;
+              dl.appendChild(opt);
+            });
+          }
+        }
+        loadCategories();
+
+        // Optional: gentle hint if user types a non-listed category
+        categoryEl.addEventListener("blur", () => {
+          const val = (categoryEl.value || "").trim();
+          const options = Array.from(
+            document.getElementById("hb-categories").options
+          ).map((o) => o.value);
+          if (val && !options.includes(val)) {
+            status.innerHTML =
+              '<span class="muted">Tip: that category isn’t in your list — update <code>categories.json</code> or pick an existing one.</span>';
+          }
+        });
+
+        // --- helpers: read-time ---
+        function estimateReadMinutesFromMarkdown(mdText) {
+          const text = (mdText || "")
+            .replace(/[#>*_`~\-+\[\]\(\)!>|]/g, " ")
+            .replace(/`{1,3}[^`]*`{1,3}/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+          const words = text ? text.split(" ").length : 0;
+          const mins = Math.max(1, Math.round(words / 225));
+          return mins;
+        }
+
+        // --- helpers: a11y state setter ---
+        function setButtonState(btn, disabled) {
+          btn.disabled = !!disabled;
+          btn.setAttribute("aria-disabled", disabled ? "true" : "false");
+        }
+
+        // --- helpers: gating conditions ---
+        function hasTitleAndContent() {
+          return !!(titleEl.value.trim() && (contentEl.value || "").trim());
+        }
+        function enforceDownloadEnabled() {
+          const shouldDisable = !isConnected || isBusy || !hasTitleAndContent();
+          setButtonState(dlBtn, shouldDisable);
+          dlBtn.title = shouldDisable
+            ? "Connect, and add a title + content to enable download"
+            : "Download files if you can't grant folder access";
+        }
+        // publish gating
+        function enforcePublishEnabled() {
+          const shouldDisable = !isConnected || isBusy || !hasTitleAndContent();
+          setButtonState(pubBtn, shouldDisable);
+          pubBtn.title = shouldDisable
+            ? "Connect, and add a title + content to enable publish"
+            : "Publish to /blog";
+        }
+
+        // Excerpt counter logic
+        function updateExcerptCounter() {
+          const len = (excerptEl.value || "").length;
+          if (len > EXCERPT_MAX) {
+            excerptEl.value = excerptEl.value.slice(0, EXCERPT_MAX);
+          }
+          const remaining = EXCERPT_MAX - (excerptEl.value || "").length;
+          if (excerptCounter) {
+            excerptCounter.textContent =
+              remaining +
+              " " +
+              (remaining === 1 ? "character" : "characters") +
+              " left";
+          }
+        }
+        excerptEl.addEventListener("input", updateExcerptCounter);
+        excerptEl.addEventListener("change", updateExcerptCounter);
+
+        // Mark dirty on changes
+        const markDirty = () => {
+          dirty = true;
+        };
+        [titleEl, dateEl, categoryEl, tagsEl, excerptEl, contentEl].forEach(
+          (el) => {
+            el.addEventListener("input", () => {
+              markDirty();
+              updatePreview();
+              enforceDownloadEnabled();
+              enforcePublishEnabled();
+            });
+            el.addEventListener("change", () => {
+              markDirty();
+              updatePreview();
+              enforceDownloadEnabled();
+              enforcePublishEnabled();
+            });
+          }
+        );
+
+        // Reset so same-file selection triggers 'change'
+        imageEl.addEventListener("click", () => {
+          imageEl.value = "";
+        });
+
+        // New image preview fix
+        imageEl.addEventListener("change", () => {
+          const f = imageEl.files && imageEl.files[0];
+          hasNewUpload = !!f;
+          markDirty();
+          if (!f) {
+            imagePreview.removeAttribute("src");
+            updatePreview();
+            enforceDownloadEnabled();
+            enforcePublishEnabled();
+            return;
+          }
+          const r = new FileReader();
+          r.onload = (e) => {
+            imagePreview.src = e.target.result;
+            updatePreview();
+            enforceDownloadEnabled();
+            enforcePublishEnabled();
+          };
+          r.readAsDataURL(f);
+        });
+
+        // Native unsaved prompt on refresh/close
+        window.addEventListener("beforeunload", (e) => {
+          if (!dirty) return;
+          e.preventDefault();
+          e.returnValue = "";
+        });
+
+        // Helpers
+        function setToday() {
+          const d = new Date(),
+            pad = (n) => String(n).padStart(2, "0");
+          dateEl.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
+            d.getDate()
+          )}`;
+        }
+        if (!dateEl.value) setToday();
+
+        function slugify(s) {
+          return (s || "")
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .slice(0, 80);
+        }
+        function esc(s) {
+          return (s || "").replace(
+            /[&<>"]/g,
+            (c) =>
+              ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])
+          );
+        }
+        function isValidDate(y) {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(y)) return false;
+          const [Y, M, D] = y.split("-").map(Number);
+          const dt = new Date(Date.UTC(Y, M - 1, D));
+          return (
+            dt.getUTCFullYear() === Y &&
+            dt.getUTCMonth() === M - 1 &&
+            dt.getUTCDate() === D
+          );
+        }
+
+        // Toggle UI + pick button color
+        function setUIState({ connected, busy, message }) {
+          isConnected = !!connected;
+          isBusy = !!busy;
+
+          setButtonState(pickBtn, !!busy);
+          // pubBtn & dlBtn are handled by their enforcers
+          setButtonState(newBtn, !isConnected || !!busy);
+          setButtonState(editBtn, !isConnected || !!busy);
+
+          pickBtn.textContent = busy
+            ? "Working…"
+            : isConnected
+            ? "Change /blog folder"
+            : "1) Choose /blog folder";
+          pubBtn.textContent = busy ? "Publishing…" : "2) Publish";
+          dlBtn.textContent = busy ? "Preparing…" : "Download files instead";
+
+          // color swap: red before connected, green after
+          pickBtn.classList.toggle("success", isConnected && !busy);
+          pickBtn.classList.toggle("accent", !isConnected || !!busy);
+
+          if (message !== undefined) status.innerHTML = message;
+
+          // Single source of truth for gating
+          enforceDownloadEnabled();
+          enforcePublishEnabled();
+        }
+        setUIState({
+          connected: false,
+          busy: false,
+          message:
+            '<span class="muted">Pick your /blog folder to enable actions.</span>',
+        });
+
+        // Article HTML (coverUrl relative to /blog/posts/) — includes readMins with pluralization
+        function postHtml({
+          title,
+          kicker,
+          datePretty,
+          bodyHtml,
+          coverUrl,
+          readMins,
+        }) {
+          const minLabel = readMins === 1 ? "min" : "mins";
+          return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<link rel="stylesheet" href="../assets/blog.css">
+<style>
+.readtime{display:inline-flex;gap:6px;align-items:center;padding:2px 8px;border:1px solid rgba(10,10,35,.12);border-radius:999px;font-size:12px}
+.readtime svg{width:14px;height:14px}
+</style>
+</head><body>
+<header class="hb-header"><div class="container hb-nav">
+  <a class="hb-brand" href="https://habitblock.com">Habitblock</a>
+  <nav class="hb-links" aria-label="Main">
+    <a href="https://habitblock.com/features">Features</a>
+    <a href="https://habitblock.com/pricing">Pricing</a>
+    <a href="https://habitblock.com/about">About</a>
+    <a href="https://habitblock.com/blog">Blog</a>
+    <a class="hb-cta" href="https://habitblock.com/#pricing">Start 7-Day free trial</a>
+  </nav>
+  <button class="hb-burger" aria-label="Menu" onclick="document.querySelector('.hb-links').classList.toggle('open')">☰</button>
+</div></header>
+<main class="container"><article class="hb-article">
+<header>
+  <p class="kicker">${esc(kicker || "Article")}</p>
+  <h1>${esc(title)}</h1>
+  <p class="meta">${esc(datePretty)} • <span class="readtime">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v6l4 2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    ${readMins} ${minLabel} read
+  </span></p>
+</header>
+${
+  coverUrl
+    ? `<figure class="hero fullbleed"><img class="cover" src="${coverUrl}" alt=""></figure>`
+    : ``
+}
+${bodyHtml}
+<hr><p><strong>Try Habitblock free:</strong> <a class="hb-cta" href="https://habitblock.com/#pricing" style="display:inline-block;margin-left:8px;">Start 7-Day free trial</a></p>
+<p><a href="../index.html">← Back to Blog</a></p>
+</article></main>
+<footer class="hb-footer"><div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+  <div>© 2025 Brightsun AI Ltd</div>
+  <nav style="display:flex;gap:14px">
+    <a href="https://habitblock.com/privacy-policy">Privacy</a>
+    <a href="https://habitblock.com/terms-of-service">Terms</a>
+    <a href="https://habitblock.com/contact">Contact</a>
+  </nav>
+</div></footer></body></html>`;
+        }
+
+        // Live preview + paths (includes read-time)
+        function updatePreview() {
+          const title = titleEl.value.trim();
+          const dateStr = (dateEl.value || "").trim();
+          const pretty = isValidDate(dateStr)
+            ? new Date(dateStr + "T12:00:00Z").toLocaleDateString("en-GB", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })
+            : "Invalid date";
+
+          let previewCover = "";
+          if (hasNewUpload && imagePreview.src) {
+            previewCover = imagePreview.src;
+          } else if (originalImageEl.value) {
+            previewCover = originalImageEl.value;
+          }
+
+          const readMins = estimateReadMinutesFromMarkdown(
+            contentEl.value || ""
+          );
+
+          const html = postHtml({
+            title,
+            kicker: (
+              categoryEl.value ||
+              tagsEl.value.split(",")[0] ||
+              "" ||
+              "Article"
+            ).trim(),
+            datePretty: pretty,
+            bodyHtml: md.render(contentEl.value || ""),
+            coverUrl: previewCover,
+            readMins,
+          });
+          preview.innerHTML = html;
+
+          const slug = title ? slugify(title) : "untitled";
+          const ext =
+            imageEl.files && imageEl.files[0]
+              ? (imageEl.files[0].name.split(".").pop() || "png").toLowerCase()
+              : "png";
+          postPathEl.textContent = `/blog/posts/${
+            dateStr || "YYYY-MM-DD"
+          }-${slug}.html`;
+          jsonUrlEl.textContent = `posts/${
+            dateStr || "YYYY-MM-DD"
+          }-${slug}.html`;
+          imgPathEl.textContent = `assets/covers/${
+            dateStr || "YYYY-MM-DD"
+          }-${slug}.${ext}`;
+
+          // Also re-enforce gating after preview updates
+          enforceDownloadEnabled();
+          enforcePublishEnabled();
+        }
+        ["input", "change"].forEach((ev) => {
+          titleEl.addEventListener(ev, updatePreview);
+          dateEl.addEventListener(ev, updatePreview);
+          categoryEl.addEventListener(ev, updatePreview);
+          tagsEl.addEventListener(ev, updatePreview);
+          excerptEl.addEventListener(ev, updatePreview);
+          contentEl.addEventListener(ev, updatePreview);
+        });
+        updatePreview();
+
+        // FS helpers
+        async function readTextFile(h) {
+          const f = await h.getFile();
+          return await f.text();
+        }
+        async function writeTextFile(h, t) {
+          const w = await h.createWritable();
+          await w.write(t);
+          await w.close();
+        }
+        async function writeBlobFile(dh, name, file) {
+          const fh = await dh.getFileHandle(name, { create: true });
+          const w = await fh.createWritable();
+          await w.write(await file.arrayBuffer());
+          await w.close();
+          return fh;
+        }
+
+        // Pick /blog
+        pickBtn.addEventListener("click", async () => {
+          try {
+            if (!window.showDirectoryPicker) {
+              setUIState({
+                connected: false,
+                busy: false,
+                message:
+                  '<span class="err">Needs Chrome/Edge and http(s).</span>',
+              });
+              return;
+            }
+            if (!/^https?:\/\//.test(location.href)) {
+              setUIState({
+                connected: false,
+                busy: false,
+                message:
+                  '<span class="err">Open via http://localhost (not file://). Try: python -m http.server</span>',
+              });
+              return;
+            }
+            setUIState({
+              connected: false,
+              busy: true,
+              message: '<span class="muted">Requesting folder access…</span>',
+            });
+            const dir = await window.showDirectoryPicker({ mode: "readwrite" });
+            const idx = await dir.getFileHandle("index.html").catch(() => null);
+            const pj = await dir.getFileHandle("posts.json").catch(() => null);
+            if (!idx || !pj) {
+              setUIState({
+                connected: false,
+                busy: false,
+                message:
+                  '<span class="err">Pick your /blog folder (must contain index.html and posts.json).</span>',
+              });
+              return;
+            }
+            blogDir = dir;
+            postsDir = await blogDir.getDirectoryHandle("posts", {
+              create: true,
+            });
+            const assets = await blogDir.getDirectoryHandle("assets", {
+              create: true,
+            });
+            coversDir = await assets.getDirectoryHandle("covers", {
+              create: true,
+            });
+            setUIState({
+              connected: true,
+              busy: false,
+              message:
+                '<span class="ok">Connected to /blog ✔ You can publish now.</span>',
+            });
+          } catch (e) {
+            setUIState({
+              connected: false,
+              busy: false,
+              message: '<span class="err">' + (e.message || e) + "</span>",
+            });
+            console.error(e);
+          }
+        });
+
+        // Stable id util
+        function makeId() {
+          return window.crypto && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        }
+
+        // Publish (returns true on success) — stores readMins in posts.json
+        async function publishNow() {
+          if (isBusy) return false; // re-entry guard
+          if (!blogDir) {
+            setUIState({
+              connected: false,
+              busy: false,
+              message: '<span class="err">Pick your /blog folder first.</span>',
+            });
+            return false;
+          }
+          const title = titleEl.value.trim();
+          if (!title) {
+            status.innerHTML = '<span class="err">Title is required.</span>';
+            titleEl.focus();
+            return false;
+          }
+          const dateStr = (dateEl.value || "").trim();
+          if (!isValidDate(dateStr)) {
+            status.innerHTML =
+              '<span class="err">Pick a valid date (YYYY-MM-DD).</span>';
+            dateEl.focus();
+            if (dateEl.reportValidity) dateEl.reportValidity();
+            return false;
+          }
+          if (!(contentEl.value || "").trim()) {
+            status.innerHTML =
+              '<span class="err">Content is required to publish.</span>';
+            contentEl.focus();
+            return false;
+          }
+
+          setUIState({
+            connected: true,
+            busy: true,
+            message: '<span class="muted">Publishing…</span>',
+          });
+
+          const slug = slugify(title) || "untitled";
+          const url = `posts/${dateStr}-${slug}.html`;
+
+          // Image handling
+          let imagePath = "";
+          const file = imageEl.files && imageEl.files[0];
+          if (hasNewUpload && file) {
+            const ext = (file.name.split(".").pop() || "png").toLowerCase();
+            const safe = ["png", "jpg", "jpeg", "webp", "svg"].includes(ext)
+              ? ext
+              : "png";
+            const outName = `${dateStr}-${slug}.${safe}`;
+            await writeBlobFile(coversDir, outName, file);
+            imagePath = `assets/covers/${outName}`;
+          } else {
+            imagePath = (originalImageEl.value || "").trim();
+          }
+          const pageCover = imagePath ? "../" + imagePath : "";
+
+          const rawMd = contentEl.value || "";
+          const readMins = estimateReadMinutesFromMarkdown(rawMd);
+          const bodyHtml = md.render(rawMd);
+          const pretty = new Date(dateStr + "T12:00:00Z").toLocaleDateString(
+            "en-GB",
+            { year: "numeric", month: "short", day: "numeric" }
+          );
+          const html = postHtml({
+            title,
+            kicker: (
+              categoryEl.value ||
+              tagsEl.value.split(",")[0] ||
+              "" ||
+              "Article"
+            ).trim(),
+            datePretty: pretty,
+            bodyHtml,
+            coverUrl: pageCover,
+            readMins,
+          });
+
+          // Write HTML file
+          const postHandle = await postsDir.getFileHandle(
+            `${dateStr}-${slug}.html`,
+            { create: true }
+          );
+          await writeTextFile(postHandle, html);
+
+          // Load/update posts.json
+          const pjHandle = await blogDir.getFileHandle("posts.json", {
+            create: true,
+          });
+          let arr = [];
+          try {
+            arr = JSON.parse((await readTextFile(pjHandle)) || "[]");
+          } catch {
+            arr = [];
+          }
+
+          // Stable id
+          const id = originalIdEl.value || makeId();
+
+          // JSON entry — includes readMins
+          const entry = {
+            id,
+            title,
+            url,
+            date: dateStr,
+            category: (categoryEl.value || "").trim(),
+            tags: tagsEl.value
+              ? tagsEl.value
+                  .split(",")
+                  .map((s) => s.trim())
+                  .filter(Boolean)
+              : [],
+            excerpt: excerptEl.value || "",
+            content: rawMd || "",
+            readMins,
+          };
+          if (imagePath) entry.image = imagePath;
+
+          // Replace by id; fallback to originalUrl for legacy entries
+          const originalUrl = (originalUrlEl.value || "").trim();
+          let replaced = false;
+          for (let i = 0; i < arr.length; i++) {
+            const p = arr[i];
+            if (
+              (p && p.id && p.id === id) ||
+              (!p.id && originalUrl && p.url === originalUrl)
+            ) {
+              arr[i] = entry;
+              replaced = true;
+              break;
+            }
+          }
+          if (!replaced) arr.push(entry);
+
+          // Robust newest-first
+          arr.forEach(
+            (p) =>
+              (p._ts = Number.isFinite(Date.parse(p.date))
+                ? Date.parse(p.date)
+                : 0)
+          );
+          arr.sort((a, b) => b._ts - a._ts);
+          arr.forEach((p) => delete p._ts);
+
+          await writeTextFile(pjHandle, JSON.stringify(arr, null, 2));
+
+          // Remove old HTML if URL changed
+          if (originalUrl && originalUrl !== url) {
+            try {
+              const oldName = originalUrl.split("/").pop();
+              await postsDir.removeEntry(oldName);
+            } catch (e) {
+              console.warn("Could not remove old HTML", e);
+            }
+          }
+
+          // Persist current edit context
+          originalUrlEl.value = url;
+          originalIdEl.value = id;
+          originalImageEl.value = imagePath || "";
+          hasNewUpload = false;
+          imageEl.value = "";
+          if (imagePath) imagePreview.src = imagePath;
+
+          dirty = false;
+          setUIState({
+            connected: true,
+            busy: false,
+            message: '<span class="ok">Published ✔</span>',
+          });
+          return true;
+        }
+
+        pubBtn.addEventListener("click", async () => {
+          try {
+            if (isBusy) return; // guard
+            await publishNow();
+          } catch (e) {
+            setUIState({
+              connected: isConnected,
+              busy: false,
+              message:
+                '<span class="err">Publish failed: ' +
+                (e.message || e) +
+                "</span>",
+            });
+          }
+        });
+
+        // Download fallback (includes id & readMins)
+        dlBtn.addEventListener("click", async () => {
+          try {
+            if (isBusy) return; // guard
+            if (!isConnected) {
+              setUIState({
+                connected: false,
+                busy: false,
+                message:
+                  '<span class="err">Pick your /blog folder first.</span>',
+              });
+              return;
+            }
+            if (!hasTitleAndContent()) {
+              status.innerHTML =
+                '<span class="err">Enter a title and content to download.</span>';
+              return;
+            }
+
+            const title = titleEl.value.trim() || "untitled";
+            const dateStr = (dateEl.value || "").trim();
+            if (!isValidDate(dateStr)) {
+              status.innerHTML =
+                '<span class="err">Pick a valid date (YYYY-MM-DD) before downloading.</span>';
+              dateEl.focus();
+              if (dateEl.reportValidity) dateEl.reportValidity();
+              return;
+            }
+
+            setUIState({
+              connected: true,
+              busy: true,
+              message: '<span class="muted">Preparing downloads…</span>',
+            });
+
+            const slug = slugify(title) || "untitled";
+            const url = `posts/${dateStr}-${slug}.html`;
+            const id = originalIdEl.value || makeId();
+
+            const rawMd = contentEl.value || "";
+            const readMins = estimateReadMinutesFromMarkdown(rawMd);
+
+            const entry = {
+              id,
+              title,
+              url,
+              date: dateStr,
+              category: (categoryEl.value || "").trim(),
+              tags: tagsEl.value
+                ? tagsEl.value
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                : [],
+              excerpt: excerptEl.value || "",
+              content: rawMd,
+              readMins,
+            };
+
+            let pageCover = "";
+            const file = imageEl.files && imageEl.files[0];
+            if (hasNewUpload && file) {
+              const ext = (file.name.split(".").pop() || "png").toLowerCase();
+              const safe = ["png", "jpg", "jpeg", "webp", "svg"].includes(ext)
+                ? ext
+                : "png";
+              const outName = `${dateStr}-${slug}.${safe}`;
+              entry.image = `assets/covers/${outName}`;
+              pageCover = `../assets/covers/${outName}`;
+              const aImg = document.createElement("a");
+              aImg.href = URL.createObjectURL(file);
+              aImg.download = outName;
+              aImg.click();
+            } else if (originalImageEl.value) {
+              entry.image = originalImageEl.value;
+              pageCover = `../${originalImageEl.value}`;
+            }
+
+            const pretty = new Date(dateStr + "T12:00:00Z").toLocaleDateString(
+              "en-GB",
+              { year: "numeric", month: "short", day: "numeric" }
+            );
+            const bodyHtml = md.render(rawMd);
+            const html = postHtml({
+              title,
+              kicker: (
+                categoryEl.value ||
+                tagsEl.value.split(",")[0] ||
+                "" ||
+                "Article"
+              ).trim(),
+              datePretty: pretty,
+              bodyHtml,
+              coverUrl: pageCover,
+              readMins,
+            });
+
+            const a1 = document.createElement("a");
+            a1.href = URL.createObjectURL(
+              new Blob([html], { type: "text/html" })
+            );
+            a1.download = `${dateStr}-${slug}.html`;
+            a1.click();
+
+            const a2 = document.createElement("a");
+            a2.href = URL.createObjectURL(
+              new Blob([JSON.stringify(entry, null, 2)], {
+                type: "application/json",
+              })
+            );
+            a2.download = `${dateStr}-${slug}.json`;
+            a2.click();
+
+            setUIState({
+              connected: true,
+              busy: false,
+              message:
+                '<span class="ok">Downloaded post HTML + image reference.</span>',
+            });
+          } catch (e) {
+            setUIState({
+              connected: isConnected,
+              busy: false,
+              message:
+                '<span class="err">Download failed: ' +
+                (e.message || e) +
+                "</span>",
+            });
+            console.error(e);
+          }
+        });
+
+        // Unsaved changes helper
+        async function confirmUnsavedThen(doNext) {
+          if (!dirty) {
+            await doNext();
+            return;
+          }
+          return new Promise((resolve) => {
+            const onDiscard = async () => {
+              unsavedDialog.close();
+              dirty = false;
+              await doNext();
+              resolve();
+            };
+            const onSave = async () => {
+              const ok = await publishNow();
+              unsavedDialog.close();
+              if (ok) await doNext();
+              resolve();
+            };
+            unsavedDiscardBtn.onclick = onDiscard;
+            unsavedSaveBtn.onclick = onSave;
+            unsavedDialog.showModal();
+          });
+        }
+
+        // New post
+        async function startNewDraft() {
+          const hadContent =
+            titleEl.value ||
+            contentEl.value ||
+            categoryEl.value ||
+            tagsEl.value ||
+            excerptEl.value ||
+            (imageEl.files && imageEl.files.length);
+          titleEl.value = "";
+          const d = new Date(),
+            pad = (n) => String(n).padStart(2, "0");
+          dateEl.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
+            d.getDate()
+          )}`;
+          categoryEl.value = "";
+          tagsEl.value = "";
+          excerptEl.value = "";
+          contentEl.value = "";
+          imageEl.value = "";
+          imagePreview.removeAttribute("src");
+          originalUrlEl.value = "";
+          originalImageEl.value = "";
+          originalIdEl.value = "";
+          hasNewUpload = false;
+          dirty = false;
+          updatePreview();
+          status.innerHTML = hadContent
+            ? '<span class="muted">Started a new draft.</span>'
+            : status.innerHTML;
+          titleEl.focus();
+        }
+        newBtn.addEventListener("click", async () => {
+          await confirmUnsavedThen(startNewDraft);
+        });
+
+        // Edit existing
+        async function listPosts() {
+          if (!blogDir) throw new Error("Pick /blog first");
+          const pjHandle = await blogDir.getFileHandle("posts.json");
+          const text = await (await pjHandle.getFile()).text();
+          const arr = JSON.parse(text || "[]");
+          arr.forEach(
+            (p) =>
+              (p._ts = Number.isFinite(Date.parse(p.date))
+                ? Date.parse(p.date)
+                : 0)
+          );
+          arr.sort((a, b) => b._ts - a._ts);
+          return arr;
+        }
+        function renderPicker(items, q = "") {
+          const term = q.trim().toLowerCase();
+          const subset = term
+            ? items.filter((p) => (p.title || "").toLowerCase().includes(term))
+            : items;
+          pickerList.innerHTML =
+            subset
+              .map(
+                (p) => `
+            <button type="button" data-url="${
+              p.url
+            }" style="display:block;width:100%;text-align:left;padding:10px 12px;border:0;border-bottom:1px solid #eee;background:#fff;cursor:pointer;">
+              <div style="font-weight:700">${p.title || "(untitled)"}</div>
+              <div style="font-size:12px;color:#666">${p.date} • ${p.url}</div>
+            </button>`
+              )
+              .join("") ||
+            `<div style="padding:10px 12px;color:#666">No matches.</div>`;
+        }
+        async function openPicker() {
+          try {
+            const arr = await listPosts();
+            renderPicker(arr);
+            pickerSearch.value = "";
+            pickerSearch.oninput = () => renderPicker(arr, pickerSearch.value);
+            pickerList.onclick = async (e) => {
+              const btn = e.target.closest("button[data-url]");
+              if (!btn) return;
+              const url = btn.dataset.url;
+              const picked = arr.find((p) => p.url === url);
+              if (!picked) return;
+
+              titleEl.value = picked.title || "";
+              dateEl.value = (picked.date || "").trim();
+              categoryEl.value = picked.category || "";
+              tagsEl.value = (
+                Array.isArray(picked.tags) ? picked.tags : []
+              ).join(", ");
+              excerptEl.value = picked.excerpt || "";
+              contentEl.value = picked.content || "";
+
+              originalUrlEl.value = picked.url || "";
+              originalImageEl.value = picked.image || "";
+              originalIdEl.value = picked.id || picked.url || "";
+
+              imageEl.value = "";
+              hasNewUpload = false;
+
+              if (picked.image) imagePreview.src = picked.image;
+              else imagePreview.removeAttribute("src");
+
+              dirty = false;
+              updatePreview();
+              pickerDialog.close();
+              status.innerHTML =
+                '<span class="ok">Loaded post. Edit and hit Publish.</span>';
+            };
+            pickerDialog.showModal();
+          } catch (e) {
+            status.innerHTML =
+              '<span class="err">Could not open picker: ' +
+              (e.message || e) +
+              "</span>";
+          }
+        }
+        editBtn.addEventListener("click", async () => {
+          await confirmUnsavedThen(openPicker);
+        });
+
+        // Keyboard shortcuts: Cmd/Ctrl+S (Publish), Cmd/Ctrl+D (Download)
+        document.addEventListener("keydown", (e) => {
+          const key = e.key?.toLowerCase();
+          if ((e.metaKey || e.ctrlKey) && key === "s") {
+            e.preventDefault();
+            if (!pubBtn.disabled) pubBtn.click();
+          }
+          if ((e.metaKey || e.ctrlKey) && key === "d") {
+            e.preventDefault();
+            if (!dlBtn.disabled) dlBtn.click();
+          }
+        });
+
+        // Initial render
+        updatePreview();
+        enforceDownloadEnabled();
+        enforcePublishEnabled();
+        updateExcerptCounter();
+      })();
+    </script>
+  </body>
+</html>
