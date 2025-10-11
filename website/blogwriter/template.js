@@ -34,6 +34,11 @@ export function postHtml({
   <link rel="stylesheet" href="../assets/blog.css">
 
   <style>
+    /* Reset root font-size to 16px to override blog.css scaling */
+    html {
+      font-size: 16px !important;
+    }
+
     :root {
       --color-rich-black: #03071eff;
       --color-chocolate-cosmos: #370617ff;
@@ -75,12 +80,21 @@ export function postHtml({
       width: 14px;
       height: 14px;
     }
+
+    /* Override blog.css to match contact.html header */
+    header, header * {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      line-height: 1.5 !important;
+      letter-spacing: 0 !important;
+      -webkit-font-smoothing: subpixel-antialiased !important;
+      -moz-osx-font-smoothing: auto !important;
+    }
   </style>
 </head>
 <body class="bg-gradient-white-yellow text-rich-black font-sans">
 
   <!-- Header Section -->
-  <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <header class="py-[1.375rem] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center">
       <div class="flex items-center space-x-3">
         <img src="../habitblock-logo.png" alt="Habitblock Logo" class="h-8 w-8">
