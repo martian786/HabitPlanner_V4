@@ -3,20 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About - Habitblock</title>
+    <title>About - HabitBlock</title>
     <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
       // Default consent settings
-      gtag('consent', 'default', {
-        'analytics_storage': 'denied'
+      gtag("consent", "default", {
+        analytics_storage: "denied",
       });
 
-      gtag('config', 'G-Y24D5E5VZ7');
+      gtag("config", "G-Y24D5E5VZ7");
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -112,8 +117,12 @@
     <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center">
         <div class="flex items-center space-x-3">
-          <img src="habitblock-logo.png" alt="Habitblock Logo" class="h-8 w-8">
-          <div class="font-bold text-3xl">Habitblock</div>
+          <img
+            src="habitblock-logo.png"
+            alt="HabitBlock Logo"
+            class="h-8 w-8"
+          />
+          <div class="font-bold text-3xl">HabitBlock</div>
         </div>
         <nav class="hidden md:flex space-x-8 text-lg font-medium">
           <a
@@ -220,7 +229,7 @@
     <section class="py-20 px-6 text-center">
       <div class="container mx-auto max-w-4xl">
         <h1 class="text-5xl md:text-6xl font-bold mb-6">
-          About <span class="text-penn-red">Habitblock</span>
+          About <span class="text-penn-red">HabitBlock</span>
         </h1>
         <p class="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto">
           We're on a mission to transform how people approach productivity,
@@ -236,7 +245,7 @@
           <div>
             <h2 class="text-4xl font-bold mb-6">Our Story</h2>
             <p class="text-lg text-gray-700 mb-6">
-              Habitblock was born from a simple frustration: traditional
+              HabitBlock was born from a simple frustration: traditional
               planning tools were either too complex or too simple, never quite
               fitting how our minds actually work. We found ourselves constantly
               switching between apps, struggling with overcomplicated
@@ -249,7 +258,7 @@
               text - so why were all planning tools still text-based?
             </p>
             <p class="text-lg text-gray-700">
-              That's when we created Habitblock: a visual planning experience
+              That's when we created HabitBlock: a visual planning experience
               that feels as natural as painting on a canvas, yet powerful enough
               to handle the complexity of modern life.
             </p>
@@ -472,7 +481,7 @@
         <h2 class="text-4xl font-bold mb-6">Our Promise to You</h2>
         <div class="bg-card-gradient p-12 rounded-2xl shadow-xl">
           <p class="text-xl text-gray-700 mb-8">
-            We promise to keep Habitblock simple, secure, and focused on what
+            We promise to keep HabitBlock simple, secure, and focused on what
             matters most: helping you achieve your goals without getting in your
             way.
           </p>
@@ -632,44 +641,59 @@
 
       // Cookie consent functionality
       function showCookieConsent() {
-        if (!localStorage.getItem('cookieConsent')) {
-          const banner = document.getElementById('cookieConsent');
-          if (banner) banner.style.display = 'block';
+        if (!localStorage.getItem("cookieConsent")) {
+          const banner = document.getElementById("cookieConsent");
+          if (banner) banner.style.display = "block";
         }
       }
 
       function acceptCookies() {
-        localStorage.setItem('cookieConsent', 'accepted');
-        document.getElementById('cookieConsent').style.display = 'none';
-        gtag('consent', 'update', {
-          'analytics_storage': 'granted'
+        localStorage.setItem("cookieConsent", "accepted");
+        document.getElementById("cookieConsent").style.display = "none";
+        gtag("consent", "update", {
+          analytics_storage: "granted",
         });
       }
 
       function declineCookies() {
-        localStorage.setItem('cookieConsent', 'declined');
-        document.getElementById('cookieConsent').style.display = 'none';
-        gtag('consent', 'update', {
-          'analytics_storage': 'denied'
+        localStorage.setItem("cookieConsent", "declined");
+        document.getElementById("cookieConsent").style.display = "none";
+        gtag("consent", "update", {
+          analytics_storage: "denied",
         });
       }
 
       // Initialize cookie consent on page load
-      window.addEventListener('load', showCookieConsent);
+      window.addEventListener("load", showCookieConsent);
     </script>
 
     <!-- Cookie Consent Banner -->
-    <div id="cookieConsent" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50" style="display: none;">
-      <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+    <div
+      id="cookieConsent"
+      class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50"
+      style="display: none"
+    >
+      <div
+        class="container mx-auto flex flex-col sm:flex-row items-center justify-between"
+      >
         <p class="text-sm mb-4 sm:mb-0">
-          We use cookies to analyze website traffic and optimize your experience.
-          <a href="privacy-policy.html" class="underline hover:text-gray-300">Privacy Policy</a>
+          We use cookies to analyze website traffic and optimize your
+          experience.
+          <a href="privacy-policy.html" class="underline hover:text-gray-300"
+            >Privacy Policy</a
+          >
         </p>
         <div class="flex gap-3">
-          <button onclick="acceptCookies()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium">
+          <button
+            onclick="acceptCookies()"
+            class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium"
+          >
             Accept
           </button>
-          <button onclick="declineCookies()" class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm">
+          <button
+            onclick="declineCookies()"
+            class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm"
+          >
             Decline
           </button>
         </div>
