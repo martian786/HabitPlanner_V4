@@ -9,8 +9,6 @@ Disallow: /config.js
 Disallow: /analytics-config.js
 Disallow: /features%20copy.html
 Disallow: /index%20copy.html
-Disallow: /privacy-policy.html
-Disallow: /terms-of-service.html
 
 # Allow assets so pages render correctly
 Allow: /assets/
