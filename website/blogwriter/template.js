@@ -106,7 +106,7 @@ export function postHtml({
         <a href="../pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
         <a href="../about.html" class="hover:text-penn-red transition duration-300">About</a>
         <a href="../contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
-        <a href="../blog.html" class="text-penn-red font-semibold">Blog</a>
+        <a href="../blog.html" class="text-penn-red font-semibold">Resources</a>
       </nav>
       <div class="flex items-center space-x-4">
         <a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300">
@@ -128,7 +128,7 @@ export function postHtml({
         <a href="../pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
         <a href="../about.html" class="hover:text-penn-red transition duration-300">About</a>
         <a href="../contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
-        <a href="../blog.html" class="text-penn-red font-semibold">Blog</a>
+        <a href="../blog.html" class="text-penn-red font-semibold">Resources</a>
         <a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300">
           Login
         </a>
@@ -159,7 +159,7 @@ export function postHtml({
       <hr style="margin: 2rem 0; border: none; border-top: 1px solid #e5e7eb;">
 
       <p style="margin-top: 2rem;">
-        <a href="../blog.html" style="color: var(--accent); font-weight: 500;">← Back to Blog</a>
+        <a href="../blog.html" style="color: var(--accent); font-weight: 500;">← Back to Resources</a>
       </p>
     </article>
   </main>
@@ -177,7 +177,7 @@ export function postHtml({
             <li><a href="../pricing.html" class="hover:text-gray-300 transition duration-300">Pricing</a></li>
             <li><a href="../about.html" class="hover:text-gray-300 transition duration-300">About</a></li>
             <li><a href="../contact.html" class="hover:text-gray-300 transition duration-300">Contact</a></li>
-            <li><a href="../blog.html" class="hover:text-gray-300 transition duration-300">Blog</a></li>
+            <li><a href="../blog.html" class="hover:text-gray-300 transition duration-300">Resources</a></li>
           </ul>
         </div>
 
