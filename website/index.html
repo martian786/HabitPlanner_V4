@@ -151,35 +151,26 @@
             >Resources</a
           >
         </nav>
-        <div class="flex items-center space-x-4">
-          <a
-            href="#"
-            onclick="gtag('event', 'login_attempt', { event_category: 'conversion', event_label: 'header_login' }); window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
-            class="font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300 text-white"
-            style="background-color: #d00000"
+        <!-- Mobile Menu Button -->
+        <button
+          onclick="toggleMobileMenu()"
+          class="md:hidden text-penn-red focus:outline-none"
+          aria-label="Toggle menu"
+        >
+          <svg
+            class="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            Login
-          </a>
-          <button
-            class="md:hidden focus:outline-none"
-            onclick="toggleMobileMenu()"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-rich-black"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
-          </button>
-        </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
       </div>
 
       <!-- Mobile Menu -->
@@ -218,14 +209,6 @@
             class="hover:text-penn-red transition duration-300"
             >Resources</a
           >
-          <a
-            href="#"
-            onclick="gtag('event', 'login_attempt', { event_category: 'conversion', event_label: 'mobile_login' }); window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
-            class="text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300"
-            style="background-color: #d00000"
-          >
-            Login
-          </a>
         </nav>
       </div>
     </header>
@@ -548,14 +531,6 @@
           <div>
             <h3 class="text-lg font-semibold mb-4">Product</h3>
             <ul class="space-y-2">
-              <li>
-                <a
-                  href="#"
-                  onclick="gtag('event', 'login_attempt', { event_category: 'conversion', event_label: 'footer_login' }); window.location.href = window.websiteConfig.getAppUrl('?mode=signin')"
-                  class="hover:text-gray-300 transition duration-300"
-                  >Login</a
-                >
-              </li>
               <li>
                 <a
                   href="pricing.html"
