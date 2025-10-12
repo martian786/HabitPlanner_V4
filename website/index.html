@@ -3,20 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Habitblock - Paint your week. Build habits that stick.</title>
+    <title>HabitBlock - Paint your week. Build habits that stick.</title>
     <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
       // Default consent settings
-      gtag('consent', 'default', {
-        'analytics_storage': 'denied'
+      gtag("consent", "default", {
+        analytics_storage: "denied",
       });
 
-      gtag('config', 'G-Y24D5E5VZ7');
+      gtag("config", "G-Y24D5E5VZ7");
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -107,7 +112,11 @@
     <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center">
         <div class="flex items-center space-x-3">
-          <img src="habitblock-logo.png" alt="Habitblock Logo" class="h-8 w-8">
+          <img
+            src="habitblock-logo.png"
+            alt="HabitBlock Logo"
+            class="h-8 w-8"
+          />
           <div class="font-bold text-3xl">Habitblock</div>
         </div>
         <nav class="hidden md:flex space-x-8 text-lg font-medium">
@@ -255,7 +264,7 @@
     <section class="py-15 px-6">
       <div class="container mx-auto max-w-5xl text-center">
         <h2 class="text-4xl md:text-5xl font-bold mb-12">
-          How Habitblock Solves Your Biggest Challenges
+          How HabitBlock Solves Your Biggest Challenges
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <!-- Card 1: Overcoming Procrastination & Finding Focus -->
@@ -372,7 +381,7 @@
             </div>
             <h3 class="text-2xl font-bold mb-2">Always Ready</h3>
             <p class="text-lg text-gray-700">
-              Optimized for both desktop and mobile, Habitblock is always there
+              Optimized for both desktop and mobile, HabitBlock is always there
               for you, so you can plan on the go, anytime, anywhere.
             </p>
           </div>
@@ -385,10 +394,10 @@
       <div class="container mx-auto max-w-5xl">
         <div class="text-center mb-12">
           <h2 class="text-4xl md:text-5xl font-bold">
-            Why Habitblock Beats Traditional Planners
+            Why HabitBlock Beats Traditional Planners
           </h2>
           <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-gray-700">
-            Ditch the old ways that hold you back. Habitblock makes you
+            Ditch the old ways that hold you back. HabitBlock makes you
             consistent.
           </p>
         </div>
@@ -444,7 +453,7 @@
             <h3 class="text-2xl font-bold text-penn-red mb-4">It's Flexible</h3>
             <p class="text-gray-700">
               Adapts to any schedule, any objective, any lifestyle. With
-              flexible week views and an archive system, Habitblock grows with
+              flexible week views and an archive system, HabitBlock grows with
               you.
             </p>
           </div>
@@ -587,17 +596,32 @@
     </footer>
 
     <!-- Cookie Consent Banner -->
-    <div id="cookieConsent" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50" style="display: none;">
-      <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+    <div
+      id="cookieConsent"
+      class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50"
+      style="display: none"
+    >
+      <div
+        class="container mx-auto flex flex-col sm:flex-row items-center justify-between"
+      >
         <p class="text-sm mb-4 sm:mb-0">
-          We use cookies to analyze website traffic and optimize your experience.
-          <a href="privacy-policy.html" class="underline hover:text-gray-300">Privacy Policy</a>
+          We use cookies to analyze website traffic and optimize your
+          experience.
+          <a href="privacy-policy.html" class="underline hover:text-gray-300"
+            >Privacy Policy</a
+          >
         </p>
         <div class="flex gap-3">
-          <button onclick="acceptCookies()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium">
+          <button
+            onclick="acceptCookies()"
+            class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium"
+          >
             Accept
           </button>
-          <button onclick="declineCookies()" class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm">
+          <button
+            onclick="declineCookies()"
+            class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm"
+          >
             Decline
           </button>
         </div>
@@ -612,29 +636,29 @@
 
       // Cookie consent functionality
       function showCookieConsent() {
-        if (!localStorage.getItem('cookieConsent')) {
-          document.getElementById('cookieConsent').style.display = 'block';
+        if (!localStorage.getItem("cookieConsent")) {
+          document.getElementById("cookieConsent").style.display = "block";
         }
       }
 
       function acceptCookies() {
-        localStorage.setItem('cookieConsent', 'accepted');
-        document.getElementById('cookieConsent').style.display = 'none';
-        gtag('consent', 'update', {
-          'analytics_storage': 'granted'
+        localStorage.setItem("cookieConsent", "accepted");
+        document.getElementById("cookieConsent").style.display = "none";
+        gtag("consent", "update", {
+          analytics_storage: "granted",
         });
       }
 
       function declineCookies() {
-        localStorage.setItem('cookieConsent', 'declined');
-        document.getElementById('cookieConsent').style.display = 'none';
-        gtag('consent', 'update', {
-          'analytics_storage': 'denied'
+        localStorage.setItem("cookieConsent", "declined");
+        document.getElementById("cookieConsent").style.display = "none";
+        gtag("consent", "update", {
+          analytics_storage: "denied",
         });
       }
 
       // Initialize cookie consent on page load
-      window.addEventListener('load', showCookieConsent);
+      window.addEventListener("load", showCookieConsent);
     </script>
   </body>
 </html>
