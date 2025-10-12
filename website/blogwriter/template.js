@@ -15,7 +15,7 @@ export function postHtml({
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${esc(title)} - Habitblock</title>
+  <title>${esc(title)} - HabitBlock</title>
 
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"></script>
@@ -97,8 +97,8 @@ export function postHtml({
   <header class="py-[1.375rem] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center">
       <div class="flex items-center space-x-3">
-        <img src="../habitblock-logo.png" alt="Habitblock Logo" class="h-8 w-8">
-        <div class="font-bold text-3xl">Habitblock</div>
+        <img src="../habitblock-logo.png" alt="HabitBlock Logo" class="h-8 w-8">
+        <div class="font-bold text-3xl">HabitBlock</div>
       </div>
       <nav class="hidden md:flex space-x-8 text-lg font-medium">
         <a href="../index.html" class="hover:text-penn-red transition duration-300">Home</a>
