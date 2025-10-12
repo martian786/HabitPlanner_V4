@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feeling Stuck? It's Not You, It's Your System (And We Can Help) - HabitBlock</title>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied'
+    });
+    gtag('config', 'G-Y24D5E5VZ7');
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../config.js"></script>
+  <link rel="stylesheet" href="../assets/blog.css">
+
+  <style>
+    /* Reset root font-size to 16px to override blog.css scaling */
+    html {
+      font-size: 16px !important;
+    }
+
+    :root {
+      --color-rich-black: #03071eff;
+      --color-chocolate-cosmos: #370617ff;
+      --color-rosewood: #6a040fff;
+      --color-penn-red: #9d0208ff;
+      --color-engineering-orange: #d00000ff;
+      --color-sinopia: #dc2f02ff;
+      --color-persimmon: #e85d04ff;
+      --color-princeton-orange: #f48c06ff;
+      --color-orange-web: #faa307ff;
+      --color-selective-yellow: #ffba08ff;
+    }
+
+    .bg-gradient-white-yellow {
+      background: linear-gradient(to bottom, white, var(--color-selective-yellow));
+    }
+
+    .text-rich-black { color: var(--color-rich-black); }
+    .text-penn-red { color: var(--color-penn-red); }
+    .bg-penn-red { background-color: var(--color-penn-red); }
+
+    .mobile-menu {
+      display: none;
+    }
+    .mobile-menu.show {
+      display: block;
+    }
+
+    .readtime {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      padding: 2px 8px;
+      border: 1px solid rgba(10,10,35,.12);
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .readtime svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Override blog.css to match contact.html header */
+    header, header * {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      line-height: 1.5 !important;
+      letter-spacing: 0 !important;
+      -webkit-font-smoothing: subpixel-antialiased !important;
+      -moz-osx-font-smoothing: auto !important;
+    }
+  </style>
+</head>
+<body class="bg-gradient-white-yellow text-rich-black font-sans">
+
+  <!-- Header Section -->
+  <header class="py-[1.375rem] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <img src="../habitblock-logo.png" alt="HabitBlock Logo" class="h-8 w-8">
+        <div class="font-bold text-3xl">HabitBlock</div>
+      </div>
+      <nav class="hidden md:flex space-x-8 text-lg font-medium">
+        <a href="../index.html" class="hover:text-penn-red transition duration-300">Home</a>
+        <a href="../features.html" class="hover:text-penn-red transition duration-300">Features</a>
+        <a href="../pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+        <a href="../about.html" class="hover:text-penn-red transition duration-300">About</a>
+        <a href="../contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
+        <a href="../blog.html" class="text-penn-red font-semibold">Resources</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300">
+          Login
+        </a>
+        <button class="md:hidden focus:outline-none" onclick="toggleMobileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rich-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4">
+      <nav class="flex flex-col space-y-4">
+        <a href="../index.html" class="hover:text-penn-red transition duration-300">Home</a>
+        <a href="../features.html" class="hover:text-penn-red transition duration-300">Features</a>
+        <a href="../pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+        <a href="../about.html" class="hover:text-penn-red transition duration-300">About</a>
+        <a href="../contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
+        <a href="../blog.html" class="text-penn-red font-semibold">Resources</a>
+        <a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300">
+          Login
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Article Content -->
+  <main class="container">
+    <article class="hb-article">
+      <header>
+        <p class="kicker">Productivity &amp; Focus</p>
+        <h1>Feeling Stuck? It's Not You, It's Your System (And We Can Help)</h1>
+        <p class="meta">12 Oct 2025 • <span class="readtime">
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="display:inline;width:14px;height:14px;vertical-align:middle;"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v6l4 2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          3 mins read
+        </span></p>
+      </header>
+
+      
+
+      <p>Let’s be honest. How many times have you sat down, ready to tackle that big project, only to find yourself an hour later… scrolling, organizing, or doing anything <em>but</em> the one thing you set out to do?</p>
+<p>If you’re nodding your head, a familiar, frustrating thought has probably crossed your mind: <em>“What’s wrong with me? Why can’t I just get this done?”</em></p>
+<p>We want you to hear this, and really let it sink in: <strong>It’s not you.</strong></p>
+<p>You are not lazy. You are not undisciplined. You don’t lack willpower.</p>
+<p>You’re just using the wrong map for the journey.</p>
+<h3><strong>The Trap of the To-Do List</strong></h3>
+<p>For years, we’ve been told that productivity is about writing things down and checking them off. So we create long, overwhelming to-do lists. “Launch business.” “Write book.” “Get fit.”</p>
+<p>But these lists don’t help us <em>build</em>; they just remind us of everything we <em>haven’t</em> done. They are a collection of bricks with no blueprint, leaving you staring at the pile, wondering where to even begin. It’s no wonder you feel stuck. Anyone would.</p>
+<h3><strong>A Kinder, More Effective Way: Becoming the Architect of Your Time</strong></h3>
+<p>What if there was a way to replace that feeling of overwhelm with a sense of calm clarity? What if you could look at your week and see a clear, manageable path forward?</p>
+<p>This is the philosophy behind HabitBlock. We believe that achievement isn’t about grinding harder. It’s about building a smarter, more supportive system that works <em>for</em> you, not against you.</p>
+<p>Think of it like this: an architect doesn’t just point at an empty field and yell “Build a house!” They create a detailed blueprint. This blueprint transforms an overwhelming vision into a series of clear, buildable steps. The crew shows up each day knowing exactly what to do.</p>
+<p><strong>HabitBlock is your personal blueprint for your goals.</strong> It’s the supportive framework that guides you from feeling lost to taking confident, purposeful action.</p>
+<h3><strong>How HabitBlock Gently Guides You Forward</strong></h3>
+<p>We designed HabitBlock to be the coach that’s always there, helping you break through the overwhelm. Here’s how it guides you, step-by-step:</p>
+<ol>
+<li><strong>Start with Your ‘Why’ (The Objective)</strong>
+<ul>
+<li>Instead of a cold task, you start with your inspiring vision. “Launch my sustainable clothing line.” “Write my novel.” This is your destination on the map. HabitBlock gives you a dedicated space for this vision, so you’re always connected to what truly matters.</li>
+</ul>
+</li>
+<li><strong>Break It Down, Without the Stress (The Key Blocks)</strong>
+<ul>
+<li>This is where the magic happens. HabitBlock gently prompts you: <em>“What are the major parts that make up your vision?”</em> You break that big vision into Key Blocks—like “Design the collection,” “Source materials,” “Build the website.”</li>
+<li>Suddenly, “launch a business” isn’t a monster anymore. It’s a series of achievable projects. The overwhelm starts to fade.</li>
+</ul>
+</li>
+<li><strong>Your Peaceful Plan for the Day (The Daily Blocks)</strong>
+<ul>
+<li>Now, for the final—and most important—step. HabitBlock helps you take one of those Key Blocks and schedule it directly into your calendar. You simply drag “Sketch 3 t-shirt designs” into a 90-minute block on Tuesday morning.</li>
+<li><strong>This is the game-changer.</strong> When Tuesday comes, you don’t have to decide what to do. The decision was already made calmly, in advance. You just open the app, see your block, and start. No internal debate. No wasted willpower. Just focused, peaceful progress.</li>
+</ul>
+</li>
+</ol>
+<h3><strong>You Don’t Have to Figure This Out Alone</strong></h3>
+<p>We know that changing habits is hard. That’s why the HabitBlock system is more than just an app—it’s a promise of support.</p>
+<ul>
+<li><strong>The tool is your silent coach,</strong> providing the structure your brain craves to move from paralysis to action.</li>
+<li><strong>And for when you need a human touch,</strong> our founder’s 1-on-1 coaching is here to help you architect your first blueprint and build the momentum you need.</li>
+</ul>
+<h3><strong>Ready to Trade Overwhelm for Confidence?</strong></h3>
+<p>It’s time to stop blaming yourself. The path forward isn’t about trying harder. It’s about building a better system.</p>
+<p><strong>Let’s build that system together.</strong></p>
+<p>We invite you to try this now. It takes just 5 minutes.</p>
+<ol>
+<li>Think of one goal that feels heavy on your mind.</li>
+<li>Open HabitBlock (it’s free to start) or even just a notebook.</li>
+<li>Write down the goal. Then, ask yourself: <strong>“What is the very first, small building block?”</strong> Not the whole thing—just the first step.</li>
+<li>Now, literally schedule a time in your calendar to do it.</li>
+</ol>
+<p>That’s it. You’ve just taken the first step from being overwhelmed to being the architect of your time.</p>
+
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #e5e7eb;">
+
+      <p style="margin-top: 2rem;">
+        <a href="../blog.html" style="color: var(--accent); font-weight: 500;">← Back to Resources</a>
+      </p>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-16 px-6 text-white text-sm" style="background-color: #370617;">
+    <div class="container mx-auto max-w-6xl">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Navigation -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Navigation</h3>
+          <ul class="space-y-2">
+            <li><a href="../index.html" class="hover:text-gray-300 transition duration-300">Home</a></li>
+            <li><a href="../features.html" class="hover:text-gray-300 transition duration-300">Features</a></li>
+            <li><a href="../pricing.html" class="hover:text-gray-300 transition duration-300">Pricing</a></li>
+            <li><a href="../about.html" class="hover:text-gray-300 transition duration-300">About</a></li>
+            <li><a href="../contact.html" class="hover:text-gray-300 transition duration-300">Contact</a></li>
+            <li><a href="../blog.html" class="hover:text-gray-300 transition duration-300">Resources</a></li>
+          </ul>
+        </div>
+
+        <!-- Product -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Product</h3>
+          <ul class="space-y-2">
+            <li><a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="hover:text-gray-300 transition duration-300">Login</a></li>
+            <li><a href="../pricing.html" class="hover:text-gray-300 transition duration-300">Start 7-Day Free Trial</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Legal</h3>
+          <ul class="space-y-2">
+            <li><a href="../privacy-policy.html" class="hover:text-gray-300 transition duration-300">Privacy Policy</a></li>
+            <li><a href="../terms-of-service.html" class="hover:text-gray-300 transition duration-300">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-600 mt-12 pt-8 text-center">
+        <p>&copy; 2025 Brightsun AI Ltd. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('show');
+    }
+
+    // Cookie consent functionality
+    function showCookieConsent() {
+      if (!localStorage.getItem('cookieConsent')) {
+        const banner = document.getElementById('cookieConsent');
+        if (banner) banner.style.display = 'block';
+      }
+    }
+
+    function acceptCookies() {
+      localStorage.setItem('cookieConsent', 'accepted');
+      document.getElementById('cookieConsent').style.display = 'none';
+      gtag('consent', 'update', {
+        'analytics_storage': 'granted'
+      });
+    }
+
+    function declineCookies() {
+      localStorage.setItem('cookieConsent', 'declined');
+      document.getElementById('cookieConsent').style.display = 'none';
+      gtag('consent', 'update', {
+        'analytics_storage': 'denied'
+      });
+    }
+
+    window.addEventListener('load', showCookieConsent);
+  </script>
+
+  <!-- Cookie Consent Banner -->
+  <div id="cookieConsent" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50" style="display: none;">
+    <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+      <p class="text-sm mb-4 sm:mb-0">
+        We use cookies to analyze website traffic and optimize your experience.
+        <a href="../privacy-policy.html" class="underline hover:text-gray-300">Privacy Policy</a>
+      </p>
+      <div class="flex gap-3">
+        <button onclick="acceptCookies()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium">
+          Accept
+        </button>
+        <button onclick="declineCookies()" class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm">
+          Decline
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
