@@ -285,14 +285,14 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
         message: '<span class="muted">Requesting folder access…</span>',
       });
       const dir = await window.showDirectoryPicker({ mode: "readwrite" });
-      const idx = await dir.getFileHandle("index.html").catch(() => null);
+      const idx = await dir.getFileHandle("resources.html").catch(() => null);
       const pj = await dir.getFileHandle("posts.json").catch(() => null);
       if (!idx || !pj) {
         setUIState({
           connected: false,
           busy: false,
           message:
-            '<span class="err">Pick your /blog folder (must contain index.html and posts.json).</span>',
+            '<span class="err">Pick your /blog folder (must contain resources.html and posts.json).</span>',
         });
         return;
       }
