@@ -3,20 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Features - Habitblock</title>
+    <title>Features - HabitBlock</title>
     <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
       // Default consent settings
-      gtag('consent', 'default', {
-        'analytics_storage': 'denied'
+      gtag("consent", "default", {
+        analytics_storage: "denied",
       });
 
-      gtag('config', 'G-Y24D5E5VZ7');
+      gtag("config", "G-Y24D5E5VZ7");
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -166,8 +171,12 @@
     <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center">
         <div class="flex items-center space-x-3">
-          <img src="habitblock-logo.png" alt="Habitblock Logo" class="h-8 w-8">
-          <div class="font-bold text-3xl">Habitblock</div>
+          <img
+            src="habitblock-logo.png"
+            alt="HabitBlock Logo"
+            class="h-8 w-8"
+          />
+          <div class="font-bold text-3xl">HabitBlock</div>
         </div>
         <nav class="hidden md:flex space-x-8 text-lg font-medium">
           <a
@@ -1020,7 +1029,7 @@
           >
             <div class="text-6xl text-center mb-4">🔐</div>
             <p class="text-center text-gray-700 italic">
-              "Use Habitblock with confidence knowing your data is protected by
+              "Use HabitBlock with confidence knowing your data is protected by
               enterprise-grade security and never sold to third parties."
             </p>
           </div>
@@ -1324,44 +1333,59 @@
 
       // Cookie consent functionality
       function showCookieConsent() {
-        if (!localStorage.getItem('cookieConsent')) {
-          const banner = document.getElementById('cookieConsent');
-          if (banner) banner.style.display = 'block';
+        if (!localStorage.getItem("cookieConsent")) {
+          const banner = document.getElementById("cookieConsent");
+          if (banner) banner.style.display = "block";
         }
       }
 
       function acceptCookies() {
-        localStorage.setItem('cookieConsent', 'accepted');
-        document.getElementById('cookieConsent').style.display = 'none';
-        gtag('consent', 'update', {
-          'analytics_storage': 'granted'
+        localStorage.setItem("cookieConsent", "accepted");
+        document.getElementById("cookieConsent").style.display = "none";
+        gtag("consent", "update", {
+          analytics_storage: "granted",
         });
       }
 
       function declineCookies() {
-        localStorage.setItem('cookieConsent', 'declined');
-        document.getElementById('cookieConsent').style.display = 'none';
-        gtag('consent', 'update', {
-          'analytics_storage': 'denied'
+        localStorage.setItem("cookieConsent", "declined");
+        document.getElementById("cookieConsent").style.display = "none";
+        gtag("consent", "update", {
+          analytics_storage: "denied",
         });
       }
 
       // Initialize cookie consent on page load
-      window.addEventListener('load', showCookieConsent);
+      window.addEventListener("load", showCookieConsent);
     </script>
 
     <!-- Cookie Consent Banner -->
-    <div id="cookieConsent" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50" style="display: none;">
-      <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+    <div
+      id="cookieConsent"
+      class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50"
+      style="display: none"
+    >
+      <div
+        class="container mx-auto flex flex-col sm:flex-row items-center justify-between"
+      >
         <p class="text-sm mb-4 sm:mb-0">
-          We use cookies to analyze website traffic and optimize your experience.
-          <a href="privacy-policy.html" class="underline hover:text-gray-300">Privacy Policy</a>
+          We use cookies to analyze website traffic and optimize your
+          experience.
+          <a href="privacy-policy.html" class="underline hover:text-gray-300"
+            >Privacy Policy</a
+          >
         </p>
         <div class="flex gap-3">
-          <button onclick="acceptCookies()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium">
+          <button
+            onclick="acceptCookies()"
+            class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium"
+          >
             Accept
           </button>
-          <button onclick="declineCookies()" class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm">
+          <button
+            onclick="declineCookies()"
+            class="border border-gray-400 hover:bg-gray-700 px-4 py-2 rounded text-sm"
+          >
             Decline
           </button>
         </div>
