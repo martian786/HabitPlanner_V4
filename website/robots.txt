@@ -1,8 +1,7 @@
 User-agent: *
-# Allow crawling everywhere
 Allow: /
 
-# Disallow only sensitive/internal files
+# Internal or non-public resources
 Disallow: /blogwriter/
 Disallow: /posts.json
 Disallow: /config.js
@@ -10,9 +9,10 @@ Disallow: /analytics-config.js
 Disallow: /features%20copy.html
 Disallow: /index%20copy.html
 
-# Allow assets so pages render correctly
+# Keep assets accessible for rendering
 Allow: /assets/
 
-# Block query-string URLs
+# Block URLs with query parameters (avoid duplicates)
 Disallow: /*?*
 
+Sitemap: https://habitblock.com/sitemap.xml
