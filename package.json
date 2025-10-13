@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:paywall": "vite --mode development",
+    "dev:test": "vite --mode test",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
