@@ -23,6 +23,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/config.js"></script>
     <script src="/utm.js"></script>
+    <!-- utm is for lead generation and capturing the lead information -->
 
     <style>
       :root {
@@ -917,7 +918,8 @@
         const stored = (window.HBUTM && window.HBUTM.pick("first")) || {};
 
         form.utm_source.value = p.get("utm_source") || stored.utm_source || "";
-        form.utm_campaign.value = p.get("utm_campaign") || stored.utm_campaign || "";
+        form.utm_campaign.value =
+          p.get("utm_campaign") || stored.utm_campaign || "";
         form.utm_medium.value = p.get("utm_medium") || stored.utm_medium || "";
 
         if (!localStorage.getItem("hb_first_click_plan"))
