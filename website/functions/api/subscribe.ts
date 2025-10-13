@@ -1,3 +1,4 @@
+// Updated
 export const onRequest = async ({ request, env }: { request: Request; env: Record<string, string> }) => {
   const CORS = {
     "Access-Control-Allow-Origin": "*",
