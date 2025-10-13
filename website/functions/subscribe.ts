@@ -1,36 +1,41 @@
-// functions/api/subscribe.ts
+export const onRequest = async ({ request, env }: { request: Request; env: Record<string, string> }) => {
+  const CORS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization"
+  };
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
+  if (request.method === "GET") {
+    return new Response(JSON.stringify({ ok: true, route: "/api/subscribe" }), {
+      status: 200, headers: { "Content-Type": "application/json", ...CORS }
+    });
+  }
+  if (request.method !== "POST") return new Response("Method not allowed", { status: 405, headers: CORS });
 
-export const onRequestPost = async ({ request, env }: { request: Request; env: Record<string, string> }) => {
   try {
     const form = await request.formData();
 
-    // 0) Honeypot (drop quietly)
-    if (String(form.get("company_website") || "").trim()) {
-      return new Response("ok", { status: 200 });
-    }
+    // honeypot
+    if (String(form.get("company_website") || "").trim()) return new Response("ok", { status: 200, headers: CORS });
 
-    // 1) Validate email
+    // email validation
     const email = String(form.get("email") || "").trim().toLowerCase();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      return new Response("Invalid email", { status: 400 });
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return new Response("Invalid email", { status: 400, headers: CORS });
+
+    // Turnstile (only in Pages env)
+    if (env.CF_PAGES) {
+      const token = String(form.get("cf-turnstile-response") || "");
+      const verify: any = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        body: new URLSearchParams({
+          secret: env.TURNSTILE_SECRET,
+          response: token,
+          remoteip: request.headers.get("CF-Connecting-IP") || ""
+        })
+      }).then(r => r.json());
+      if (!verify?.success) return new Response("Captcha failed", { status: 400, headers: CORS });
     }
 
-    // 2) Verify Turnstile (server-side)
-    const token = String(form.get("cf-turnstile-response") || "");
-    const verify: any = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST",
-      body: new URLSearchParams({
-        secret: env.TURNSTILE_SECRET,
-        response: token,
-        remoteip: request.headers.get("CF-Connecting-IP") || ""
-      })
-    }).then((r) => r.json());
-
-    if (!verify?.success) {
-      return new Response("Captcha failed", { status: 400 });
-    }
-
-    // 3) Collect fields (keep names aligned with your modal)
     const record = {
       name: String(form.get("name") || ""),
       email,
@@ -46,50 +51,36 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: R
       source: "pricing-modal"
     };
 
-    // 4) Forward to Basin (optional) and upsert to Supabase (both in parallel)
-    const basinBody = new URLSearchParams();
-    Object.entries(record as Record<string, unknown>).forEach(([k, v]) => {
-      basinBody.append(k, String(v ?? ""));
-    });
-
+    // optional Basin
     const basinPromise = env.BASIN_ENDPOINT
       ? fetch(env.BASIN_ENDPOINT, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: basinBody
-        })
+          headers: { "Accept": "application/json", "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(record as Record<string, string>)
+        }).catch(() => new Response(null, { status: 599 }))
       : Promise.resolve(new Response(null, { status: 204 }));
 
-    const supabasePromise = fetch(`${env.SUPABASE_URL}/rest/v1/leads?on_conflict=email`, {
-      method: "POST",
-      headers: {
-        apikey: env.SUPABASE_SERVICE_ROLE,
-        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE}`,
-        "Content-Type": "application/json",
-        Prefer: "resolution=merge-duplicates,return=minimal"
-      },
-      body: JSON.stringify(record)
-    });
+    // Supabase (source of truth)
+    const supabasePromise = env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE
+      ? fetch(`${env.SUPABASE_URL}/rest/v1/leads?on_conflict=email`, {
+          method: "POST",
+          headers: {
+            apikey: env.SUPABASE_SERVICE_ROLE,
+            Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE}`,
+            "Content-Type": "application/json",
+            Prefer: "resolution=merge-duplicates,return=minimal"
+          },
+          body: JSON.stringify(record)
+        }).catch(() => new Response(null, { status: 599 }))
+      : Promise.resolve(new Response(null, { status: 204 }));
 
-    // Run in parallel; treat Supabase as source of truth
-    const [basinRes, supaRes] = await Promise.all([
-      basinPromise.catch(() => new Response(null, { status: 599 })),
-      supabasePromise.catch(() => new Response(null, { status: 599 }))
-    ]);
+    const [basinRes, supaRes] = await Promise.all([basinPromise, supabasePromise]);
 
-    if (!supaRes.ok) {
-      return new Response("Storage error", { status: 502 });
+    if (env.SUPABASE_URL && (!supaRes || !supaRes.ok)) {
+      return new Response("Storage error", { status: 502, headers: CORS });
     }
-    // Basin can fail without blocking success
-    if (!basinRes.ok) {
-      // You could log this to a logging service
-    }
-
-    return new Response("ok", { status: 200 });
+    return new Response("ok", { status: 200, headers: CORS });
   } catch (e) {
-    return new Response("Server error", { status: 500 });
+    return new Response("Server error", { status: 500, headers: CORS });
   }
 };
