@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pricing - HabitBlock</title>
 
+    <!-- Tiny data-URL favicon so dev servers stop 404-ing -->
+    <link rel="icon" href="data:," />
+
     <!-- Google Analytics 4 -->
     <script
       async
@@ -20,10 +23,12 @@
       gtag("config", "G-Y24D5E5VZ7");
     </script>
 
+    <!-- Tailwind (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Your env/url helpers + first-touch UTM tracker -->
     <script src="/config.js"></script>
     <script src="/utm.js"></script>
-    <!-- utm is for lead generation and capturing the lead information -->
 
     <style>
       :root {
@@ -67,36 +72,6 @@
       .text-penn-red {
         color: var(--color-penn-red);
       }
-      .bg-engineering-orange {
-        background-color: var(--color-engineering-orange);
-      }
-      .text-engineering-orange {
-        color: var(--color-engineering-orange);
-      }
-      .bg-persimmon {
-        background-color: var(--color-persimmon);
-      }
-      .text-persimmon {
-        color: var(--color-persimmon);
-      }
-      .bg-princeton-orange {
-        background-color: var(--color-princeton-orange);
-      }
-      .text-princeton-orange {
-        color: var(--color-princeton-orange);
-      }
-      .bg-orange-web {
-        background-color: var(--color-orange-web);
-      }
-      .text-orange-web {
-        color: var(--color-orange-web);
-      }
-      .bg-selective-yellow {
-        background-color: var(--color-selective-yellow);
-      }
-      .text-selective-yellow {
-        color: var(--color-selective-yellow);
-      }
 
       .mobile-menu {
         display: none;
@@ -125,6 +100,34 @@
         font-size: 0.875rem;
         font-weight: bold;
       }
+
+      /* Chip styles (no Tailwind @apply — works with CDN) */
+      .hb-section-title,
+      .hb-field-title {
+        font-weight: 500; /* bold */
+        font-size: 1rem; /* ~ text-lg */
+        line-height: 1.5rem;
+      }
+
+      .hb-chip {
+        display: inline-block;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        padding: 0.25rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 9999px;
+        background: #fff;
+        cursor: pointer;
+      }
+      .hb-chip:hover {
+        background: #f3f4f6;
+      }
+      .hb-chip.is-selected {
+        background: #046c00;
+        border-color: #046c00;
+        color: #fff;
+        font-weight: 600;
+      }
     </style>
   </head>
   <body class="bg-gradient-white-yellow text-rich-black font-sans" id="top">
@@ -140,30 +143,16 @@
           <div class="font-bold text-3xl">HabitBlock</div>
         </div>
         <nav class="hidden md:flex space-x-8 text-lg font-medium">
-          <a
-            href="index.html"
-            class="hover:text-penn-red transition duration-300"
-            >Home</a
-          >
-          <a
-            href="features.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="index.html" class="hover:text-penn-red transition">Home</a>
+          <a href="features.html" class="hover:text-penn-red transition"
             >Features</a
           >
           <a href="pricing.html" class="text-penn-red font-semibold">Pricing</a>
-          <a
-            href="about.html"
-            class="hover:text-penn-red transition duration-300"
-            >About</a
-          >
-          <a
-            href="contact.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="about.html" class="hover:text-penn-red transition">About</a>
+          <a href="contact.html" class="hover:text-penn-red transition"
             >Contact</a
           >
-          <a
-            href="resources.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="resources.html" class="hover:text-penn-red transition"
             >Resources</a
           >
         </nav>
@@ -193,30 +182,16 @@
         class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4"
       >
         <nav class="flex flex-col space-y-4">
-          <a
-            href="index.html"
-            class="hover:text-penn-red transition duration-300"
-            >Home</a
-          >
-          <a
-            href="features.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="index.html" class="hover:text-penn-red transition">Home</a>
+          <a href="features.html" class="hover:text-penn-red transition"
             >Features</a
           >
           <a href="pricing.html" class="text-penn-red font-semibold">Pricing</a>
-          <a
-            href="about.html"
-            class="hover:text-penn-red transition duration-300"
-            >About</a
-          >
-          <a
-            href="contact.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="about.html" class="hover:text-penn-red transition">About</a>
+          <a href="contact.html" class="hover:text-penn-red transition"
             >Contact</a
           >
-          <a
-            href="resources.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="resources.html" class="hover:text-penn-red transition"
             >Resources</a
           >
         </nav>
@@ -258,7 +233,6 @@
                 Perfect for getting started with visual planning
               </p>
             </div>
-
             <ul class="space-y-4 mb-8">
               <li class="flex items-start">
                 <svg
@@ -331,12 +305,11 @@
                 <span>Mobile & desktop access</span>
               </li>
             </ul>
-
             <button
               type="button"
               data-open-modal
               data-plan="pro"
-              class="block w-full bg-gray-900 text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition duration-300"
+              class="block w-full bg-gray-900 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition"
             >
               Reserve Early Access
             </button>
@@ -348,9 +321,9 @@
           <!-- Habit Plus -->
           <div
             class="pricing-card bg-white rounded-2xl p-8 shadow-lg relative border-4 border-penn-red"
+            style="border-color: var(--color-penn-red)"
           >
             <div class="popular-badge">Most Popular</div>
-
             <div class="text-center mb-8">
               <h3 class="text-2xl font-bold mb-4">Habit Plus</h3>
               <div class="mb-2">
@@ -367,7 +340,6 @@
                 Everything you need for serious productivity
               </p>
             </div>
-
             <ul class="space-y-4 mb-8">
               <li class="flex items-start">
                 <svg
@@ -454,12 +426,12 @@
                 <span>Priority email support</span>
               </li>
             </ul>
-
             <button
               type="button"
               data-open-modal
               data-plan="plus"
-              class="block w-full bg-penn-red text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+              class="block w-full text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition"
+              style="background-color: var(--color-penn-red)"
             >
               Reserve Early Access
             </button>
@@ -565,10 +537,9 @@
                 <span>24/7 phone & email support</span>
               </li>
             </ul>
-
             <a
               href="contact.html"
-              class="block w-full bg-white text-penn-red text-center font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition duration-300"
+              class="block w-full bg-white text-penn-red text-center font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition"
               >Contact Sales</a
             >
           </div>
@@ -582,7 +553,6 @@
         <h2 class="text-4xl font-bold text-center mb-12">
           Frequently Asked Questions
         </h2>
-
         <div class="space-y-8">
           <div class="border-b border-gray-200 pb-6">
             <h3 class="text-xl font-semibold mb-3">Can I cancel anytime?</h3>
@@ -592,7 +562,6 @@
               your current billing period.
             </p>
           </div>
-
           <div class="border-b border-gray-200 pb-6">
             <h3 class="text-xl font-semibold mb-3">
               What's included in the free trial?
@@ -603,7 +572,6 @@
               priority support.
             </p>
           </div>
-
           <div class="border-b border-gray-200 pb-6">
             <h3 class="text-xl font-semibold mb-3">How secure is my data?</h3>
             <p class="text-gray-700">
@@ -612,14 +580,12 @@
               automatically backed up and you can export it anytime as JSON.
             </p>
           </div>
-
           <div class="border-b border-gray-200 pb-6">
             <h3 class="text-xl font-semibold mb-3">
               Do you offer student discounts?
             </h3>
             <p class="text-gray-700">Not at this time.</p>
           </div>
-
           <div>
             <h3 class="text-xl font-semibold mb-3">
               What if I need more than Enterprise features?
@@ -651,6 +617,7 @@
             data-open-modal
             data-plan="cta"
             class="bg-penn-red text-white font-bold py-4 px-10 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-80"
+            style="background-color: var(--color-penn-red)"
           >
             Reserve Early Access
           </button>
@@ -669,43 +636,32 @@
             <h3 class="text-lg font-semibold mb-4">Navigation</h3>
             <ul class="space-y-2">
               <li>
-                <a
-                  href="index.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="index.html" class="hover:text-gray-300 transition"
                   >Home</a
                 >
               </li>
               <li>
-                <a
-                  href="features.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="features.html" class="hover:text-gray-300 transition"
                   >Features</a
                 >
               </li>
               <li>
-                <a
-                  href="pricing.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="pricing.html" class="hover:text-gray-300 transition"
                   >Pricing</a
                 >
               </li>
               <li>
-                <a
-                  href="about.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="about.html" class="hover:text-gray-300 transition"
                   >About</a
                 >
               </li>
               <li>
-                <a
-                  href="contact.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="contact.html" class="hover:text-gray-300 transition"
                   >Contact</a
                 >
               </li>
             </ul>
           </div>
-
           <div>
             <h3 class="text-lg font-semibold mb-4">Product</h3>
             <ul class="space-y-2">
@@ -713,35 +669,33 @@
                 <button
                   data-open-modal
                   data-plan="footer"
-                  class="hover:text-gray-300 transition duration-300"
+                  class="hover:text-gray-300 transition"
                 >
                   Reserve Early Access
                 </button>
               </li>
             </ul>
           </div>
-
           <div>
             <h3 class="text-lg font-semibold mb-4">Legal</h3>
             <ul class="space-y-2">
               <li>
                 <a
                   href="privacy-policy.html"
-                  class="hover:text-gray-300 transition duration-300"
+                  class="hover:text-gray-300 transition"
                   >Privacy Policy</a
                 >
               </li>
               <li>
                 <a
                   href="terms-of-service.html"
-                  class="hover:text-gray-300 transition duration-300"
+                  class="hover:text-gray-300 transition"
                   >Terms of Service</a
                 >
               </li>
             </ul>
           </div>
         </div>
-
         <div class="border-t border-gray-600 mt-12 pt-8 text-center">
           <p>&copy; 2024 Brightsun AI Ltd. All rights reserved.</p>
         </div>
@@ -752,7 +706,7 @@
     <div id="ea-backdrop" class="fixed inset-0 bg-black/40 hidden"></div>
     <div
       id="ea-modal"
-      class="fixed inset-x-0 top-20 mx-auto w-[92%] max-w-lg bg-white rounded-2xl p-6 shadow-2xl hidden"
+      class="fixed inset-x-0 top-20 mx-auto w-[92%] max-w-lg bg-white rounded-2xl p-6 shadow-2xl hidden max-h-[80vh] overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="ea-title"
@@ -772,6 +726,7 @@
         <input type="hidden" name="utm_medium" />
         <input type="hidden" name="first_click_plan" />
         <input type="hidden" name="ga_client_id" />
+        <input type="hidden" name="feature_hook" id="feature_hook" />
 
         <!-- Honeypot -->
         <input
@@ -803,16 +758,85 @@
           />
         </label>
 
-        <!-- Cloudflare Turnstile (replace with your site key) -->
+        <!-- Optional insights (OPEN for testing — remove `open` later) -->
+        <details class="border rounded-lg p-3 bg-gray-50">
+          <summary class="cursor-pointer text-sm font-medium">
+            Tell us more (optional)
+          </summary>
+          <div class="mt-3 space-y-3">
+            <!-- A) What caught your eye? (chips, multi-select) -->
+            <label class="block">
+              <span class="block hb-field-title mb-2"
+                >What caught your eye?</span
+              >
+              <div id="featureHookChips" class="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  class="hb-chip"
+                  data-value="visual_planning"
+                >
+                  Visual drag &amp; paint
+                </button>
+                <button type="button" class="hb-chip" data-value="key_blocks">
+                  Turning goals into Key Blocks
+                </button>
+                <button type="button" class="hb-chip" data-value="daily_blocks">
+                  Calendar-scheduled Daily Blocks
+                </button>
+                <button type="button" class="hb-chip" data-value="reflection">
+                  Weekly reflection &amp; insights
+                </button>
+                <button type="button" class="hb-chip" data-value="analytics">
+                  Analytics &amp; charts
+                </button>
+                <button type="button" class="hb-chip" data-value="templates">
+                  Templates / week copying
+                </button>
+                <button type="button" class="hb-chip" data-value="other">
+                  Something else
+                </button>
+              </div>
+            </label>
+
+            <!-- B) Use case (short note) -->
+            <label class="block">
+              <span class="block hb-field-title mb-2"
+                >What’s one thing you’d plan with HabitBlock?</span
+              >
+              <input
+                type="text"
+                name="use_case_note"
+                maxlength="180"
+                class="w-full border rounded-lg p-3"
+                placeholder="e.g., study plan, meal planning, fitness, marathon training, launch prep, exam prep, side project, thesis…"
+              />
+              <p class="mt-1 text-xs text-gray-500">
+                Optional insights → aggregate use only. We never sell your data.
+                See our
+                <a
+                  href="/privacy-policy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline hover:text-gray-600"
+                  >Privacy Policy</a
+                >.
+              </p>
+            </label>
+          </div>
+        </details>
+
+        <!-- Cloudflare Turnstile -->
         <div class="cf-turnstile" data-sitekey="0x4AAAAAAB6SGlBazHDYsDKs"></div>
 
         <button
           type="submit"
-          class="w-full bg-penn-red text-white font-bold py-3 rounded-lg"
+          class="w-full text-white font-bold py-3 rounded-lg"
+          style="background-color: var(--color-penn-red)"
         >
           Reserve My Spot
         </button>
         <p id="ea-status" class="text-sm text-gray-700"></p>
+
         <button
           type="button"
           id="ea-close"
@@ -827,6 +851,8 @@
         </p>
       </form>
     </div>
+
+    <!-- Turnstile script -->
     <script
       src="https://challenges.cloudflare.com/turnstile/v0/api.js"
       async
@@ -839,7 +865,7 @@
         document.getElementById("mobileMenu").classList.toggle("show");
       }
 
-      // --- (optional) price toggle demo kept as-is ---
+      // --- (optional) pricing toggle demo (kept simple) ---
       let isAnnual = false;
       function toggleBilling() {
         const toggle = document.getElementById("billingToggle");
@@ -848,17 +874,17 @@
         const proPeriod = document.getElementById("proPeriod");
         isAnnual = !isAnnual;
         if (isAnnual) {
-          toggle.classList.add("bg-penn-red");
-          toggle.classList.remove("bg-gray-300");
-          circle.style.transform = "translateX(2rem)";
-          proPrice.textContent = "£86";
-          proPeriod.textContent = "/year";
+          toggle?.classList.add("bg-penn-red");
+          toggle?.classList.remove("bg-gray-300");
+          if (circle) circle.style.transform = "translateX(2rem)";
+          if (proPrice) proPrice.textContent = "£86";
+          if (proPeriod) proPeriod.textContent = "/year";
         } else {
-          toggle.classList.remove("bg-penn-red");
-          toggle.classList.add("bg-gray-300");
-          circle.style.transform = "translateX(0)";
-          proPrice.textContent = "£149";
-          proPeriod.textContent = "/year";
+          toggle?.classList.remove("bg-penn-red");
+          toggle?.classList.add("bg-gray-300");
+          if (circle) circle.style.transform = "translateX(0)";
+          if (proPrice) proPrice.textContent = "£149";
+          if (proPeriod) proPeriod.textContent = "/year";
         }
       }
 
@@ -871,12 +897,14 @@
       }
       function acceptCookies() {
         localStorage.setItem("cookieConsent", "accepted");
-        document.getElementById("cookieConsent").style.display = "none";
+        const b = document.getElementById("cookieConsent");
+        if (b) b.style.display = "none";
         gtag("consent", "update", { analytics_storage: "granted" });
       }
       function declineCookies() {
         localStorage.setItem("cookieConsent", "declined");
-        document.getElementById("cookieConsent").style.display = "none";
+        const b = document.getElementById("cookieConsent");
+        if (b) b.style.display = "none";
         gtag("consent", "update", { analytics_storage: "denied" });
       }
       window.addEventListener("load", showCookieConsent);
@@ -888,7 +916,7 @@
         if (!window.gtag) return cb(null);
         try {
           gtag("get", "G-Y24D5E5VZ7", "client_id", (cid) => cb(cid || null));
-        } catch (e) {
+        } catch {
           cb(null);
         }
       }
@@ -911,29 +939,34 @@
             ? "Habit Pro"
             : "HabitBlock"
         }`;
+
+        // Core context
         form.page_url.value = location.href;
 
-        // Get UTM from URL first, fallback to stored first-touch UTM
+        // UTM from URL first; fallback to first-touch stored by utm.js
         const p = new URLSearchParams(location.search);
         const stored = (window.HBUTM && window.HBUTM.pick("first")) || {};
-
         form.utm_source.value = p.get("utm_source") || stored.utm_source || "";
         form.utm_campaign.value =
           p.get("utm_campaign") || stored.utm_campaign || "";
         form.utm_medium.value = p.get("utm_medium") || stored.utm_medium || "";
 
+        // First plan click
         if (!localStorage.getItem("hb_first_click_plan"))
           localStorage.setItem("hb_first_click_plan", plan);
         form.first_click_plan.value =
           localStorage.getItem("hb_first_click_plan") || plan;
 
+        // GA client id
         getGaClientId((cid) => {
           form.ga_client_id.value = cid || "";
         });
 
+        // Show modal
         backdrop.classList.remove("hidden");
         modal.classList.remove("hidden");
       }
+
       function closeModal() {
         backdrop.classList.add("hidden");
         modal.classList.add("hidden");
@@ -959,6 +992,7 @@
         if (e.key === "Escape") closeModal();
       });
 
+      // Submit handler
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         statusEl.textContent = "Submitting…";
@@ -984,11 +1018,38 @@
               plan: planInput.value,
             });
           }
-        } catch (err) {
+        } catch {
           statusEl.textContent = "Network error. Please try again.";
           gtag("event", "early_access_submit_error", { plan: planInput.value });
         }
       });
+
+      // Chips wiring
+      (function () {
+        const wrap = document.getElementById("featureHookChips");
+        const out = document.getElementById("feature_hook");
+        if (!wrap || !out) return;
+
+        function serialize() {
+          const values = Array.from(
+            wrap.querySelectorAll(".hb-chip.is-selected")
+          ).map((b) => b.getAttribute("data-value"));
+          out.value = values.join(",");
+        }
+
+        wrap.addEventListener("click", (e) => {
+          const btn = e.target.closest(".hb-chip");
+          if (!btn) return;
+          btn.classList.toggle("is-selected");
+          serialize();
+          try {
+            gtag("event", "early_access_feature_select", {
+              option: btn.getAttribute("data-value"),
+              selected: btn.classList.contains("is-selected"),
+            });
+          } catch {}
+        });
+      })();
     </script>
 
     <!-- Cookie Consent Banner -->
