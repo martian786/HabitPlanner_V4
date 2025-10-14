@@ -940,6 +940,64 @@
       const statusEl = document.getElementById("ea-status");
       const planInput = document.getElementById("ea-plan");
 
+      // --- NEW: light currency map + region filler ---
+      const CTRY_TO_CCY = {
+        US: "USD",
+        GB: "GBP",
+        IE: "EUR",
+        DE: "EUR",
+        FR: "EUR",
+        ES: "EUR",
+        IT: "EUR",
+        NL: "EUR",
+        BE: "EUR",
+        PT: "EUR",
+        AT: "EUR",
+        FI: "EUR",
+        GR: "EUR",
+        EE: "EUR",
+        LV: "EUR",
+        LT: "EUR",
+        SK: "EUR",
+        SI: "EUR",
+        CY: "EUR",
+        MT: "EUR",
+        LU: "EUR",
+        CA: "CAD",
+        AU: "AUD",
+        NZ: "NZD",
+        IN: "INR",
+        SG: "SGD",
+        JP: "JPY",
+        CH: "CHF",
+        SE: "SEK",
+        NO: "NOK",
+        DK: "DKK",
+      };
+
+      function fillRegionFields(form) {
+        try {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+          const loc =
+            navigator.language ||
+            Intl.DateTimeFormat().resolvedOptions().locale ||
+            "";
+
+          let cc = "";
+          const m = /-([A-Za-z]{2})$/.exec(loc || "");
+          if (m) cc = m[1].toUpperCase();
+
+          const ccy = CTRY_TO_CCY[cc] || "";
+
+          form.elements["timezone"].value = tz;
+          form.elements["locale"].value = loc;
+          form.elements["currency_guess"].value = ccy;
+        } catch {
+          // best-effort only
+        }
+      }
+      // --- /NEW ---
+
       function openModal(plan) {
         planInput.value = plan;
         document.getElementById(
@@ -973,6 +1031,9 @@
         getGaClientId((cid) => {
           form.ga_client_id.value = cid || "";
         });
+
+        // NEW: populate timezone/locale/currency_guess
+        fillRegionFields(form);
 
         // Show modal
         backdrop.classList.remove("hidden");
