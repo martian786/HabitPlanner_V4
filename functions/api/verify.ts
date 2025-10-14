@@ -74,6 +74,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
     <div class="card">
       <h1>Email verified ✅</h1>
       <p>Thanks! Your email is confirmed.</p>
+      <p>We will be in touch soon. In the meantime you can read articles in our resources</p>
       <p><a class="btn" href="${origin}/">Back to HabitBlock</a></p>
     </div>
   </body>
