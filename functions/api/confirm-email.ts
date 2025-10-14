@@ -1,4 +1,5 @@
 // functions/api/confirm-email.ts
+
 const randomToken = (len = 32) => {
   const bytes = new Uint8Array(len);
   crypto.getRandomValues(bytes);
@@ -8,38 +9,58 @@ const randomToken = (len = 32) => {
 const basicAuth = (user: string, pass: string) =>
   "Basic " + btoa(`${user}:${pass}`);
 
-export const onRequest = async ({ request, env }: { request: Request; env: Record<string,string> }) => {
+export const onRequest = async ({
+  request,
+  env,
+}: {
+  request: Request;
+  env: Record<string, string>;
+}) => {
   try {
     if (request.method !== "POST") {
       return new Response("Method not allowed", { status: 405 });
     }
 
-    // Supabase DB Webhook body shape: { type:"INSERT", table:"leads", record:{...} , ... }
+    // Shared-secret header from Supabase Webhooks UI (Header: X-Webhook-Token)
+    const tokenHeader =
+      request.headers.get("x-webhook-token") || request.headers.get("X-Webhook-Token");
+    if (!env.WEBHOOK_TOKEN || !tokenHeader || tokenHeader !== env.WEBHOOK_TOKEN) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    // Body: { type:"INSERT", table:"leads", record:{...} }
     const payload = await request.json().catch(() => ({} as any));
+    const eventType = payload?.type || payload?.event;
+    const table = payload?.table || payload?.table_name;
+    if (table !== "leads" || eventType !== "INSERT") {
+      return new Response("Ignored", { status: 200 });
+    }
+
     const lead = payload?.record || {};
     const email = String(lead.email || "").trim().toLowerCase();
     if (!email) return new Response("Missing email", { status: 400 });
 
-    // Optional idempotency: if you get duplicate webhook deliveries, you can no-op
-    // e.g., skip if a non-expired verification already exists for this email.
     if (!(env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE)) {
       return new Response("Server misconfigured", { status: 500 });
     }
 
-    // Look for an existing, unused, unexpired token to avoid spamming:
-    const check = await fetch(`${env.SUPABASE_URL}/rest/v1/email_verifications?email=eq.${encodeURIComponent(email)}&used_at=is.null&select=token,expires_at&order=created_at.desc&limit=1`, {
-      headers: {
-        apikey: env.SUPABASE_SERVICE_ROLE,
-        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE}`,
-      },
-    });
-    if (!check.ok) {
-      return new Response("Lookup failed", { status: 502 });
-    }
+    // Reuse an unexpired token if it exists
+    const check = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/email_verifications` +
+        `?email=eq.${encodeURIComponent(email)}` +
+        `&used_at=is.null&select=token,expires_at&order=created_at.desc&limit=1`,
+      {
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE,
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE}`,
+        },
+      }
+    );
+    if (!check.ok) return new Response("Lookup failed", { status: 502 });
     const existing = await check.json();
-    const stillValid = existing?.[0] && new Date(existing[0].expires_at).getTime() > Date.now();
+    const stillValid =
+      existing?.[0] && new Date(existing[0].expires_at).getTime() > Date.now();
 
-    // Either reuse recent token or create a new one
     const token = stillValid ? existing[0].token : randomToken(32);
 
     if (!stillValid) {
@@ -61,26 +82,31 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
         }),
       });
       if (!insert.ok) {
-        // Don’t fail the webhook—just report for logs
         const t = await insert.text();
-        return new Response(`Token insert failed: ${t}`, { status: 502 });
+        return new Response(`Token insert failed: ${t}`, { status: 200 });
       }
     }
 
-    // Send Mailgun (skip silently if not configured)
-    if (env.MAILGUN_DOMAIN && env.MAILGUN_API_KEY && env.MAIL_FROM) {
+    // -------- Mailtrap Send API --------
+    // Required env vars:
+    // MAILTRAP_TOKEN, MAIL_FROM (e.g., "no-reply@yourdomain.com")
+    // Optional: MAIL_FROM_NAME, PUBLIC_SITE_ORIGIN
+    if (env.MAILTRAP_TOKEN && env.MAIL_FROM) {
       const origin = env.PUBLIC_SITE_ORIGIN || new URL(request.url).origin;
       const verifyUrl = `${origin}/api/verify?token=${encodeURIComponent(token)}`;
 
-      const mgResp = await fetch(`https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`, {
+      const mtResp = await fetch("https://send.api.mailtrap.io/api/send", {
         method: "POST",
         headers: {
-          Authorization: basicAuth("api", env.MAILGUN_API_KEY),
-          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${env.MAILTRAP_TOKEN}`,
+          "Content-Type": "application/json",
         },
-        body: new URLSearchParams({
-          from: env.MAIL_FROM,
-          to: email,
+        body: JSON.stringify({
+          from: {
+            email: env.MAIL_FROM,
+            name: env.MAIL_FROM_NAME || "HabitBlock",
+          },
+          to: [{ email, name: lead.name || "" }],
           subject: "Confirm your email for HabitBlock",
           text:
             `Hi${lead.name ? " " + lead.name : ""},\n\n` +
@@ -93,10 +119,11 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
             `<p>— HabitBlock</p>`,
         }),
       });
-      if (!mgResp.ok) {
-        const t = await mgResp.text();
-        // Return 200 so Supabase doesn’t retry forever; you can monitor logs
-        return new Response(`Mailgun failed: ${t}`, { status: 200 });
+
+      // Mailtrap returns 200 on success; if it fails, log-friendly but OK 200 to avoid endless retries
+      if (!mtResp.ok) {
+        const t = await mtResp.text();
+        return new Response(`Mailtrap failed: ${t}`, { status: 200 });
       }
     }
 
