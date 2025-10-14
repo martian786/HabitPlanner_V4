@@ -19,8 +19,11 @@ const safeUrl = (v: unknown, max = 2048) => {
   return "";
 };
 
-const oneOf = <T extends string>(v: unknown, allowed: readonly T[], fallback: T) =>
-  (allowed as readonly string[]).includes(String(v)) ? (v as T) : fallback;
+const oneOf = <T extends string>(
+  v: unknown,
+  allowed: readonly T[],
+  fallback: T
+) => ((allowed as readonly string[]).includes(String(v)) ? (v as T) : fallback);
 
 // Match your <button class="hb-chip" data-value="..."> values in pricing.html
 const FEATURE_KEYS = [
@@ -42,8 +45,52 @@ const normalizeFeatureHook = (v: unknown, maxItems = 6) => {
         .filter(Boolean)
     )
   );
-  const allowed = uniq.filter((k) => (FEATURE_KEYS as readonly string[]).includes(k));
+  const allowed = uniq.filter((k) =>
+    (FEATURE_KEYS as readonly string[]).includes(k)
+  );
   return allowed.slice(0, maxItems).join(",");
+};
+
+const upper2 = (v: unknown) =>
+  String(v ?? "")
+    .trim()
+    .toUpperCase()
+    .slice(0, 2);
+
+// quick, non-exhaustive currency map; safe as a *hint* only
+const CTRY_TO_CCY: Record<string, string> = {
+  US: "USD",
+  GB: "GBP",
+  IE: "EUR",
+  DE: "EUR",
+  FR: "EUR",
+  ES: "EUR",
+  IT: "EUR",
+  NL: "EUR",
+  BE: "EUR",
+  PT: "EUR",
+  AT: "EUR",
+  FI: "EUR",
+  GR: "EUR",
+  EE: "EUR",
+  LV: "EUR",
+  LT: "EUR",
+  SK: "EUR",
+  SI: "EUR",
+  CY: "EUR",
+  MT: "EUR",
+  LU: "EUR",
+  // non-euro examples
+  CA: "CAD",
+  AU: "AUD",
+  NZ: "NZD",
+  IN: "INR",
+  SG: "SGD",
+  JP: "JPY",
+  CH: "CHF",
+  SE: "SEK",
+  NO: "NOK",
+  DK: "DKK",
 };
 
 // ---------- handler ----------
@@ -97,14 +144,17 @@ export const onRequest = async ({
       const isPreview = host.endsWith(".pages.dev");
       if (!isPreview) {
         const token = String(form.get("cf-turnstile-response") || "");
-        const verify = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-          method: "POST",
-          body: new URLSearchParams({
-            secret: env.TURNSTILE_SECRET || "",
-            response: token,
-            remoteip: request.headers.get("CF-Connecting-IP") || "",
-          }),
-        }).then((r) => r.json());
+        const verify = await fetch(
+          "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+          {
+            method: "POST",
+            body: new URLSearchParams({
+              secret: env.TURNSTILE_SECRET || "",
+              response: token,
+              remoteip: request.headers.get("CF-Connecting-IP") || "",
+            }),
+          }
+        ).then((r) => r.json());
         turnstilePassed = !!verify?.success;
       }
     } catch {
@@ -114,7 +164,7 @@ export const onRequest = async ({
       return new Response("Captcha failed", { status: 400, headers: CORS });
     }
 
-    // -------- collect + sanitize fields --------
+    // -------- collect + sanitize fields (client-provided) --------
     const name = sanitizeStr(form.get("name"), 120);
     const plan = oneOf(form.get("plan"), ["pro", "plus", "cta", "footer"] as const, "pro");
 
@@ -131,10 +181,30 @@ export const onRequest = async ({
 
     const ga_client_id = sanitizeStr(form.get("ga_client_id"), 64);
     const feature_hook = normalizeFeatureHook(form.get("feature_hook")); // CSV → cleaned CSV
-    const use_case_note = sanitizeStr(form.get("use_case_note"), 180); // enforce server-side cap
+    const use_case_note = sanitizeStr(form.get("use_case_note"), 180); // server-side cap
+
+    // region/pricing helpers from client (hidden inputs)
+    let timezone = sanitizeStr(form.get("timezone"), 64);
+    const locale = sanitizeStr(form.get("locale"), 32);
+    let currency_guess = sanitizeStr(form.get("currency_guess"), 8);
 
     const user_agent = sanitizeStr(request.headers.get("user-agent"), 300);
     const ip = sanitizeStr(request.headers.get("CF-Connecting-IP"), 64);
+
+    // -------- server-side geo enrichment (Cloudflare) --------
+    const cf: any = (request as any).cf || {};
+    const cfCountry = upper2(request.headers.get("cf-ipcountry") || cf.country);
+    const cfRegion =
+      sanitizeStr(cf.region || cf.regionCode || cf.subdivision, 80) || "";
+    const cfTz = sanitizeStr(cf.timezone, 64);
+
+    // prefer client timezone if present, else use CF
+    if (!timezone && cfTz) timezone = cfTz;
+
+    // prefer client currency_guess if present, else map from CF country
+    if (!currency_guess && cfCountry) {
+      currency_guess = CTRY_TO_CCY[cfCountry] || "";
+    }
 
     const record: Record<string, string> = {
       name,
@@ -146,8 +216,19 @@ export const onRequest = async ({
       utm_medium,
       first_click_plan,
       ga_client_id,
+
+      // insights
       feature_hook,
       use_case_note,
+
+      // region/pricing helpers
+      country_code: cfCountry || "",
+      region_name: cfRegion,
+      timezone,
+      locale,
+      currency_guess,
+
+      // technical/context
       user_agent,
       ip,
       source: "pricing-modal",
@@ -175,16 +256,19 @@ export const onRequest = async ({
     let supabaseBody: string | null = null;
     if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE) {
       try {
-        const r = await fetch(`${env.SUPABASE_URL}/rest/v1/leads?on_conflict=email`, {
-          method: "POST",
-          headers: {
-            apikey: env.SUPABASE_SERVICE_ROLE,
-            Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE}`,
-            "Content-Type": "application/json",
-            Prefer: "resolution=merge-duplicates,return=minimal",
-          },
-          body: JSON.stringify(record),
-        });
+        const r = await fetch(
+          `${env.SUPABASE_URL}/rest/v1/leads?on_conflict=email`,
+          {
+            method: "POST",
+            headers: {
+              apikey: env.SUPABASE_SERVICE_ROLE,
+              Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE}`,
+              "Content-Type": "application/json",
+              Prefer: "resolution=merge-duplicates,return=minimal",
+            },
+            body: JSON.stringify(record),
+          }
+        );
         supabaseStatus = r.status;
         if (!r.ok) supabaseBody = (await r.text()).slice(0, 400);
         if (!r.ok) {
