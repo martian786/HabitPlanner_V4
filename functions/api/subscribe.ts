@@ -70,6 +70,8 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
       utm_medium: String(form.get("utm_medium") || ""),
       first_click_plan: String(form.get("first_click_plan") || ""),
       ga_client_id: String(form.get("ga_client_id") || ""),
+      feature_hook: String(form.get("feature_hook") || ""),     // NEW
+      use_case_note: String(form.get("use_case_note") || ""), 
       user_agent: request.headers.get("user-agent") || "",
       ip: request.headers.get("CF-Connecting-IP") || "",
       source: "pricing-modal",
