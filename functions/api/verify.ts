@@ -25,15 +25,15 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
         headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", ...extraHeaders },
       });
 
-    const successHtml = () => `<!doctype html>
+    const successHtml = (opts?: { already?: boolean }) => `<!doctype html>
 <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Email verified</title>
+<title>${opts?.already ? "Email already verified" : "Email verified"}</title>
 <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;padding:40px;color:#111}
 .card{max-width:560px;margin:0 auto;border:1px solid #eee;border-radius:12px;padding:24px}
 .btn{background:#9d0208;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;display:inline-block}</style>
 </head><body><div class="card">
-<h1>Email verified ✅</h1>
-<p>Thanks! Your email is confirmed.</p>
+<h1>${opts?.already ? "Email already verified ✅" : "Email verified ✅"}</h1>
+<p>${opts?.already ? "Your email was previously confirmed. You're all set." : "Thanks! Your email is confirmed."}</p>
 <p>We will be in touch soon. In the meantime you can read articles in our resources</p>
 <p><a class="btn" href="${origin}/">Back to HabitBlock</a></p>
 </div></body></html>`;
@@ -115,10 +115,9 @@ addEventListener('DOMContentLoaded', go);
         return html(200, errorHtml("This verification link is invalid or has expired.", true));
       }
 
-      // Already used → treat as idempotent display.
-      // We are not "fudging": token was used by a legitimate prior POST (or old system).
+      // Already used → idempotent display with "already verified" copy
       if (row.used_at) {
-        return html(200, successHtml());
+        return html(200, successHtml({ already: true }));
       }
 
       // Valid + unused → show interstitial that auto-POSTs
@@ -169,9 +168,8 @@ addEventListener('DOMContentLoaded', go);
       const updated = await patch.json();
 
       if (!Array.isArray(updated) || updated.length === 0) {
-        // No rows updated: it was already used between GET and POST (or in an older flow)
-        // Idempotent display: show success (token exists and is not expired)
-        return html(200, successHtml());
+        // Already used between GET and POST → show "already verified" copy
+        return html(200, successHtml({ already: true }));
       }
 
       // (Optional) here you can mark the user/lead as verified in your own table.
