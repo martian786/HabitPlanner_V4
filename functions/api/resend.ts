@@ -37,7 +37,8 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
 
     // Verify short-lived signature (15 minutes)
     const maxAgeMs = 15 * 60 * 1000;
-    const fresh = Math.abs(Date.now() - Number(ts)) <= maxAgeMs;
+    const tsNum = Number(ts);
+    const fresh = Number.isFinite(tsNum) && Math.abs(Date.now() - tsNum) <= maxAgeMs;
     const secret = env.RESEND_LINK_SECRET || env.SUPABASE_SERVICE_ROLE;
     const expect = await hmacHex(secret, `${email}|${ts}`);
     if (!fresh || !tsec(sig, expect)) return genericOk(origin);
@@ -52,42 +53,35 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
         },
       });
 
-    // Find pending row (unused)
-    const q = await sb(`/rest/v1/email_verifications?email=eq.${encodeURIComponent(email)}&used_at=is.null&select=created_at,updated_at,token`);
+    // Find pending row (unused) — your schema has no updated_at
+    const q = await sb(`/rest/v1/email_verifications?email=eq.${encodeURIComponent(email)}&used_at=is.null&select=created_at,token`);
     if (!q.ok) return genericOk(origin);
     const pending = (await q.json())?.[0];
 
-    // Cooldown: if created/updated < 15m ago, silently OK
-    const lastTs = pending?.updated_at || pending?.created_at;
-    if (lastTs && (Date.now() - new Date(lastTs).getTime()) < 15*60*1000) {
+    // If no pending row, don't create one here; just no-op (safer)
+    if (!pending) return genericOk(origin);
+
+    // Cooldown: created_at must be >= 15 minutes old
+    const createdAt = pending.created_at ? new Date(pending.created_at).getTime() : 0;
+    if (createdAt && (Date.now() - createdAt) < 15 * 60 * 1000) {
       return genericOk(origin);
     }
 
     const newToken = randomHex(32); // 64-char hex
     const newExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
 
-    if (pending) {
-      // Rotate in place: new token + new expiry
-      const patch = await sb(`/rest/v1/email_verifications?email=eq.${encodeURIComponent(email)}&used_at=is.null`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
-        body: JSON.stringify({ token: newToken, expires_at: newExpiry }),
-      });
-      if (!patch.ok) return genericOk(origin);
-    } else {
-      // No pending row → create one
-      const ins = await sb(`/rest/v1/email_verifications`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
-        body: JSON.stringify([{ email, token: newToken, expires_at: newExpiry }]),
-      });
-      if (!ins.ok) return genericOk(origin);
-    }
+    // Rotate in place: new token + new expiry
+    const patch = await sb(`/rest/v1/email_verifications?email=eq.${encodeURIComponent(email)}&used_at=is.null`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
+      body: JSON.stringify({ token: newToken, expires_at: newExpiry }),
+    });
+    if (!patch.ok) return genericOk(origin);
 
     // Send email via Mailtrap (same as your webhook style)
     if (env.MAILTRAP_TOKEN && env.MAIL_FROM) {
       const verifyUrl = `${origin}/api/verify?token=${encodeURIComponent(newToken)}`;
-      const mt = await fetch("https://send.api.mailtrap.io/api/send", {
+      await fetch("https://send.api.mailtrap.io/api/send", {
         method: "POST",
         headers: { Authorization: `Bearer ${env.MAILTRAP_TOKEN}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -99,9 +93,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
                  <p><a href="${verifyUrl}" style="background:#9d0208;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;display:inline-block">
                  Confirm email</a></p><p>— HabitBlock</p>`,
         }),
-      });
-      // Always return generic OK regardless of mt result to avoid info leaks/retries
-      await mt.text().catch(() => null);
+      }).catch(() => null);
     }
 
     return genericOk(origin);
