@@ -30,7 +30,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
 </head><body><div class="card">
 <h1>${opts?.already ? "Email already verified ✅" : "Email verified ✅"}</h1>
 <p>${opts?.already ? "Your email was previously confirmed. You're all set." : "Thanks! Your email is confirmed."}</p>
-<p>We will be in touch soon. In the meantime you can read articles in our resources</p>
+<p>We will be in touch soon. In the meantime you can read articles on our resources page.</p>
 <p><a class="btn" href="${origin}/">Back to HabitBlock</a></p>
 </div></body></html>`;
 
