@@ -134,8 +134,13 @@ const isRoleAddress = (local: string) => ROLE_LOCALPART.has(local);
 
 // KV-backed sliding window rate limit (skips if KV not bound)
 const rlKey = (ip: string) => `rl:${ip}`;
-const RL_LIMIT = 10;         // 10 attempts
-const RL_WINDOW_SEC = 600;   // per 10 minutes
+// --- Rate limiting config ---
+// These can now be adjusted from Cloudflare Pages environment variables.
+// Defaults remain 10 attempts / 10 minutes if not set.
+const RL_LIMIT = Number(env.RL_LIMIT ?? 10);
+const RL_WINDOW_SEC = Number(env.RL_WINDOW_SEC ?? 600);
+console.log("Rate limit:", RL_LIMIT, "window:", RL_WINDOW_SEC);
+
 
 async function hitRateLimit(env: Record<string, any>, ip: string | null) {
   try {
