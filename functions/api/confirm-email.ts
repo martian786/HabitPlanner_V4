@@ -117,7 +117,6 @@ export const onRequest = async ({
             `• Be among the first to try HabitBlock\n` +
             `• Get priority updates and early features\n` +
             `• Help shape the app with your feedback\n\n` +
-            `If the button doesn't work, copy and paste this link:\n${verifyUrl}\n\n` +
             `— The HabitBlock Team`,
           html:
             `<p style="margin:0 0 12px 0;">Hi${lead.name ? " " + lead.name : ""},</p>` +
@@ -132,9 +131,6 @@ export const onRequest = async ({
               `<li>Get priority updates and early features</li>` +
               `<li>Help shape the app with your feedback</li>` +
             `</ul>` +
-            `<p style="margin:0 0 18px 0;">If the button doesn’t work, paste this link into your browser:<br/>` +
-              `<a href="${verifyUrl}" style="word-break:break-all;">${verifyUrl}</a>` +
-            `</p>` +
             `<p style="margin:12px 0 0 0;">— The HabitBlock Team</p>`,
         }),
       });
