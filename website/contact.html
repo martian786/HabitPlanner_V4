@@ -53,12 +53,6 @@
       .text-rich-black {
         color: var(--color-rich-black);
       }
-      .bg-penn-red {
-        background-color: var(--color-penn-red);
-      }
-      .text-penn-red {
-        color: var(--color-penn-red);
-      }
       .mobile-menu {
         display: none;
       }
@@ -178,9 +172,23 @@
               Our support team is here to help.
             </p>
             <p class="text-penn-red font-semibold mb-2">
-              <a id="email-support" rel="nofollow noopener" class="underline"
-                >Email Support</a
+              <a
+                id="email-support"
+                rel="nofollow noopener"
+                class="underline"
+                data-userb64="c3VwcG9ydA=="
+                <!--
+                support
+                --
               >
+                data-hostb64="aGFiaXRibG9jaw=="
+                <!-- habitblock -->
+                data-tldb64="Y29t"
+                <!-- com -->
+                data-subjb64="SGFiaXRCbG9jayBTdXBwb3J0IFJlcXVlc3Q=">
+                <!-- HabitBlock Support Request -->
+                Email Support
+              </a>
             </p>
             <p class="text-sm text-gray-600">Response within 24 hours</p>
           </div>
@@ -196,9 +204,23 @@
               Let's discuss your needs.
             </p>
             <p class="text-penn-red font-semibold mb-2">
-              <a id="email-sales" rel="nofollow noopener" class="underline"
-                >Email Sales</a
+              <a
+                id="email-sales"
+                rel="nofollow noopener"
+                class="underline"
+                data-userb64="c2FsZXM="
+                <!--
+                sales
+                --
               >
+                data-hostb64="aGFiaXRibG9jaw=="
+                <!-- habitblock -->
+                data-tldb64="Y29t"
+                <!-- com -->
+                data-subjb64="SGFiaXRCbG9jayBTYWxlcyBJbnF1aXJ5">
+                <!-- HabitBlock Sales Inquiry -->
+                Email Sales
+              </a>
             </p>
             <p class="text-sm text-gray-600">Response within 4 hours</p>
           </div>
@@ -214,9 +236,23 @@
               hearing from our community.
             </p>
             <p class="text-penn-red font-semibold mb-2">
-              <a id="email-general" rel="nofollow noopener" class="underline"
-                >Email Us</a
+              <a
+                id="email-general"
+                rel="nofollow noopener"
+                class="underline"
+                data-userb64="aGVsbG8="
+                <!--
+                hello
+                --
               >
+                data-hostb64="aGFiaXRibG9jaw=="
+                <!-- habitblock -->
+                data-tldb64="Y29t"
+                <!-- com -->
+                data-subjb64="SGVsbG8gSGFiaXRCbG9jaw==">
+                <!-- Hello HabitBlock -->
+                Email Us
+              </a>
             </p>
             <p class="text-sm text-gray-600">Response within 48 hours</p>
           </div>
@@ -484,55 +520,58 @@
       window.addEventListener("load", showCookieConsent);
     </script>
 
-    <!-- Email wiring (interaction-armed href) -->
+    <!-- Email wiring (Base64 + interaction-armed href) -->
     <script>
-      // Build emails at runtime
-      const host = "habitblock",
-        tld = "com";
-      const addr = (user) => `${user}@${host}.${tld}`;
-
-      // Prefill subject/body (include page URL for context)
-      const subjects = {
-        support: "HabitBlock%20Support%20Request",
-        sales: "HabitBlock%20Sales%20Inquiry",
-        general: "Hello%20HabitBlock",
-        feature: "HabitBlock%20Feature%20Request",
+      // Safe Base64 decoder
+      const b64 = (s) => {
+        try {
+          return atob(s || "");
+        } catch {
+          return "";
+        }
       };
       const bodyFromPage = () =>
         encodeURIComponent(`From: ${location.href}\n\nMessage:\n`);
 
-      // Arm href only during human interaction; clear after a short window
-      function armHrefTemporarily(el, to) {
-        const href = `mailto:${to}?subject=${
-          subjects[el.dataset.channel] || ""
-        }&body=${bodyFromPage()}`;
+      function armHrefTemporarily(el) {
+        const user = b64(el.dataset.userb64);
+        const host = b64(el.dataset.hostb64);
+        const tld = b64(el.dataset.tldb64);
+        const subj = encodeURIComponent(b64(el.dataset.subjb64) || "");
+        if (!user || !host || !tld) return;
+
+        const to = `${user}@${host}.${tld}`;
+        const href = `mailto:${to}?subject=${subj}&body=${bodyFromPage()}`;
         el.setAttribute("href", href);
+
         clearTimeout(el._hrefTimer);
         el._hrefTimer = setTimeout(() => {
           el.removeAttribute("href");
         }, 2000); // 2s window
       }
 
-      function wireEmail(id, user) {
+      function wireEmail(id) {
         const el = document.getElementById(`email-${id}`);
         if (!el) return;
-        el.dataset.channel = id;
-        const to = addr(user);
 
-        // Provide href only when the user interacts
+        // Give href during likely human interactions
         ["mouseenter", "focus", "contextmenu", "touchstart"].forEach((ev) => {
-          el.addEventListener(ev, () => armHrefTemporarily(el, to), {
+          el.addEventListener(ev, () => armHrefTemporarily(el), {
             passive: true,
           });
         });
 
-        // Navigate on click even if href has been cleared
+        // Click navigates even if href has been cleared
         el.addEventListener("click", (e) => {
           if (!el.hasAttribute("href")) {
             e.preventDefault();
-            location.href = `mailto:${to}?subject=${
-              subjects[id] || ""
-            }&body=${bodyFromPage()}`;
+            const user = b64(el.dataset.userb64);
+            const host = b64(el.dataset.hostb64);
+            const tld = b64(el.dataset.tldb64);
+            const subj = encodeURIComponent(b64(el.dataset.subjb64) || "");
+            if (user && host && tld) {
+              location.href = `mailto:${user}@${host}.${tld}?subject=${subj}&body=${bodyFromPage()}`;
+            }
           }
           try {
             gtag("event", "contact_click", { method: "email", channel: id });
@@ -540,17 +579,16 @@
         });
       }
 
-      // Wire primary cards
-      wireEmail("support", "support");
-      wireEmail("sales", "sales");
-      wireEmail("general", "hello");
+      // Wire all three
+      ["support", "sales", "general"].forEach(wireEmail);
 
-      // Feature Requests CTA (direct)
+      // Feature Requests CTA (direct, Base64 pieces inline)
       function openFeatureEmail() {
-        const to = addr("hello");
-        location.href = `mailto:${to}?subject=${
-          subjects.feature
-        }&body=${bodyFromPage()}`;
+        const to = `${b64("aGVsbG8=")}@${b64("aGFiaXRibG9jaw==")}.${b64(
+          "Y29t"
+        )}`; // hello@habitblock.com
+        const subj = encodeURIComponent("HabitBlock Feature Request");
+        location.href = `mailto:${to}?subject=${subj}&body=${bodyFromPage()}`;
         try {
           gtag("event", "contact_click", {
             method: "email",
@@ -558,6 +596,7 @@
           });
         } catch (e) {}
       }
+      window.openFeatureEmail = openFeatureEmail; // keep global for button
     </script>
   </body>
 </html>
