@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contact - HabitBlock</title>
+
     <!-- Google Analytics 4 -->
     <script
       async
@@ -15,33 +16,27 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
-      // Default consent settings
-      gtag("consent", "default", {
-        analytics_storage: "denied",
-      });
-
+      gtag("consent", "default", { analytics_storage: "denied" });
       gtag("config", "G-Y24D5E5VZ7");
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/config.js"></script>
     <script src="/utm.js"></script>
-    <!-- utm is for lead generation and capturing the lead information -->
+
     <style>
       :root {
-        --color-rich-black: #03071eff;
-        --color-chocolate-cosmos: #370617ff;
-        --color-rosewood: #6a040fff;
-        --color-penn-red: #9d0208ff;
-        --color-engineering-orange: #d00000ff;
-        --color-sinopia: #dc2f02ff;
-        --color-persimmon: #e85d04ff;
-        --color-princeton-orange: #f48c06ff;
-        --color-orange-web: #faa307ff;
-        --color-selective-yellow: #ffba08ff;
+        --color-rich-black: #03071e;
+        --color-chocolate-cosmos: #370617;
+        --color-rosewood: #6a040f;
+        --color-penn-red: #9d0208;
+        --color-engineering-orange: #d00000;
+        --color-sinopia: #dc2f02;
+        --color-persimmon: #e85d04;
+        --color-princeton-orange: #f48c06;
+        --color-orange-web: #faa307;
+        --color-selective-yellow: #ffba08;
       }
-
       .bg-gradient-white-yellow {
         background: linear-gradient(
           to bottom,
@@ -49,11 +44,9 @@
           var(--color-selective-yellow)
         );
       }
-
       .bg-card-gradient {
         background: linear-gradient(145deg, #fff, #ffa770);
       }
-
       .bg-rich-black {
         background-color: var(--color-rich-black);
       }
@@ -66,57 +59,23 @@
       .text-penn-red {
         color: var(--color-penn-red);
       }
-      .bg-engineering-orange {
-        background-color: var(--color-engineering-orange);
-      }
-      .text-engineering-orange {
-        color: var(--color-engineering-orange);
-      }
-      .bg-persimmon {
-        background-color: var(--color-persimmon);
-      }
-      .text-persimmon {
-        color: var(--color-persimmon);
-      }
-      .bg-princeton-orange {
-        background-color: var(--color-princeton-orange);
-      }
-      .text-princeton-orange {
-        color: var(--color-princeton-orange);
-      }
-      .bg-orange-web {
-        background-color: var(--color-orange-web);
-      }
-      .text-orange-web {
-        color: var(--color-orange-web);
-      }
-      .bg-selective-yellow {
-        background-color: var(--color-selective-yellow);
-      }
-      .text-selective-yellow {
-        color: var(--color-selective-yellow);
-      }
-
       .mobile-menu {
         display: none;
       }
       .mobile-menu.show {
         display: block;
       }
-
       .contact-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
-
       .contact-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
       }
-
+      /* legacy .form-input kept for visual consistency on inputs elsewhere */
       .form-input {
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
       }
-
       .form-input:focus {
         outline: none;
         border-color: var(--color-penn-red);
@@ -125,7 +84,7 @@
     </style>
   </head>
   <body class="bg-gradient-white-yellow text-rich-black font-sans">
-    <!-- Header Section -->
+    <!-- Header -->
     <header class="py-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center">
         <div class="flex items-center space-x-3">
@@ -137,34 +96,19 @@
           <div class="font-bold text-3xl">HabitBlock</div>
         </div>
         <nav class="hidden md:flex space-x-8 text-lg font-medium">
-          <a
-            href="index.html"
-            class="hover:text-penn-red transition duration-300"
-            >Home</a
-          >
-          <a
-            href="features.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="index.html" class="hover:text-penn-red transition">Home</a>
+          <a href="features.html" class="hover:text-penn-red transition"
             >Features</a
           >
-          <a
-            href="pricing.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="pricing.html" class="hover:text-penn-red transition"
             >Pricing</a
           >
-          <a
-            href="about.html"
-            class="hover:text-penn-red transition duration-300"
-            >About</a
-          >
+          <a href="about.html" class="hover:text-penn-red transition">About</a>
           <a href="contact.html" class="text-penn-red font-semibold">Contact</a>
-          <a
-            href="resources.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="resources.html" class="hover:text-penn-red transition"
             >Resources</a
           >
         </nav>
-        <!-- Mobile Menu Button -->
         <button
           onclick="toggleMobileMenu()"
           class="md:hidden text-penn-red focus:outline-none"
@@ -186,43 +130,28 @@
         </button>
       </div>
 
-      <!-- Mobile Menu -->
       <div
         id="mobileMenu"
         class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4"
       >
         <nav class="flex flex-col space-y-4">
-          <a
-            href="index.html"
-            class="hover:text-penn-red transition duration-300"
-            >Home</a
-          >
-          <a
-            href="features.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="index.html" class="hover:text-penn-red transition">Home</a>
+          <a href="features.html" class="hover:text-penn-red transition"
             >Features</a
           >
-          <a
-            href="pricing.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="pricing.html" class="hover:text-penn-red transition"
             >Pricing</a
           >
-          <a
-            href="about.html"
-            class="hover:text-penn-red transition duration-300"
-            >About</a
-          >
+          <a href="about.html" class="hover:text-penn-red transition">About</a>
           <a href="contact.html" class="text-penn-red font-semibold">Contact</a>
-          <a
-            href="resources.html"
-            class="hover:text-penn-red transition duration-300"
+          <a href="resources.html" class="hover:text-penn-red transition"
             >Resources</a
           >
         </nav>
       </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="py-20 px-6 text-center">
       <div class="container mx-auto max-w-4xl">
         <h1 class="text-5xl md:text-6xl font-bold mb-6">
@@ -235,7 +164,7 @@
       </div>
     </section>
 
-    <!-- Contact Options Section -->
+    <!-- Contact Options -->
     <section class="py-20 px-6">
       <div class="container mx-auto max-w-6xl">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
@@ -250,7 +179,9 @@
               Our support team is here to help.
             </p>
             <p class="text-penn-red font-semibold mb-2">
-              support@habitblock.com
+              <a id="email-support" rel="nofollow noopener" class="underline"
+                >Email Support</a
+              >
             </p>
             <p class="text-sm text-gray-600">Response within 24 hours</p>
           </div>
@@ -265,7 +196,11 @@
               Interested in Enterprise features or have questions about pricing?
               Let's discuss your needs.
             </p>
-            <p class="text-penn-red font-semibold mb-2">sales@habitblock.com</p>
+            <p class="text-penn-red font-semibold mb-2">
+              <a id="email-sales" rel="nofollow noopener" class="underline"
+                >Email Sales</a
+              >
+            </p>
             <p class="text-sm text-gray-600">Response within 4 hours</p>
           </div>
 
@@ -279,14 +214,26 @@
               Got feedback, suggestions, or just want to say hello? We love
               hearing from our community.
             </p>
-            <p class="text-penn-red font-semibold mb-2">hello@habitblock.com</p>
+            <p class="text-penn-red font-semibold mb-2">
+              <a id="email-general" rel="nofollow noopener" class="underline"
+                >Email Us</a
+              >
+            </p>
             <p class="text-sm text-gray-600">Response within 48 hours</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ Section -->
+    <!-- No-JS fallback -->
+    <noscript>
+      <p class="text-sm text-gray-600 text-center">
+        support [at] habitblock [dot] com • sales [at] habitblock [dot] com •
+        hello [at] habitblock [dot] com
+      </p>
+    </noscript>
+
+    <!-- FAQ -->
     <section class="py-20 px-6">
       <div class="container mx-auto max-w-4xl">
         <div class="text-center mb-12">
@@ -358,7 +305,7 @@
       </div>
     </section>
 
-    <!-- Alternative Contact Methods -->
+    <!-- Other Ways -->
     <section class="py-20 px-6 bg-white">
       <div class="container mx-auto max-w-6xl text-center">
         <h2 class="text-4xl font-bold mb-12">Other Ways to Connect</h2>
@@ -374,7 +321,7 @@
             <a
               href="#"
               onclick="window.location.href = window.websiteConfig.getAppUrl()"
-              class="inline-block bg-penn-red text-white font-bold py-3 px-6 rounded-full hover:bg-opacity-90 transition duration-300"
+              class="inline-block bg-penn-red text-white font-bold py-3 px-6 rounded-full hover:bg-opacity-90 transition"
             >
               View Help Docs
             </a>
@@ -388,8 +335,8 @@
               hear it. Your feedback shapes our product development.
             </p>
             <button
-              onclick="document.getElementById('subject').value='feature'; document.getElementById('contactForm').scrollIntoView();"
-              class="inline-block bg-penn-red text-white font-bold py-3 px-6 rounded-full hover:bg-opacity-90 transition duration-300"
+              onclick="openFeatureEmail()"
+              class="inline-block bg-penn-red text-white font-bold py-3 px-6 rounded-full hover:bg-opacity-90 transition"
             >
               Submit Idea
             </button>
@@ -405,77 +352,60 @@
     >
       <div class="container mx-auto max-w-6xl">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Navigation -->
           <div>
             <h3 class="text-lg font-semibold mb-4">Navigation</h3>
             <ul class="space-y-2">
               <li>
-                <a
-                  href="index.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="index.html" class="hover:text-gray-300 transition"
                   >Home</a
                 >
               </li>
               <li>
-                <a
-                  href="features.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="features.html" class="hover:text-gray-300 transition"
                   >Features</a
                 >
               </li>
               <li>
-                <a
-                  href="pricing.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="pricing.html" class="hover:text-gray-300 transition"
                   >Pricing</a
                 >
               </li>
               <li>
-                <a
-                  href="about.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="about.html" class="hover:text-gray-300 transition"
                   >About</a
                 >
               </li>
               <li>
-                <a
-                  href="contact.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="contact.html" class="hover:text-gray-300 transition"
                   >Contact</a
                 >
               </li>
             </ul>
           </div>
-
-          <!-- Product -->
           <div>
             <h3 class="text-lg font-semibold mb-4">Product</h3>
             <ul class="space-y-2">
               <li>
-                <a
-                  href="pricing.html"
-                  class="hover:text-gray-300 transition duration-300"
+                <a href="pricing.html" class="hover:text-gray-300 transition"
                   >Reserve Early Access</a
                 >
               </li>
             </ul>
           </div>
-
-          <!-- Legal -->
           <div>
             <h3 class="text-lg font-semibold mb-4">Legal</h3>
             <ul class="space-y-2">
               <li>
                 <a
                   href="privacy-policy.html"
-                  class="hover:text-gray-300 transition duration-300"
+                  class="hover:text-gray-300 transition"
                   >Privacy Policy</a
                 >
               </li>
               <li>
                 <a
                   href="terms-of-service.html"
-                  class="hover:text-gray-300 transition duration-300"
+                  class="hover:text-gray-300 transition"
                   >Terms of Service</a
                 >
               </li>
@@ -489,66 +419,12 @@
       </div>
     </footer>
 
+    <!-- Scripts -->
     <script>
       function toggleMobileMenu() {
         const menu = document.getElementById("mobileMenu");
         menu.classList.toggle("show");
       }
-
-      function submitForm(event) {
-        event.preventDefault();
-
-        // Get form data
-        const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData);
-
-        // Here you would typically send the data to your backend
-        // For now, we'll just simulate a successful submission
-        console.log("Form submitted with data:", data);
-
-        // Hide form and show success message
-        document.getElementById("contactForm").style.display = "none";
-        document.getElementById("successMessage").classList.remove("hidden");
-
-        // Scroll to success message
-        document.getElementById("successMessage").scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-
-        // In a real implementation, you would:
-        // 1. Validate the form data
-        // 2. Send it to your backend API
-        // 3. Handle success/error responses
-        // 4. Show appropriate messages to the user
-      }
-
-      // Cookie consent functionality
-      function showCookieConsent() {
-        if (!localStorage.getItem("cookieConsent")) {
-          const banner = document.getElementById("cookieConsent");
-          if (banner) banner.style.display = "block";
-        }
-      }
-
-      function acceptCookies() {
-        localStorage.setItem("cookieConsent", "accepted");
-        document.getElementById("cookieConsent").style.display = "none";
-        gtag("consent", "update", {
-          analytics_storage: "granted",
-        });
-      }
-
-      function declineCookies() {
-        localStorage.setItem("cookieConsent", "declined");
-        document.getElementById("cookieConsent").style.display = "none";
-        gtag("consent", "update", {
-          analytics_storage: "denied",
-        });
-      }
-
-      // Initialize cookie consent on page load
-      window.addEventListener("load", showCookieConsent);
     </script>
 
     <!-- Cookie Consent Banner -->
@@ -583,5 +459,80 @@
         </div>
       </div>
     </div>
+
+    <script>
+      // Cookie consent
+      function showCookieConsent() {
+        if (!localStorage.getItem("cookieConsent")) {
+          const banner = document.getElementById("cookieConsent");
+          if (banner) banner.style.display = "block";
+        }
+      }
+      function acceptCookies() {
+        localStorage.setItem("cookieConsent", "accepted");
+        document.getElementById("cookieConsent").style.display = "none";
+        try {
+          gtag("consent", "update", { analytics_storage: "granted" });
+        } catch (e) {}
+      }
+      function declineCookies() {
+        localStorage.setItem("cookieConsent", "declined");
+        document.getElementById("cookieConsent").style.display = "none";
+        try {
+          gtag("consent", "update", { analytics_storage: "denied" });
+        } catch (e) {}
+      }
+      window.addEventListener("load", showCookieConsent);
+    </script>
+
+    <!-- Email wiring (bot-resistant) -->
+    <script>
+      // Build mail addresses at runtime to resist scraping
+      const host = "habitblock",
+        tld = "com";
+      const addr = (user) => `${user}@${host}.${tld}`;
+
+      // Prefill subject/body (include page URL for context)
+      const subjects = {
+        support: "HabitBlock%20Support%20Request",
+        sales: "HabitBlock%20Sales%20Inquiry",
+        general: "Hello%20HabitBlock",
+        feature: "HabitBlock%20Feature%20Request",
+      };
+      const bodyFromPage = () =>
+        encodeURIComponent(`From: ${location.href}\n\nMessage:\n`);
+
+      function wireEmail(id, user) {
+        const el = document.getElementById(`email-${id}`);
+        if (!el) return;
+        const to = addr(user);
+        const qp = `?subject=${subjects[id] || ""}&body=${bodyFromPage()}`;
+        el.href = `mailto:${to}${qp}`;
+        el.addEventListener("click", () => {
+          try {
+            gtag("event", "contact_click", { method: "email", channel: id });
+          } catch (e) {}
+        });
+      }
+
+      // primary cards
+      wireEmail("support", "support");
+      wireEmail("sales", "sales");
+      wireEmail("general", "hello");
+
+      // Feature Requests CTA
+      function openFeatureEmail() {
+        const to = addr("hello");
+        location.href = `mailto:${to}?subject=${
+          subjects.feature
+        }&body=${bodyFromPage()}`;
+        try {
+          gtag("event", "contact_click", {
+            method: "email",
+            channel: "feature",
+          });
+        } catch (e) {}
+      }
+    </script>
   </body>
 </html>
