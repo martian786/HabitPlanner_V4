@@ -87,11 +87,31 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
         body: JSON.stringify({
           from: { email: env.MAIL_FROM, name: env.MAIL_FROM_NAME || "HabitBlock" },
           to: [{ email }],
-          subject: "Confirm your email for HabitBlock",
-          text: `Hi,\n\nPlease confirm your email:\n${verifyUrl}\n\n— HabitBlock`,
-          html: `<p>Hi,</p><p>Please confirm your email for <strong>HabitBlock</strong>:</p>
-                 <p><a href="${verifyUrl}" style="background:#9d0208;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;display:inline-block">
-                 Confirm email</a></p><p>— HabitBlock</p>`,
+          subject: "Confirm your early access to HabitBlock ✅",
+          text:
+            `Hi${lead.name ? " " + lead.name : ""},\n\n` +
+            `Thanks for signing up for early access to HabitBlock.\n\n` +
+            `Confirm your email to secure your spot and get early feature access:\n` +
+            `${verifyUrl}\n\n` +
+            `Once you confirm, you'll:\n` +
+            `• Be among the first to try HabitBlock\n` +
+            `• Get priority updates and early features\n` +
+            `• Help shape the app with your feedback\n\n` +
+            `— The HabitBlock Team`,
+          html:
+            `<p style="margin:0 0 12px 0;">Hi${lead.name ? " " + lead.name : ""},</p>` +
+            `<p style="margin:0 0 16px 0;">Thanks for signing up for <strong>early access to HabitBlock</strong> — we’re excited to have you on board!</p>` +
+            `<p style="margin:0 0 16px 0;">To secure your spot and get notified when we launch, please confirm your email:</p>` +
+            `<p style="margin:0 0 20px 0;">` +
+              `<a href="${verifyUrl}" style="background:#9d0208;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;display:inline-block;font-weight:600">Confirm my email</a>` +
+            `</p>` +
+            `<p style="margin:0 0 10px 0;"><strong>After you confirm, you’ll:</strong></p>` +
+            `<ul style="margin:0 0 18px 20px; padding:0;">` +
+              `<li>Be among the first to try HabitBlock</li>` +
+              `<li>Get priority updates and early features</li>` +
+              `<li>Help shape the app with your feedback</li>` +
+            `</ul>` +
+            `<p style="margin:12px 0 0 0;">— The HabitBlock Team</p>`,
         }),
       }).catch(() => null);
     }
