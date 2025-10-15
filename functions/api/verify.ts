@@ -1,11 +1,7 @@
 // functions/api/verify.ts
-// The problem is exactly that your endpoint consumes the token on the first GET. 
-// Outlook/Hotmail “Safe Links” does a GET as soon as the email arrives, so by the 
-// time you click it, your code has already set used_at → 400.
-// If you switch to GET → show a page → POST → consume, scanners won’t burn tokens 
-// anymore—and you won’t “fudge” success: you’ll only mark verified on POST.
+// GET -> render only (no DB writes). POST -> consume token (used_at).
+// Expired tokens show a signed "Resend" link so only this page can trigger resend.
 
-///
 export const onRequest = async ({ request, env }: { request: Request; env: Record<string, string> }) => {
   try {
     const url = new URL(request.url);
@@ -15,7 +11,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
       return new Response("Server misconfigured", { status: 500, headers: { "Content-Type": "text/plain" } });
     }
 
-    // Utility helpers
+    // --- helpers ---
     const text = (code: number, msg: string) =>
       new Response(msg, { status: code, headers: { "Content-Type": "text/plain; charset=utf-8" } });
 
@@ -38,7 +34,8 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
 <p><a class="btn" href="${origin}/">Back to HabitBlock</a></p>
 </div></body></html>`;
 
-    const errorHtml = (message: string, showResend = true) => `<!doctype html>
+    // NOTE: now takes an optional resendHref (signed). If absent, no button shown.
+    const errorHtml = (message: string, resendHref?: string) => `<!doctype html>
 <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Verification problem</title>
 <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;padding:40px;color:#111}
@@ -47,7 +44,7 @@ export const onRequest = async ({ request, env }: { request: Request; env: Recor
 </head><body><div class="card">
 <h1>Couldn’t verify</h1>
 <p>${message}</p>
-${showResend ? `<p><a class="btn" href="${origin}/#resend">Resend verification email</a></p>` : ``}
+${resendHref ? `<p><a class="btn" href="${resendHref}">Resend verification email</a></p>` : ``}
 <p><a href="${origin}/">Back to HabitBlock</a></p>
 </div></body></html>`;
 
@@ -82,6 +79,13 @@ addEventListener('DOMContentLoaded', go);
 </noscript>
 </body></html>`;
 
+    // HMAC helper to sign resend links (prevents abuse)
+    async function hmacHex(secret: string, data: string) {
+      const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+      const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(data));
+      return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
     const supabase = async (path: string, init?: RequestInit) =>
       fetch(`${env.SUPABASE_URL}${path}`, {
         ...init,
@@ -94,9 +98,7 @@ addEventListener('DOMContentLoaded', go);
 
     // HEAD/OPTIONS should never consume anything
     if (request.method === "HEAD") return new Response(null, { status: 204 });
-    if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin } });
-    }
+    if (request.method === "OPTIONS") return new Response(null, { status: 204 });
 
     if (request.method === "GET") {
       const token = (new URL(request.url).searchParams.get("token") || "").trim();
@@ -108,11 +110,16 @@ addEventListener('DOMContentLoaded', go);
 
       const rows = await getResp.json();
       const row = rows?.[0];
-      if (!row) return html(200, errorHtml("This verification link is invalid or has expired.", true));
+      if (!row) return html(200, errorHtml("This verification link is invalid or has expired."));
 
       // Expired?
       if (row.expires_at && new Date(row.expires_at).getTime() < Date.now()) {
-        return html(200, errorHtml("This verification link is invalid or has expired.", true));
+        // Build a short-lived, signed resend link bound to this email
+        const secret = env.RESEND_LINK_SECRET || env.SUPABASE_SERVICE_ROLE; // fallback to SR if needed
+        const ts = Date.now().toString();
+        const sig = await hmacHex(secret, `${row.email}|${ts}`);
+        const resendHref = `${origin}/api/resend?email=${encodeURIComponent(row.email)}&ts=${ts}&sig=${sig}`;
+        return html(200, errorHtml("This verification link is invalid or has expired.", resendHref));
       }
 
       // Already used → idempotent display with "already verified" copy
@@ -145,9 +152,13 @@ addEventListener('DOMContentLoaded', go);
       if (!getResp.ok) return text(502, "Lookup failed");
       const rows = await getResp.json();
       const row = rows?.[0];
-      if (!row) return html(200, errorHtml("This verification link is invalid or has expired.", true));
+      if (!row) return html(200, errorHtml("This verification link is invalid or has expired."));
       if (row.expires_at && new Date(row.expires_at).getTime() < Date.now()) {
-        return html(200, errorHtml("This verification link is invalid or has expired.", true));
+        const secret = env.RESEND_LINK_SECRET || env.SUPABASE_SERVICE_ROLE;
+        const ts = Date.now().toString();
+        const sig = await hmacHex(secret, `${row.email}|${ts}`);
+        const resendHref = `${origin}/api/resend?email=${encodeURIComponent(row.email)}&ts=${ts}&sig=${sig}`;
+        return html(200, errorHtml("This verification link is invalid or has expired.", resendHref));
       }
 
       // Consume token atomically: only if currently unused
@@ -172,7 +183,7 @@ addEventListener('DOMContentLoaded', go);
         return html(200, successHtml({ already: true }));
       }
 
-      // (Optional) here you can mark the user/lead as verified in your own table.
+      // (Optional) mark user/lead verified here.
 
       return html(200, successHtml());
     }

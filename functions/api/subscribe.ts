@@ -1,5 +1,8 @@
 // functions/api/subscribe.ts
 //Updated to make form more secure against mail bombing
+// Solid anti - abuse: sanitization, Cloudflare Turnstile, KV - based IP rate - limiting,
+//   role - address blocklist.
+// This endpoint does not handle resend; it’s only for initial signups.
 
 // ---------- helpers ----------
 const sanitizeStr = (v: unknown, max: number) =>
