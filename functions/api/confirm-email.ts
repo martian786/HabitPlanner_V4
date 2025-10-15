@@ -111,7 +111,7 @@ export const onRequest = async ({
           text:
             `Hi${lead.name ? " " + lead.name : ""},\n\n` +
             `Thanks for reserving early access to HabitBlock.\n\n` +
-            `Confirm your email:\n${verifyUrl}\n\n— HabitBlock`,
+            `Please confirm your email:\n${verifyUrl}\n\n— HabitBlock`,
           html:
             `<p>Hi${lead.name ? " " + lead.name : ""},</p>` +
             `<p>Thanks for reserving early access to <strong>HabitBlock</strong>.</p>` +
