@@ -72,7 +72,6 @@
         transform: translateY(-5px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
       }
-      /* legacy .form-input kept for visual consistency on inputs elsewhere */
       .form-input {
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
       }
@@ -485,9 +484,9 @@
       window.addEventListener("load", showCookieConsent);
     </script>
 
-    <!-- Email wiring (bot-resistant) -->
+    <!-- Email wiring (interaction-armed href) -->
     <script>
-      // Build mail addresses at runtime to resist scraping
+      // Build emails at runtime
       const host = "habitblock",
         tld = "com";
       const addr = (user) => `${user}@${host}.${tld}`;
@@ -502,25 +501,51 @@
       const bodyFromPage = () =>
         encodeURIComponent(`From: ${location.href}\n\nMessage:\n`);
 
+      // Arm href only during human interaction; clear after a short window
+      function armHrefTemporarily(el, to) {
+        const href = `mailto:${to}?subject=${
+          subjects[el.dataset.channel] || ""
+        }&body=${bodyFromPage()}`;
+        el.setAttribute("href", href);
+        clearTimeout(el._hrefTimer);
+        el._hrefTimer = setTimeout(() => {
+          el.removeAttribute("href");
+        }, 2000); // 2s window
+      }
+
       function wireEmail(id, user) {
         const el = document.getElementById(`email-${id}`);
         if (!el) return;
+        el.dataset.channel = id;
         const to = addr(user);
-        const qp = `?subject=${subjects[id] || ""}&body=${bodyFromPage()}`;
-        el.href = `mailto:${to}${qp}`;
-        el.addEventListener("click", () => {
+
+        // Provide href only when the user interacts
+        ["mouseenter", "focus", "contextmenu", "touchstart"].forEach((ev) => {
+          el.addEventListener(ev, () => armHrefTemporarily(el, to), {
+            passive: true,
+          });
+        });
+
+        // Navigate on click even if href has been cleared
+        el.addEventListener("click", (e) => {
+          if (!el.hasAttribute("href")) {
+            e.preventDefault();
+            location.href = `mailto:${to}?subject=${
+              subjects[id] || ""
+            }&body=${bodyFromPage()}`;
+          }
           try {
             gtag("event", "contact_click", { method: "email", channel: id });
           } catch (e) {}
         });
       }
 
-      // primary cards
+      // Wire primary cards
       wireEmail("support", "support");
       wireEmail("sales", "sales");
       wireEmail("general", "hello");
 
-      // Feature Requests CTA
+      // Feature Requests CTA (direct)
       function openFeatureEmail() {
         const to = addr("hello");
         location.href = `mailto:${to}?subject=${
