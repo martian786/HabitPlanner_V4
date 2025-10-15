@@ -132,29 +132,39 @@ const ROLE_LOCALPART = new Set([
 ]);
 const isRoleAddress = (local: string) => ROLE_LOCALPART.has(local);
 
+// Minimal KV interface for type safety
+interface KVNamespace {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
+}
+
 // KV-backed sliding window rate limit (skips if KV not bound)
 const rlKey = (ip: string) => `rl:${ip}`;
-// --- Rate limiting config ---
-// These can now be adjusted from Cloudflare Pages environment variables.
-// Defaults remain 10 attempts / 10 minutes if not set.
-const RL_LIMIT = Number(env.RL_LIMIT ?? 10);
-const RL_WINDOW_SEC = Number(env.RL_WINDOW_SEC ?? 600);
-console.log("Rate limit:", RL_LIMIT, "window:", RL_WINDOW_SEC);
 
-
-async function hitRateLimit(env: Record<string, any>, ip: string | null) {
+async function hitRateLimit(env: Record<string, string | KVNamespace>, ip: string | null) {
   try {
     if (!ip) return false;
-    const kv = (env as any).SUBSCRIBE_RL;
+    const kv = env.SUBSCRIBE_RL as KVNamespace | undefined;
     if (!kv || typeof kv.get !== "function") return false; // KV not bound → skip
+
+    // --- Rate limiting config ---
+    // These can now be adjusted from Cloudflare Pages environment variables.
+    // Defaults remain 10 attempts / 10 minutes if not set.
+    const RL_LIMIT = Number(env.RL_LIMIT ?? 10);
+    const RL_WINDOW_SEC = Number(env.RL_WINDOW_SEC ?? 600);
+    console.log("Rate limit config:", RL_LIMIT, "attempts per", RL_WINDOW_SEC, "seconds");
+
     const now = Math.floor(Date.now() / 1000);
     const window = Math.floor(now / RL_WINDOW_SEC);
     const storageKey = `${rlKey(ip)}:${window}`;
     const current = parseInt((await kv.get(storageKey)) || "0", 10);
+    console.log(`Rate limit check for IP ${ip}: ${current}/${RL_LIMIT}`);
+
     if (current >= RL_LIMIT) return true;
     await kv.put(storageKey, String(current + 1), { expirationTtl: RL_WINDOW_SEC + 60 });
     return false;
-  } catch {
+  } catch (err) {
+    console.error("Rate limit error:", err);
     return false; // fail-open (non-breaking)
   }
 }
