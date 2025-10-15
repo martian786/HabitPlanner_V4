@@ -1,4 +1,5 @@
 // functions/api/subscribe.ts
+//Updated to make form more secure against mail bombing
 
 // ---------- helpers ----------
 const sanitizeStr = (v: unknown, max: number) =>
@@ -93,13 +94,82 @@ const CTRY_TO_CCY: Record<string, string> = {
   DK: "DKK",
 };
 
+// ------------------- security additions (non-breaking defaults) -------------------
+
+// Lightweight, safer email regex + length guard (doesn't "overvalidate")
+const isValidEmail = (email: string) => {
+  if (!email || email.length > 320) return false;
+  // local@domain.tld (very permissive but avoids spaces/control chars)
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+};
+
+// Basic disposable list (extend via env.DISPOSABLE_DOMAINS CSV)
+const DEFAULT_DISPOSABLE = new Set([
+  "mailinator.com",
+  "guerrillamail.com",
+  "10minutemail.com",
+  "tempmail.email",
+  "yopmail.com",
+  "trashmail.com",
+  "dispostable.com",
+  "getnada.com",
+]);
+
+const isDisposable = (domain: string, extraCsv?: string) => {
+  const list = new Set(DEFAULT_DISPOSABLE);
+  if (extraCsv) {
+    for (const d of extraCsv.split(",").map(s => s.trim().toLowerCase()).filter(Boolean)) {
+      list.add(d);
+    }
+  }
+  return list.has(domain);
+};
+
+// Optional role account block (only active if env.BLOCK_ROLE_EMAILS==="1")
+const ROLE_LOCALPART = new Set([
+  "admin","administrator","root","webmaster","postmaster","abuse","support",
+  "info","sales","hello","contact","security","noc","help","billing"
+]);
+const isRoleAddress = (local: string) => ROLE_LOCALPART.has(local);
+
+// KV-backed sliding window rate limit (skips if KV not bound)
+const rlKey = (ip: string) => `rl:${ip}`;
+const RL_LIMIT = 10;         // 10 attempts
+const RL_WINDOW_SEC = 600;   // per 10 minutes
+
+async function hitRateLimit(env: Record<string, any>, ip: string | null) {
+  try {
+    if (!ip) return false;
+    const kv = (env as any).SUBSCRIBE_RL;
+    if (!kv || typeof kv.get !== "function") return false; // KV not bound → skip
+    const now = Math.floor(Date.now() / 1000);
+    const window = Math.floor(now / RL_WINDOW_SEC);
+    const storageKey = `${rlKey(ip)}:${window}`;
+    const current = parseInt((await kv.get(storageKey)) || "0", 10);
+    if (current >= RL_LIMIT) return true;
+    await kv.put(storageKey, String(current + 1), { expirationTtl: RL_WINDOW_SEC + 60 });
+    return false;
+  } catch {
+    return false; // fail-open (non-breaking)
+  }
+}
+
+// Optional form-duration guard if front-end sends hidden "ts" (ms epoch)
+const tooFastOrStale = (clientTsMs: number | null, now = Date.now()) => {
+  if (!clientTsMs || isNaN(clientTsMs)) return false;
+  const delta = now - clientTsMs;
+  if (delta < 800) return true;                     // < 0.8s (likely bot)
+  if (delta > 30 * 60 * 1000) return true;          // > 30 min (stale)
+  return false;
+};
+
 // ---------- handler ----------
 export const onRequest = async ({
   request,
   env,
 }: {
   request: Request;
-  env: Record<string, string>;
+  env: Record<string, string | any>;
 }) => {
   const CORS = {
     "Access-Control-Allow-Origin": "*",
@@ -131,25 +201,58 @@ export const onRequest = async ({
       return new Response("ok", { status: 200, headers: CORS });
     }
 
+    // Optional form duration check (non-breaking: only enforces if "ts" present)
+    const tsRaw = String(form.get("ts") ?? "") || "";
+    const tsNum = tsRaw ? Number(tsRaw) : null;
+    if (tooFastOrStale(tsNum)) {
+      // Don't reveal signal to bots; 200 "ok" keeps UX identical
+      return new Response("ok", { status: 200, headers: CORS });
+    }
+
+    // Extract IP early for RL and logging
+    const ip = sanitizeStr(request.headers.get("CF-Connecting-IP"), 64);
+
+    // Per-IP rate limiting (KV-backed; silently disabled if KV not present)
+    if (await hitRateLimit(env, ip || null)) {
+      // Keep the body generic; 429 is standard and non-breaking for clients
+      return new Response("Too many requests", { status: 429, headers: CORS });
+    }
+
     // Email validation
     const email = String(form.get("email") || "").trim().toLowerCase();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    if (!isValidEmail(email)) {
       return new Response("Invalid email", { status: 400, headers: CORS });
     }
 
-    // Turnstile — make dev/preview forgiving
+    // Disposable / role email checks (role is opt-in)
+    const [localPart, domainPart = ""] = email.split("@");
+    const domain = domainPart.toLowerCase();
+    if (isDisposable(domain, String(env.DISPOSABLE_DOMAINS || ""))) {
+      // Soft deny with 200 to avoid becoming an oracle for bots
+      return new Response("ok", { status: 200, headers: CORS });
+    }
+    if (String(env.BLOCK_ROLE_EMAILS || "") === "1" && isRoleAddress(localPart)) {
+      // Optional strict block
+      return new Response("Unsupported email", { status: 400, headers: CORS });
+    }
+
+    // Turnstile — dev/preview bypass is explicitly controlled
     let turnstilePassed = true;
     try {
       const host = new URL(request.url).hostname;
-      const isPreview = host.endsWith(".pages.dev");
-      if (!isPreview) {
+      const isPreviewHost = host.endsWith(".pages.dev");
+      const allowPreviewBypass = String(env.TURNSTILE_BYPASS_PREVIEW || "") === "1";
+      const mustVerify = !(isPreviewHost && allowPreviewBypass);
+
+      if (mustVerify) {
         const token = String(form.get("cf-turnstile-response") || "");
+        if (!token) throw new Error("missing token");
         const verify = await fetch(
           "https://challenges.cloudflare.com/turnstile/v0/siteverify",
           {
             method: "POST",
             body: new URLSearchParams({
-              secret: env.TURNSTILE_SECRET || "",
+              secret: String(env.TURNSTILE_SECRET || ""),
               response: token,
               remoteip: request.headers.get("CF-Connecting-IP") || "",
             }),
@@ -189,7 +292,6 @@ export const onRequest = async ({
     let currency_guess = sanitizeStr(form.get("currency_guess"), 8);
 
     const user_agent = sanitizeStr(request.headers.get("user-agent"), 300);
-    const ip = sanitizeStr(request.headers.get("CF-Connecting-IP"), 64);
 
     // -------- server-side geo enrichment (Cloudflare) --------
     const cf: any = (request as any).cf || {};
@@ -261,8 +363,8 @@ export const onRequest = async ({
           {
             method: "POST",
             headers: {
-              apikey: env.SUPABASE_SERVICE_ROLE,
-              Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE}`,
+              apikey: String(env.SUPABASE_SERVICE_ROLE),
+              Authorization: `Bearer ${String(env.SUPABASE_SERVICE_ROLE)}`,
               "Content-Type": "application/json",
               Prefer: "resolution=merge-duplicates,return=minimal",
             },
