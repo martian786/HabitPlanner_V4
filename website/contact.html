@@ -174,8 +174,11 @@
             <p class="text-penn-red font-semibold mb-2">
               <a
                 id="email-support"
-                rel="nofollow noopener"
                 class="underline"
+                rel="nofollow noopener noreferrer"
+                role="link"
+                tabindex="0"
+                aria-label="Email HabitBlock Support"
                 data-userb64="c3VwcG9ydA=="
                 data-hostb64="aGFiaXRibG9jaw=="
                 data-tldb64="Y29t"
@@ -199,8 +202,11 @@
             <p class="text-penn-red font-semibold mb-2">
               <a
                 id="email-sales"
-                rel="nofollow noopener"
                 class="underline"
+                rel="nofollow noopener noreferrer"
+                role="link"
+                tabindex="0"
+                aria-label="Email HabitBlock Sales"
                 data-userb64="c2FsZXM="
                 data-hostb64="aGFiaXRibG9jaw=="
                 data-tldb64="Y29t"
@@ -224,8 +230,11 @@
             <p class="text-penn-red font-semibold mb-2">
               <a
                 id="email-general"
-                rel="nofollow noopener"
                 class="underline"
+                rel="nofollow noopener noreferrer"
+                role="link"
+                tabindex="0"
+                aria-label="Email HabitBlock"
                 data-userb64="aGVsbG8="
                 data-hostb64="aGFiaXRibG9jaw=="
                 data-tldb64="Y29t"
@@ -499,7 +508,7 @@
       window.addEventListener("load", showCookieConsent);
     </script>
 
-    <!-- Email wiring (Base64 + interaction-armed href) -->
+    <!-- Email wiring (Base64 + interaction-armed href + keyboard a11y) -->
     <script>
       // Safe Base64 decoder
       const b64 = (s) => {
@@ -533,11 +542,19 @@
         const el = document.getElementById(`email-${id}`);
         if (!el) return;
 
-        // Give href during likely human interactions
+        // Expose href briefly on likely human interactions
         ["mouseenter", "focus", "contextmenu", "touchstart"].forEach((ev) => {
           el.addEventListener(ev, () => armHrefTemporarily(el), {
             passive: true,
           });
+        });
+
+        // Keyboard activation (Enter/Space)
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            el.click();
+          }
         });
 
         // Click navigates even if href has been cleared
