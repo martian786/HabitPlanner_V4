@@ -165,7 +165,9 @@ async function hitRateLimit(env: Record<string, string | KVNamespace>, ip: strin
     return false;
   } catch (err) {
     console.error("Rate limit error:", err);
-    return false; // fail-open (non-breaking)
+    // NEW: optional strict mode — throttle on KV error when STRICT_RL=1
+    const STRICT_RL = String((env as any).STRICT_RL || "") === "1";
+    return STRICT_RL ? true : false;
   }
 }
 
@@ -205,7 +207,9 @@ async function hitRateLimitEmail(env: Record<string, any>, email: string) {
     return false;
   } catch (err) {
     console.error("Email RL error:", err);
-    return false; // fail-open (non-breaking)
+    // NEW: optional strict mode — throttle on KV error when STRICT_RL=1
+    const STRICT_RL = String(env.STRICT_RL || "") === "1";
+    return STRICT_RL ? true : false;
   }
 }
 
@@ -234,6 +238,17 @@ function buildCors(env: Record<string, any>, req: Request) {
     "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
   } as const;
+}
+
+// -------- NEW: enforce Origin/Referer only when ALLOWED_ORIGINS is set ---------
+function isTrustedPageRequest(req: Request, allowedCsv: string) {
+  if (!allowedCsv) return true; // non-breaking: no allowlist set → allow
+  const allowed = new Set(allowedCsv.split(",").map(s => s.trim()).filter(Boolean));
+  const origin  = req.headers.get("Origin");
+  const referer = req.headers.get("Referer");
+  const okO = !origin  || allowed.has(origin);
+  const okR = !referer || allowed.has(new URL(referer).origin);
+  return okO && okR;
 }
 
 // Optional form-duration guard if front-end sends hidden "ts" (ms epoch)
@@ -272,6 +287,17 @@ export const onRequest = async ({
       return new Response("Method not allowed", { status: 405, headers: CORS });
     }
 
+    // NEW: Reject cross-site submissions quietly when ALLOWED_ORIGINS is set
+    if (!isTrustedPageRequest(request, String(env.ALLOWED_ORIGINS || ""))) {
+      return new Response("ok", { status: 200, headers: CORS });
+    }
+
+    // NEW: Content-Type guard (quietly ignore non-form payloads)
+    const ct = request.headers.get("content-type") || "";
+    if (!/multipart\/form-data|application\/x-www-form-urlencoded/i.test(ct)) {
+      return new Response("ok", { status: 200, headers: CORS });
+    }
+
     // Parse form safely
     const form = await request.formData();
 
@@ -303,7 +329,7 @@ export const onRequest = async ({
       return new Response("Invalid email", { status: 400, headers: CORS });
     }
 
-    // -------- NEW: per-email throttling (works alongside IP RL) --------
+    // -------- per-email throttling (works alongside IP RL) --------
     if (await hitRateLimitEmail(env, email)) {
       // Keep response simple (same pattern as above)
       return new Response("Too many requests", { status: 429, headers: CORS });
