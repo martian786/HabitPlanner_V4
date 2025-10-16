@@ -270,7 +270,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -284,7 +284,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -298,7 +298,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -349,7 +349,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -363,7 +363,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -405,7 +405,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -419,7 +419,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -474,7 +474,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -850,7 +850,13 @@
           >
             Reserve My Spot
           </button>
-          <p id="ea-status" class="text-sm text-gray-700"></p>
+          <!-- Accessible status text -->
+          <p
+            id="ea-status"
+            class="text-sm text-gray-700"
+            role="status"
+            aria-live="polite"
+          ></p>
         </div>
         <button
           type="button"
@@ -865,6 +871,40 @@
           No payment required until launch. 7-day free trial when we go live.
         </p>
       </form>
+
+      <!-- SUCCESS PANEL (hidden by default) -->
+      <div id="ea-success" class="space-y-4 hidden">
+        <h3 class="text-2xl font-bold outline-none" tabindex="-1">
+          You're on the list 🎉
+        </h3>
+        <p class="text-gray-700">
+          We’ve sent a verification link to
+          <span id="ea-success-email" class="font-medium"></span>. Please check
+          your inbox (and spam) to confirm your email.
+        </p>
+        <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
+          <li>Didn’t get it after a minute? Click “Resend”.</li>
+          <li>Wrong email? Choose “Edit email”.</li>
+        </ul>
+        <div class="flex gap-3 pt-2">
+          <button
+            id="ea-resend"
+            class="bg-gray-900 text-white font-bold py-2 px-4 rounded-lg"
+          >
+            Resend
+          </button>
+          <button
+            id="ea-edit"
+            class="border border-gray-300 py-2 px-4 rounded-lg"
+          >
+            Edit email
+          </button>
+          <button id="ea-done" class="ml-auto py-2 px-4 rounded-lg border">
+            Done
+          </button>
+        </div>
+      </div>
+      <!-- /SUCCESS PANEL -->
     </div>
 
     <!-- Turnstile script -->
@@ -943,6 +983,13 @@
       const statusEl = document.getElementById("ea-status");
       const planInput = document.getElementById("ea-plan");
 
+      // NEW: success panel refs
+      const successEl = document.getElementById("ea-success");
+      const successEmailSpan = document.getElementById("ea-success-email");
+      const successResendBtn = document.getElementById("ea-resend");
+      const successEditBtn = document.getElementById("ea-edit");
+      const successDoneBtn = document.getElementById("ea-done");
+
       // --- NEW: light currency map + region filler ---
       const CTRY_TO_CCY = {
         US: "USD",
@@ -1001,7 +1048,19 @@
       }
       // --- /NEW ---
 
+      function showFormHideSuccess() {
+        successEl?.classList.add("hidden");
+        form?.classList.remove("hidden");
+      }
+      function showSuccessHideForm() {
+        form?.classList.add("hidden");
+        successEl?.classList.remove("hidden");
+      }
+
       function openModal(plan) {
+        // Always start on form view
+        showFormHideSuccess();
+
         planInput.value = plan;
         document.getElementById(
           "ea-title"
@@ -1049,7 +1108,9 @@
       function closeModal() {
         backdrop.classList.add("hidden");
         modal.classList.add("hidden");
+        // Reset to default state next time
         statusEl.textContent = "";
+        showFormHideSuccess();
       }
 
       document.querySelectorAll("[data-open-modal]").forEach((btn) => {
@@ -1087,13 +1148,23 @@
             body: new FormData(form),
           });
           if (resp.ok) {
-            statusEl.textContent =
-              "Verification link sent — check your inbox (and spam).";
+            // Clear small inline status and switch to success view
+            statusEl.textContent = "";
+            // Echo the user's email inside success panel
+            const email = form.elements["email"]?.value || "";
+            if (successEmailSpan) successEmailSpan.textContent = email;
+
+            showSuccessHideForm();
+
+            // Focus success heading for a11y
+            successEl?.querySelector("h3")?.focus();
+
             gtag("event", "early_access_submit_success", {
               plan: planInput.value,
             });
+
+            // Reset form + re-stamp freshness for a future submit
             form.reset();
-            // Re-stamp ts so any subsequent submit is fresh
             form.elements["ts"].value = String(Date.now());
           } else {
             const t = await resp.text();
@@ -1110,6 +1181,37 @@
           submitBtn?.removeAttribute("disabled");
           submitBtn?.classList.remove("opacity-70", "cursor-not-allowed");
         }
+      });
+
+      // Success panel buttons
+      successResendBtn?.addEventListener("click", async () => {
+        try {
+          const fd = new FormData();
+          fd.append("email", successEmailSpan?.textContent || "");
+          fd.append("plan", planInput.value || "");
+          const r = await fetch("/api/subscribe/resend", {
+            method: "POST",
+            body: fd,
+          });
+          alert(
+            r.ok
+              ? "Resent! Check your inbox again."
+              : "Could not resend. Try again shortly."
+          );
+        } catch {
+          alert("Network error. Try again.");
+        }
+      });
+
+      successEditBtn?.addEventListener("click", () => {
+        // Return to the form, pre-focus email
+        showFormHideSuccess();
+        form.elements["email"]?.focus();
+      });
+
+      successDoneBtn?.addEventListener("click", () => {
+        // Close modal
+        closeModal();
       });
 
       // Chips wiring
