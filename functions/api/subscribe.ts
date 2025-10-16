@@ -155,14 +155,12 @@ async function hitRateLimit(env: Record<string, string | KVNamespace>, ip: strin
     // Defaults remain 10 attempts / 10 minutes if not set.
     const RL_LIMIT = Number(env.RL_LIMIT ?? 10);
     const RL_WINDOW_SEC = Number(env.RL_WINDOW_SEC ?? 600);
-    console.log("Rate limit config:", RL_LIMIT, "attempts per", RL_WINDOW_SEC, "seconds");
-
+  
     const now = Math.floor(Date.now() / 1000);
     const window = Math.floor(now / RL_WINDOW_SEC);
     const storageKey = `${rlKey(ip)}:${window}`;
     const current = parseInt((await kv.get(storageKey)) || "0", 10);
-    console.log(`Rate limit check for IP ${ip}: ${current}/${RL_LIMIT}`);
-
+   
     if (current >= RL_LIMIT) return true;
     await kv.put(storageKey, String(current + 1), { expirationTtl: RL_WINDOW_SEC + 60 });
     return false;
