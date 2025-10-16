@@ -104,8 +104,8 @@
       /* Chip styles (no Tailwind @apply — works with CDN) */
       .hb-section-title,
       .hb-field-title {
-        font-weight: 500; /* bold */
-        font-size: 1rem; /* ~ text-lg */
+        font-weight: 500;
+        font-size: 1rem;
         line-height: 1.5rem;
       }
 
@@ -391,7 +391,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -872,7 +872,7 @@
         </p>
       </form>
 
-      <!-- SUCCESS PANEL (hidden by default) -->
+      <!-- SUCCESS PANEL (simplified, with centered Close) -->
       <div id="ea-success" class="space-y-4 hidden">
         <h3 class="text-2xl font-bold outline-none" tabindex="-1">
           You're on the list 🎉
@@ -882,10 +882,9 @@
           <span id="ea-success-email" class="font-medium"></span>. Please check
           your inbox (and spam) to confirm your email.
         </p>
-
-        <div class="flex gap-3 pt-2">
-          <button id="ea-done" class="ml-auto py-2 px-4 rounded-lg border">
-            Done
+        <div class="pt-2 flex justify-center">
+          <button id="ea-close-center" class="py-2 px-6 rounded-lg border">
+            Close
           </button>
         </div>
       </div>
@@ -971,9 +970,7 @@
       // NEW: success panel refs
       const successEl = document.getElementById("ea-success");
       const successEmailSpan = document.getElementById("ea-success-email");
-      const successResendBtn = document.getElementById("ea-resend");
-      const successEditBtn = document.getElementById("ea-edit");
-      const successDoneBtn = document.getElementById("ea-done");
+      const successCloseCenterBtn = document.getElementById("ea-close-center");
 
       // --- NEW: light currency map + region filler ---
       const CTRY_TO_CCY = {
@@ -1168,34 +1165,8 @@
         }
       });
 
-      // Success panel buttons
-      successResendBtn?.addEventListener("click", async () => {
-        try {
-          const fd = new FormData();
-          fd.append("email", successEmailSpan?.textContent || "");
-          fd.append("plan", planInput.value || "");
-          const r = await fetch("/api/subscribe/resend", {
-            method: "POST",
-            body: fd,
-          });
-          alert(
-            r.ok
-              ? "Resent! Check your inbox again."
-              : "Could not resend. Try again shortly."
-          );
-        } catch {
-          alert("Network error. Try again.");
-        }
-      });
-
-      successEditBtn?.addEventListener("click", () => {
-        // Return to the form, pre-focus email
-        showFormHideSuccess();
-        form.elements["email"]?.focus();
-      });
-
-      successDoneBtn?.addEventListener("click", () => {
-        // Close modal
+      // Center Close button (success)
+      successCloseCenterBtn?.addEventListener("click", () => {
         closeModal();
       });
 
