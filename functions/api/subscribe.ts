@@ -1,7 +1,7 @@
 // functions/api/subscribe.ts
-//Updated to make form more secure against mail bombing
-// Solid anti - abuse: sanitization, Cloudflare Turnstile, KV - based IP rate - limiting,
-//   role - address blocklist.
+// Updated to make form more secure against mail bombing
+// Solid anti-abuse: sanitization, Cloudflare Turnstile, KV-based IP rate-limiting,
+// role-address blocklist.
 // This endpoint does not handle resend; it’s only for initial signups.
 
 // ---------- helpers ----------
@@ -151,16 +151,15 @@ async function hitRateLimit(env: Record<string, string | KVNamespace>, ip: strin
     if (!kv || typeof kv.get !== "function") return false; // KV not bound → skip
 
     // --- Rate limiting config ---
-    // These can now be adjusted from Cloudflare Pages environment variables.
     // Defaults remain 10 attempts / 10 minutes if not set.
     const RL_LIMIT = Number(env.RL_LIMIT ?? 10);
     const RL_WINDOW_SEC = Number(env.RL_WINDOW_SEC ?? 600);
-  
+
     const now = Math.floor(Date.now() / 1000);
     const window = Math.floor(now / RL_WINDOW_SEC);
     const storageKey = `${rlKey(ip)}:${window}`;
     const current = parseInt((await kv.get(storageKey)) || "0", 10);
-   
+
     if (current >= RL_LIMIT) return true;
     await kv.put(storageKey, String(current + 1), { expirationTtl: RL_WINDOW_SEC + 60 });
     return false;
@@ -168,6 +167,73 @@ async function hitRateLimit(env: Record<string, string | KVNamespace>, ip: strin
     console.error("Rate limit error:", err);
     return false; // fail-open (non-breaking)
   }
+}
+
+// -------- NEW: email-hash + per-email throttling (non-breaking defaults) --------
+async function hmacSha256Hex(secret: string, data: string) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(data));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+const rlEmailKey = (eh: string) => `rle:${eh}`;
+
+async function hitRateLimitEmail(env: Record<string, any>, email: string) {
+  try {
+    const kv = env.SUBSCRIBE_RL as KVNamespace | undefined;
+    if (!kv || typeof kv.get !== "function") return false; // KV not bound → skip
+
+    const limit = Number(env.RL_EMAIL_LIMIT ?? 3);            // default 3 per 6h
+    const windowSec = Number(env.RL_EMAIL_WINDOW_SEC ?? 21600);
+    const now = Math.floor(Date.now() / 1000);
+    const win = Math.floor(now / windowSec);
+
+    // Hash email so we don't store PII in KV (fallback to plain if secret missing)
+    const secret = String(env.RL_HASH_SECRET || "");
+    const emailHash = secret ? await hmacSha256Hex(secret, email) : email;
+
+    const key = `${rlEmailKey(emailHash)}:${win}`;
+    const current = parseInt((await kv.get(key)) || "0", 10);
+    if (current >= limit) return true;
+    await kv.put(key, String(current + 1), { expirationTtl: windowSec + 60 });
+    return false;
+  } catch (err) {
+    console.error("Email RL error:", err);
+    return false; // fail-open (non-breaking)
+  }
+}
+
+// -------- NEW: non-breaking CORS helper (defaults to "*", allowlist via env) ----
+function buildCors(env: Record<string, any>, req: Request) {
+  // By default keep "*" to avoid breaking existing clients
+  const allowlistCsv = String(env.ALLOWED_ORIGINS || "").trim();
+  const originHdr = req.headers.get("Origin");
+
+  if (!allowlistCsv) {
+    return {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    } as const;
+  }
+
+  const allowed = new Set(
+    allowlistCsv.split(",").map(s => s.trim()).filter(Boolean)
+  );
+  const allowOrigin = originHdr && allowed.has(originHdr) ? originHdr : Array.from(allowed)[0] || "*";
+
+  return {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Vary": "Origin",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  } as const;
 }
 
 // Optional form-duration guard if front-end sends hidden "ts" (ms epoch)
@@ -187,11 +253,8 @@ export const onRequest = async ({
   request: Request;
   env: Record<string, string | any>;
 }) => {
-  const CORS = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  } as const;
+  // NEW: CORS built from env (keeps "*" unless ALLOWED_ORIGINS is set)
+  const CORS = buildCors(env, request);
 
   try {
     if (request.method === "OPTIONS") {
@@ -238,6 +301,12 @@ export const onRequest = async ({
     const email = String(form.get("email") || "").trim().toLowerCase();
     if (!isValidEmail(email)) {
       return new Response("Invalid email", { status: 400, headers: CORS });
+    }
+
+    // -------- NEW: per-email throttling (works alongside IP RL) --------
+    if (await hitRateLimitEmail(env, email)) {
+      // Keep response simple (same pattern as above)
+      return new Response("Too many requests", { status: 429, headers: CORS });
     }
 
     // Disposable / role email checks (role is opt-in)
