@@ -226,7 +226,8 @@
                 >
               </div>
               <div class="mb-6">
-                <span class="text-5xl font-bold">£99</span>
+                <!-- ADDED id so script can update this value -->
+                <span id="starterPrice" class="text-5xl font-bold">£99</span>
                 <span class="text-gray-500">/year</span>
               </div>
               <p class="text-gray-600">
@@ -256,7 +257,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -391,7 +392,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -405,7 +406,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -419,7 +420,7 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0z"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>
@@ -1195,6 +1196,139 @@
             });
           } catch {}
         });
+      })();
+    </script>
+
+    <!-- Auto currency by IP region (EUR in Europe, GBP in UK, USD elsewhere) -->
+    <script>
+      (function autoCurrencyByIP() {
+        // Curated amounts (no FX): keep nice endings per currency
+        const PRICE_MATRIX = {
+          GBP: { plus: 149, pro: 99 },
+          EUR: { plus: 149, pro: 113 },
+          USD: { plus: 199, pro: 129 },
+        };
+
+        const plusEl = document.getElementById("proPrice");
+        const proEl = document.getElementById("starterPrice");
+        const fineEl = document.getElementById("hbCurrencyFineprint"); // NEW
+
+        function fmt(n, ccy) {
+          if (ccy === "USD") {
+            // Force pure "$" (never "US$") via en-US + narrowSymbol
+            return new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+              currencyDisplay: "narrowSymbol",
+            }).format(n);
+          }
+          // GBP/EUR: keep user locale; narrowSymbol avoids "EUR 149,00" styles
+          return new Intl.NumberFormat(undefined, {
+            style: "currency",
+            currency: ccy,
+            currencyDisplay: "narrowSymbol",
+          }).format(n);
+        }
+
+        function apply(ccy) {
+          if (plusEl) plusEl.textContent = fmt(PRICE_MATRIX[ccy].plus, ccy);
+          if (proEl) proEl.textContent = fmt(PRICE_MATRIX[ccy].pro, ccy);
+
+          // Fine print only for USD
+          if (fineEl) {
+            if (ccy === "USD") fineEl.classList.remove("hidden");
+            else fineEl.classList.add("hidden");
+          }
+        }
+
+        function pickFromLocaleFallback() {
+          try {
+            const loc =
+              navigator.language ||
+              Intl.DateTimeFormat().resolvedOptions().locale ||
+              "";
+            const cc = (/-([A-Za-z]{2})$/.exec(loc || "") || [
+              ,
+              "",
+            ])[1].toUpperCase();
+            if (cc === "GB") return "GBP";
+            const EU_CC = new Set([
+              "AL",
+              "AD",
+              "AT",
+              "BY",
+              "BE",
+              "BA",
+              "BG",
+              "HR",
+              "CY",
+              "CZ",
+              "DK",
+              "EE",
+              "FO",
+              "FI",
+              "FR",
+              "DE",
+              "GI",
+              "GR",
+              "GG",
+              "HU",
+              "IS",
+              "IE",
+              "IT",
+              "XK",
+              "LV",
+              "LI",
+              "LT",
+              "LU",
+              "MT",
+              "MD",
+              "MC",
+              "ME",
+              "NL",
+              "MK",
+              "NO",
+              "PL",
+              "PT",
+              "RO",
+              "RU",
+              "SM",
+              "RS",
+              "SK",
+              "SI",
+              "ES",
+              "SE",
+              "CH",
+              "TR",
+              "UA",
+              "VA",
+            ]);
+            if (EU_CC.has(cc)) return "EUR";
+          } catch {}
+          return "USD";
+        }
+
+        // Try IP-based lookup first (continent + country), then fallback
+        const controller = new AbortController();
+        const to = setTimeout(() => controller.abort(), 1500); // fail fast
+
+        fetch("https://ipapi.co/json/", { signal: controller.signal })
+          .then((r) => (r.ok ? r.json() : Promise.reject()))
+          .then((data) => {
+            clearTimeout(to);
+            const country =
+              (data && data.country) || (data && data.country_code) || "";
+            const continent = (data && data.continent_code) || "";
+            let ccy = "USD";
+            if (country === "GB") ccy = "GBP";
+            else if (continent === "EU") ccy = "EUR";
+            else ccy = "USD";
+            apply(ccy);
+          })
+          .catch(() => {
+            clearTimeout(to);
+            apply(pickFromLocaleFallback());
+          });
       })();
     </script>
 
