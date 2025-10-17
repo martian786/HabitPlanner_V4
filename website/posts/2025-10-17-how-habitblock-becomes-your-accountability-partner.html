@@ -1,21 +1,9 @@
-// HTML template generation
-import { esc } from "./utils.js";
-
-export function postHtml({
-  title,
-  kicker,
-  datePretty,
-  bodyHtml,
-  coverUrl,
-  readMins,
-}) {
-  const minLabel = readMins === 1 ? "min" : "mins";
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${esc(title)} - HabitBlock</title>
+  <title>How Habitblock Becomes Your Accountability Partner - HabitBlock</title>
 
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y24D5E5VZ7"></script>
@@ -99,21 +87,30 @@ export function postHtml({
   <main class="container">
     <article class="hb-article">
       <header>
-        <p class="kicker">${esc(kicker || "Article")}</p>
-        <h1>${esc(title)}</h1>
-        <p class="meta">${esc(datePretty)} • <span class="readtime">
+        <p class="kicker">Productivity &amp; Focus</p>
+        <h1>How Habitblock Becomes Your Accountability Partner</h1>
+        <p class="meta">17 Oct 2025 • <span class="readtime">
           <svg viewBox="0 0 24 24" aria-hidden="true" style="display:inline;width:14px;height:14px;vertical-align:middle;"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v6l4 2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-          ${readMins} ${minLabel} read
+          1 min read
         </span></p>
       </header>
 
-      ${
-        coverUrl
-          ? `<figure class="hero fullbleed"><img class="cover" src="${coverUrl}" alt=""></figure>`
-          : ""
-      }
+      
 
-      ${bodyHtml}
+      <p>When people talk about accountability partners, they often imagine a friend or mentor checking in every week. But accountability doesn’t always need another person — it needs <strong>clarity, feedback, and reflection</strong>. That’s where Habitblock steps in.</p>
+<p>Your analytics dashboard is more than just a chart — it’s your honest, data-driven partner. It doesn’t guilt-trip you or cheer blindly; it simply shows you what’s real.</p>
+<p>Take a look at your <strong>Planned vs Actual</strong> chart. You can see exactly where your time went. Maybe you planned five hours for Research but ended up with zero, while Health hit 100%. That snapshot doesn’t judge — it just tells the truth. And that truth is powerful, because it turns vague feelings like “I didn’t do enough” into <em>evidence</em> you can learn from.</p>
+<p>Each bar, each percentage, is a conversation. The analytics ask you gentle but important questions:</p>
+<ul>
+<li>What helped you stay consistent in Health?</li>
+<li>Why did Research fall off?</li>
+<li>What small tweak would make next week easier?</li>
+</ul>
+<p>This kind of reflection is what most accountability partners aim for — awareness without shame.</p>
+<p>The <strong>Daily Trend</strong> chart keeps you anchored too. Watching your actual hours dip or rise across the week is like seeing your motivation in motion. It’s feedback you can act on immediately, instead of waiting for things to pile up.</p>
+<p>So instead of chasing someone else to hold you accountable, open your Habitblock dashboard. Let it remind you where you’re winning, reflect what’s lagging, and reinforce your progress one data point at a time.</p>
+<p>That’s what accountability looks like when it’s powered by insight — and built for growth.</p>
+
 
       <hr style="margin: 2rem 0; border: none; border-top: 1px solid #e5e7eb;">
 
@@ -217,5 +214,4 @@ export function postHtml({
   </div>
 
 </body>
-</html>`;
-}
+</html>

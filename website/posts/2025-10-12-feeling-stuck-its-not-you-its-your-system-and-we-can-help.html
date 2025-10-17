@@ -167,9 +167,9 @@
     async function hbFetchPartial(url) {
       if (hbPartialCache.has(url)) return hbPartialCache.get(url);
       const res = await fetch(url, { credentials: "same-origin" });
-      if (!res.ok) {
-        throw new Error(`Failed to load partial ${url}: ${res.status}`);
-      }
+    if (!res.ok) {
+      throw new Error("Failed to load partial " + url + ": " + res.status);
+    }
       const text = await res.text();
       hbPartialCache.set(url, text);
       return text;

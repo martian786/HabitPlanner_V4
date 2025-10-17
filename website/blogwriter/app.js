@@ -43,6 +43,11 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
 
   const excerptCounter = document.getElementById("excerptCounter");
   const EXCERPT_MAX = 200;
+  const PARTIAL_RESOURCES = [
+    { selector: "#hb-shared-header", url: "../partials/header.html", name: "header.html" },
+    { selector: "#hb-shared-footer", url: "../partials/footer.html", name: "footer.html" },
+  ];
+  const partialCache = new Map();
 
   // edit-state fields
   const originalUrlEl = document.getElementById("originalUrl");
@@ -60,7 +65,8 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
   // FS handles
   let blogDir = null,
     postsDir = null,
-    coversDir = null;
+    coversDir = null,
+    partialsDir = null;
 
   // state
   let hasNewUpload = false;
@@ -95,6 +101,64 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
   const markDirty = () => {
     dirty = true;
   };
+
+  async function fetchPartial(url) {
+    if (partialCache.has(url)) return partialCache.get(url);
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+      const text = await res.text();
+      partialCache.set(url, text);
+      return text;
+    } catch (err) {
+      console.error(err);
+      partialCache.set(url, "");
+      return "";
+    }
+  }
+
+  async function hydratePreviewPartials(root) {
+    if (!root) return;
+    await Promise.all(
+      PARTIAL_RESOURCES.map(async ({ selector, url }) => {
+        const host = root.querySelector(selector);
+        if (!host) return;
+        host.innerHTML = await fetchPartial(url);
+      })
+    );
+  }
+
+  async function ensurePartialFiles() {
+    if (!blogDir) return true;
+    if (!partialsDir) {
+      try {
+        partialsDir = await blogDir.getDirectoryHandle("partials", {
+          create: true,
+        });
+      } catch (err) {
+        console.error("Could not access /partials folder in blog directory", err);
+        status.innerHTML =
+          '<span class="err">Could not create /partials folder inside the blog directory. Header/footer will not update.</span>';
+        return false;
+      }
+    }
+    try {
+      await Promise.all(
+        PARTIAL_RESOURCES.map(async ({ name, url }) => {
+          const content = await fetchPartial(url);
+          if (!content) return;
+          const fh = await partialsDir.getFileHandle(name, { create: true });
+          await writeTextFile(fh, content);
+        })
+      );
+    } catch (err) {
+      console.error("Failed to write partials into blog directory", err);
+      status.innerHTML =
+        '<span class="err">Failed to update shared header/footer in the blog folder.</span>';
+      return false;
+    }
+    return true;
+  }
 
   function hasTitleAndContent() {
     return !!(titleEl.value.trim() && (contentEl.value || "").trim());
@@ -232,6 +296,7 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
       readMins,
     });
     preview.innerHTML = html;
+    hydratePreviewPartials(preview);
 
     const slug = title ? slugify(title) : "untitled";
     const ext =
@@ -302,6 +367,7 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
         create: true,
       });
       coversDir = await assets.getDirectoryHandle("covers", { create: true });
+      partialsDir = null;
       setUIState({
         connected: true,
         busy: false,
@@ -355,6 +421,16 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
       busy: true,
       message: '<span class="muted">Publishing…</span>',
     });
+    const partialsReady = await ensurePartialFiles();
+    if (!partialsReady) {
+      setUIState({
+        connected: true,
+        busy: false,
+        message:
+          '<span class="err">Publishing cancelled because the shared header/footer could not be updated.</span>',
+      });
+      return false;
+    }
 
     const slug = slugify(title) || "untitled";
     const url = `posts/${dateStr}-${slug}.html`;
