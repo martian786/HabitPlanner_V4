@@ -1,0 +1,40 @@
+<header class="py-[1.375rem] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <img src="../habitblock-logo.png" alt="HabitBlock Logo" class="h-8 w-8">
+      <div class="font-bold text-3xl">HabitBlock</div>
+    </div>
+    <nav class="hidden md:flex space-x-8 text-lg font-medium">
+      <a href="../index.html" class="hover:text-penn-red transition duration-300">Home</a>
+      <a href="../features.html" class="hover:text-penn-red transition duration-300">Features</a>
+      <a href="../pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+      <a href="../about.html" class="hover:text-penn-red transition duration-300">About</a>
+      <a href="../contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
+      <a href="../resources.html" class="text-penn-red font-semibold">Resources</a>
+    </nav>
+    <div class="flex items-center space-x-4">
+      <a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300">
+        Login
+      </a>
+      <button class="md:hidden focus:outline-none" onclick="toggleMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rich-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4">
+    <nav class="flex flex-col space-y-4">
+      <a href="../index.html" class="hover:text-penn-red transition duration-300">Home</a>
+      <a href="../features.html" class="hover:text-penn-red transition duration-300">Features</a>
+      <a href="../pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
+      <a href="../about.html" class="hover:text-penn-red transition duration-300">About</a>
+      <a href="../contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
+      <a href="../resources.html" class="text-penn-red font-semibold">Resources</a>
+      <a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300">
+        Login
+      </a>
+    </nav>
+  </div>
+</header>

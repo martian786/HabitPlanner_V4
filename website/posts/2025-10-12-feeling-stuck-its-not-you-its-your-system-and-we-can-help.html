@@ -80,49 +80,7 @@
   </style>
 </head>
 <body class="bg-gradient-white-yellow text-rich-black font-sans">
-
-  <!-- Header Section -->
-  <header class="py-[1.375rem] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center space-x-3">
-        <img src="../habitblock-logo.png" alt="HabitBlock Logo" class="h-8 w-8">
-        <div class="font-bold text-3xl">HabitBlock</div>
-      </div>
-      <nav class="hidden md:flex space-x-8 text-lg font-medium">
-        <a href="../index.html" class="hover:text-penn-red transition duration-300">Home</a>
-        <a href="../features.html" class="hover:text-penn-red transition duration-300">Features</a>
-        <a href="../pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
-        <a href="../about.html" class="hover:text-penn-red transition duration-300">About</a>
-        <a href="../contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
-        <a href="../resources.html" class="text-penn-red font-semibold">Resources</a>
-      </nav>
-      <div class="flex items-center space-x-4">
-        <a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full hover:bg-opacity-80 transition duration-300">
-          Login
-        </a>
-        <button class="md:hidden focus:outline-none" onclick="toggleMobileMenu()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rich-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="mobile-menu mt-4 bg-white rounded-lg shadow-lg p-4">
-      <nav class="flex flex-col space-y-4">
-        <a href="../index.html" class="hover:text-penn-red transition duration-300">Home</a>
-        <a href="../features.html" class="hover:text-penn-red transition duration-300">Features</a>
-        <a href="../pricing.html" class="hover:text-penn-red transition duration-300">Pricing</a>
-        <a href="../about.html" class="hover:text-penn-red transition duration-300">About</a>
-        <a href="../contact.html" class="hover:text-penn-red transition duration-300">Contact</a>
-        <a href="../resources.html" class="text-penn-red font-semibold">Resources</a>
-        <a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="bg-penn-red text-white font-bold py-2 px-6 rounded-full text-center hover:bg-opacity-80 transition duration-300">
-          Login
-        </a>
-      </nav>
-    </div>
-  </header>
+  <div id="hb-shared-header" data-partial="../partials/header.html"></div>
 
   <!-- Article Content -->
   <main class="container">
@@ -198,50 +156,46 @@
       </p>
     </article>
   </main>
-
-  <!-- Footer -->
-  <footer class="py-16 px-6 text-white text-sm" style="background-color: #370617;">
-    <div class="container mx-auto max-w-6xl">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Navigation -->
-        <div>
-          <h3 class="text-lg font-semibold mb-4">Navigation</h3>
-          <ul class="space-y-2">
-            <li><a href="../index.html" class="hover:text-gray-300 transition duration-300">Home</a></li>
-            <li><a href="../features.html" class="hover:text-gray-300 transition duration-300">Features</a></li>
-            <li><a href="../pricing.html" class="hover:text-gray-300 transition duration-300">Pricing</a></li>
-            <li><a href="../about.html" class="hover:text-gray-300 transition duration-300">About</a></li>
-            <li><a href="../contact.html" class="hover:text-gray-300 transition duration-300">Contact</a></li>
-            <li><a href="../resources.html" class="hover:text-gray-300 transition duration-300">Resources</a></li>
-          </ul>
-        </div>
-
-        <!-- Product -->
-        <div>
-          <h3 class="text-lg font-semibold mb-4">Product</h3>
-          <ul class="space-y-2">
-            <li><a href="#" onclick="window.location.href = window.websiteConfig.getAppUrl()" class="hover:text-gray-300 transition duration-300">Login</a></li>
-            <li><a href="../pricing.html" class="hover:text-gray-300 transition duration-300">Start 7-Day Free Trial</a></li>
-          </ul>
-        </div>
-
-        <!-- Legal -->
-        <div>
-          <h3 class="text-lg font-semibold mb-4">Legal</h3>
-          <ul class="space-y-2">
-            <li><a href="../privacy-policy.html" class="hover:text-gray-300 transition duration-300">Privacy Policy</a></li>
-            <li><a href="../terms-of-service.html" class="hover:text-gray-300 transition duration-300">Terms of Service</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="border-t border-gray-600 mt-12 pt-8 text-center">
-        <p>&copy; 2025 Brightsun AI Ltd. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
+  <div id="hb-shared-footer" data-partial="../partials/footer.html"></div>
   <script>
+    const HB_PARTIALS = [
+      { selector: "#hb-shared-header", url: "../partials/header.html" },
+      { selector: "#hb-shared-footer", url: "../partials/footer.html" },
+    ];
+    const hbPartialCache = new Map();
+
+    async function hbFetchPartial(url) {
+      if (hbPartialCache.has(url)) return hbPartialCache.get(url);
+      const res = await fetch(url, { credentials: "same-origin" });
+      if (!res.ok) {
+        throw new Error(`Failed to load partial ${url}: ${res.status}`);
+      }
+      const text = await res.text();
+      hbPartialCache.set(url, text);
+      return text;
+    }
+
+    async function hbHydratePartials(root) {
+      const scope = root || document;
+      await Promise.all(
+        HB_PARTIALS.map(async ({ selector, url }) => {
+          const target = scope.querySelector(selector);
+          if (!target) return;
+          try {
+            target.innerHTML = await hbFetchPartial(url);
+          } catch (err) {
+            console.error(err);
+          }
+        })
+      );
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      hbHydratePartials();
+    });
+
+    window.hbHydrateBlogPost = hbHydratePartials;
+
     function toggleMobileMenu() {
       const menu = document.getElementById('mobileMenu');
       menu.classList.toggle('show');
