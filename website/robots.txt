@@ -3,11 +3,16 @@ Allow: /
 
 # Internal or non-public resources
 Disallow: /blogwriter/
+Disallow: /partials
+Disallow: /assets
 Disallow: /posts.json
 Disallow: /config.js
 Disallow: /analytics-config.js
 Disallow: /features%20copy.html
 Disallow: /index%20copy.html
+Disallow: /index%20copy%20with%207-day-trial.html
+Disallow: /utm.js
+Disallow: /blog--.html
 
 # Keep assets accessible for rendering
 Allow: /assets/
