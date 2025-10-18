@@ -18,6 +18,20 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
     typographer: true,
   });
 
+// Add link attributes (open in new tab + underline styling)
+if (window.markdownitLinkAttributes) {
+  md.use(window.markdownitLinkAttributes, {
+    pattern: /./, // match all links
+    attrs: {
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      class: 'hb-link',
+    },
+  });
+} else {
+  console.warn('markdownit-link-attributes plugin not loaded.');
+}
+
   // UI refs
   const pickBtn = document.getElementById("pick");
   const pubBtn = document.getElementById("publish");
@@ -291,7 +305,8 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
         "Article"
       ).trim(),
       datePretty: pretty,
-      bodyHtml: md.render(contentEl.value || ""),
+      // bodyHtml: md.render(contentEl.value || ""), --fixing hyperlinks
+      bodyHtml: `<div class="post-body">${md.render(contentEl.value || "")}</div>`,
       coverUrl: previewCover,
       readMins,
     });
@@ -453,7 +468,8 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
 
     const rawMd = contentEl.value || "";
     const readMins = estimateReadMinutesFromMarkdown(rawMd);
-    const bodyHtml = md.render(rawMd);
+    // const bodyHtml = md.render(rawMd); --- fixed for hyperlinks
+    const bodyHtml= `<div class="post-body">${md.render(contentEl.value || "")}</div>`;
     const pretty = new Date(dateStr + "T12:00:00Z").toLocaleDateString(
       "en-GB",
       { year: "numeric", month: "short", day: "numeric" }
@@ -655,7 +671,8 @@ import { loadCategories, setupCategoryValidation } from "./categories.js";
         "en-GB",
         { year: "numeric", month: "short", day: "numeric" }
       );
-      const bodyHtml = md.render(rawMd);
+      // const bodyHtml = md.render(rawMd);  -- fixed for hyperlink
+      const bodyHtml = `<div class="post-body">${md.render(rawMd)}</div>`;
       const html = postHtml({
         title,
         kicker: (

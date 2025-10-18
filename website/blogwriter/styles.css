@@ -248,3 +248,17 @@ main > .two > .card:last-child {
     height: calc(100vh - 84px);
   }
 }
+
+/* Ensure underlined links inside the editor preview */
+.preview .post-body a.hb-link,
+.preview .post-body a.hb-link:link,
+.preview .post-body a.hb-link:visited {
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1.5px;
+  font-weight: 500;
+}
+
+.preview .post-body a.hb-link:hover {
+  opacity: 0.85;
+}
