@@ -216,10 +216,10 @@
     <section class="py-10 px-6">
       <div class="container mx-auto max-w-6xl">
         <div class="flex flex-wrap justify-center gap-8">
-          <!-- Habit Pro -->
+          <!-- Habit Plus -->
           <div class="pricing-card bg-white rounded-2xl p-8 shadow-lg relative">
             <div class="text-center mb-8">
-              <h3 class="text-2xl font-bold mb-4">Habit Pro</h3>
+              <h3 class="text-2xl font-bold mb-4">Habit Plus</h3>
               <div class="mb-2">
                 <span
                   class="inline-block text-xs font-semibold bg-gray-100 px-3 py-1 rounded-full"
@@ -227,9 +227,20 @@
                 >
               </div>
               <div class="mb-6">
-                <!-- ADDED id so script can update this value -->
-                <span id="starterPrice" class="text-5xl font-bold">£99</span>
-                <span class="text-gray-500">/year</span>
+                <!-- Original price with strikethrough -->
+                <div>
+                  <span id="starterPriceOriginal" class="text-3xl text-gray-900 line-through">£89</span>
+                </div>
+                <!-- Discounted price -->
+                <div class="mt-1">
+                  <span id="starterPrice" class="text-5xl font-bold text-gray-900">£62</span>
+                  <span class="text-gray-500">/year</span>
+                </div>
+                <div class="mt-2">
+                  <span class="inline-block text-xs font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                    Save 30%
+                  </span>
+                </div>
               </div>
               <p class="text-gray-600">
                 Perfect for getting started with visual planning
@@ -310,7 +321,7 @@
             <button
               type="button"
               data-open-modal
-              data-plan="pro"
+              data-plan="plus"
               class="block w-full bg-gray-900 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition"
             >
               Reserve Early Access - Get Lifetime Discount
@@ -320,14 +331,14 @@
             </p>
           </div>
 
-          <!-- Habit Plus -->
+          <!-- Habit Pro -->
           <div
             class="pricing-card bg-white rounded-2xl p-8 shadow-lg relative border-4 border-penn-red"
             style="border-color: var(--color-penn-red)"
           >
             <div class="popular-badge">Most Popular</div>
             <div class="text-center mb-8">
-              <h3 class="text-2xl font-bold mb-4">Habit Plus</h3>
+              <h3 class="text-2xl font-bold mb-4">Habit Pro</h3>
               <div class="mb-2">
                 <span
                   class="inline-block text-xs font-semibold bg-red-50 text-penn-red px-3 py-1 rounded-full"
@@ -335,8 +346,20 @@
                 >
               </div>
               <div class="mb-6">
-                <span id="proPrice" class="text-5xl font-bold">£149</span>
-                <span id="proPeriod" class="text-gray-500">/year</span>
+                <!-- Original price with strikethrough -->
+                <div>
+                  <span id="proPriceOriginal" class="text-3xl text-gray-900 line-through">£115</span>
+                </div>
+                <!-- Discounted price -->
+                <div class="mt-1">
+                  <span id="proPrice" class="text-5xl font-bold text-gray-900">£81</span>
+                  <span id="proPeriod" class="text-gray-500">/year</span>
+                </div>
+                <div class="mt-2">
+                  <span class="inline-block text-xs font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                    Save 30%
+                  </span>
+                </div>
               </div>
               <p class="text-gray-600">
                 Everything you need for serious productivity
@@ -355,7 +378,7 @@
                     clip-rule="evenodd"
                   ></path>
                 </svg>
-                <span><strong>Everything in Starter, plus:</strong></span>
+                <span><strong>Everything in Plus, and:</strong></span>
               </li>
               <li class="flex items-start">
                 <svg
@@ -431,7 +454,7 @@
             <button
               type="button"
               data-open-modal
-              data-plan="plus"
+              data-plan="pro"
               class="block w-full text-white text-center font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition"
               style="background-color: var(--color-penn-red)"
             >
@@ -466,7 +489,7 @@
                     clip-rule="evenodd"
                   ></path>
                 </svg>
-                <span><strong>Everything in Pro, plus:</strong></span>
+                <span><strong>Everything in Plus, plus:</strong></span>
               </li>
               <li class="flex items-start">
                 <svg
@@ -569,9 +592,8 @@
               What's included in the free trial?
             </h3>
             <p class="text-gray-700">
-              Your 7-day free trial includes all Pro features: unlimited
-              objectives, advanced analytics, week copying, data export, and
-              priority support.
+              Your 7-day free trial includes all features for the plan that you
+              selected
             </p>
           </div>
           <div class="border-b border-gray-200 pb-6">
@@ -1205,13 +1227,15 @@
       (function autoCurrencyByIP() {
         // Curated amounts (no FX): keep nice endings per currency
         const PRICE_MATRIX = {
-          GBP: { plus: 149, pro: 99 },
-          EUR: { plus: 149, pro: 113 },
-          USD: { plus: 199, pro: 129 },
+          GBP: { pro: 115, plus: 89 },
+          EUR: { pro: 133, plus: 102 },
+          USD: { pro: 156, plus: 119 },
         };
 
-        const plusEl = document.getElementById("proPrice");
-        const proEl = document.getElementById("starterPrice");
+        const plusEl = document.getElementById("starterPrice");
+        const plusOriginalEl = document.getElementById("starterPriceOriginal");
+        const proEl = document.getElementById("proPrice");
+        const proOriginalEl = document.getElementById("proPriceOriginal");
         const fineEl = document.getElementById("hbCurrencyFineprint"); // NEW
 
         function fmt(n, ccy) {
@@ -1221,6 +1245,8 @@
               style: "currency",
               currency: "USD",
               currencyDisplay: "narrowSymbol",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
             }).format(n);
           }
           // GBP/EUR: keep user locale; narrowSymbol avoids "EUR 149,00" styles
@@ -1228,12 +1254,23 @@
             style: "currency",
             currency: ccy,
             currencyDisplay: "narrowSymbol",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
           }).format(n);
         }
 
         function apply(ccy) {
-          if (plusEl) plusEl.textContent = fmt(PRICE_MATRIX[ccy].plus, ccy);
-          if (proEl) proEl.textContent = fmt(PRICE_MATRIX[ccy].pro, ccy);
+          // Calculate discounted prices (30% off)
+          const plusDiscounted = Math.round(PRICE_MATRIX[ccy].plus * 0.7);
+          const proDiscounted = Math.round(PRICE_MATRIX[ccy].pro * 0.7);
+
+          // Update original prices (strikethrough)
+          if (plusOriginalEl) plusOriginalEl.textContent = fmt(PRICE_MATRIX[ccy].plus, ccy);
+          if (proOriginalEl) proOriginalEl.textContent = fmt(PRICE_MATRIX[ccy].pro, ccy);
+
+          // Update discounted prices
+          if (plusEl) plusEl.textContent = fmt(plusDiscounted, ccy);
+          if (proEl) proEl.textContent = fmt(proDiscounted, ccy);
 
           // Fine print only for USD
           if (fineEl) {
