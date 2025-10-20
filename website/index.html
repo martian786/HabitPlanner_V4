@@ -108,6 +108,27 @@
       .mobile-menu.show {
         display: block;
       }
+
+      /* Blinking caret for hero typed text */
+      .hero-caret {
+        display: inline-block;
+        width: 0.06em;
+        height: 1em;
+        margin-left: 0.15em;
+        background: currentColor;
+        animation: hero-blink 1s steps(1) infinite;
+        vertical-align: baseline;
+      }
+      @keyframes hero-blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hero-caret {
+          animation: none;
+        }
+      }
     </style>
   </head>
   <body class="bg-gradient-white-yellow text-rich-black font-sans">
@@ -224,9 +245,22 @@
         >
           Paint your week <br />
           <br />
-          <span class="block"
-            >Build habits that stick — and hit the goals that matter.</span
-          >
+          <span class="block text-5xl md:text-6xl lg:text-7xl font-bold">
+            <span
+              id="heroTyped"
+              class="inline-block align-bottom min-h-[1.2em]"
+              aria-live="polite"
+              aria-atomic="true"
+              data-phrases='[
+                "Build habits that stick.",
+                "Hit your goals.",
+                "Paint your week in color strokes.",
+                "Add 2 hours of deep work each week.",
+                "See proof of progress, not just plans."
+              ]'
+            ></span>
+            <span class="hero-caret" aria-hidden="true"></span>
+          </span>
         </h1>
 
         <p class="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-gray-700">
@@ -246,6 +280,7 @@
         </div>
       </div>
     </main>
+
     <!-- How Habitblock Solves Your Biggest Challenges Section -->
     <section class="py-15 px-6">
       <div class="container mx-auto max-w-5xl text-center">
@@ -271,7 +306,7 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-4 0V3m-4 2V3m4 2V3m0 0a2 2 0 012-2h2a2 2 0 012 2v2m-4-2H9m4 0h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-4 0V3m-4 2V3m4 2V3m0 0a2 2 0 012-2h2a2 2 0 012 2v2m-4-2H9m4 0h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2m-4 2h2"
                 />
               </svg>
             </div>
@@ -606,6 +641,7 @@
       </div>
     </div>
 
+    <!-- Scripts -->
     <script>
       function toggleMobileMenu() {
         const menu = document.getElementById("mobileMenu");
@@ -637,6 +673,84 @@
 
       // Initialize cookie consent on page load
       window.addEventListener("load", showCookieConsent);
+    </script>
+
+    <!-- Typed/Eraser loop for hero -->
+    <script>
+      (function () {
+        const el = document.getElementById("heroTyped");
+        if (!el) return;
+
+        // Config
+        const TYPE_MS = 25; // per character while typing
+        const ERASE_MS = 20; // per character while erasing
+        const HOLD_MS = 4400; // pause after fully typed
+        const GAP_MS = 100; // pause before next phrase
+        const LOOP = true; // keep looping
+        const SHUFFLE = false; // randomize order
+
+        // Pull phrases from data attribute (falls back to a default)
+        let phrases;
+        try {
+          phrases = JSON.parse(el.getAttribute("data-phrases") || "[]");
+        } catch {
+          phrases = [];
+        }
+        if (!phrases.length) {
+          phrases = [
+            "Build habits that stick — and hit the goals that matter.",
+          ];
+        }
+
+        // Respect reduced motion
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+        if (reducedMotion) {
+          el.textContent = phrases[0];
+          return;
+        }
+
+        // Optional shuffle
+        if (SHUFFLE) {
+          phrases = phrases
+            .map((v) => [Math.random(), v])
+            .sort((a, b) => a[0] - b[0])
+            .map((pair) => pair[1]);
+        }
+
+        const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+        async function typeText(text) {
+          el.textContent = "";
+          for (let i = 0; i < text.length; i++) {
+            el.textContent += text[i];
+            await wait(TYPE_MS);
+          }
+        }
+
+        async function eraseText() {
+          const text = el.textContent;
+          for (let i = text.length; i >= 0; i--) {
+            el.textContent = text.slice(0, i);
+            await wait(ERASE_MS);
+          }
+        }
+
+        (async function run() {
+          let i = 0;
+          do {
+            const phrase = phrases[i % phrases.length];
+            await typeText(phrase);
+            await wait(HOLD_MS);
+            await eraseText();
+            await wait(GAP_MS);
+            i++;
+          } while (LOOP || i < phrases.length);
+
+          if (!LOOP) el.textContent = phrases[phrases.length - 1];
+        })();
+      })();
     </script>
   </body>
 </html>
