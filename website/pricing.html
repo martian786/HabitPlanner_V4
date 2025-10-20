@@ -229,15 +229,25 @@
               <div class="mb-6">
                 <!-- Original price with strikethrough -->
                 <div>
-                  <span id="starterPriceOriginal" class="text-3xl text-gray-900 line-through">£89</span>
+                  <span
+                    id="starterPriceOriginal"
+                    class="text-3xl text-gray-900 line-through"
+                    >£89</span
+                  >
                 </div>
                 <!-- Discounted price -->
                 <div class="mt-1">
-                  <span id="starterPrice" class="text-5xl font-bold text-gray-900">£62</span>
+                  <span
+                    id="starterPrice"
+                    class="text-5xl font-bold text-gray-900"
+                    >£62</span
+                  >
                   <span class="text-gray-500">/year</span>
                 </div>
                 <div class="mt-2">
-                  <span class="inline-block text-xs font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                  <span
+                    class="inline-block text-xm font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full"
+                  >
                     Save 30%
                   </span>
                 </div>
@@ -317,6 +327,10 @@
                 </svg>
                 <span>Mobile & desktop access</span>
               </li>
+              <li>
+                <span><br /></span>
+                <!--leave to move button down to match other card  -->
+              </li>
             </ul>
             <button
               type="button"
@@ -348,15 +362,23 @@
               <div class="mb-6">
                 <!-- Original price with strikethrough -->
                 <div>
-                  <span id="proPriceOriginal" class="text-3xl text-gray-900 line-through">£115</span>
+                  <span
+                    id="proPriceOriginal"
+                    class="text-3xl text-gray-900 line-through"
+                    >£115</span
+                  >
                 </div>
                 <!-- Discounted price -->
                 <div class="mt-1">
-                  <span id="proPrice" class="text-5xl font-bold text-gray-900">£81</span>
+                  <span id="proPrice" class="text-5xl font-bold text-gray-900"
+                    >£81</span
+                  >
                   <span id="proPeriod" class="text-gray-500">/year</span>
                 </div>
                 <div class="mt-2">
-                  <span class="inline-block text-xs font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                  <span
+                    class="inline-block text-xm font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full"
+                  >
                     Save 30%
                   </span>
                 </div>
@@ -1265,8 +1287,10 @@
           const proDiscounted = Math.round(PRICE_MATRIX[ccy].pro * 0.7);
 
           // Update original prices (strikethrough)
-          if (plusOriginalEl) plusOriginalEl.textContent = fmt(PRICE_MATRIX[ccy].plus, ccy);
-          if (proOriginalEl) proOriginalEl.textContent = fmt(PRICE_MATRIX[ccy].pro, ccy);
+          if (plusOriginalEl)
+            plusOriginalEl.textContent = fmt(PRICE_MATRIX[ccy].plus, ccy);
+          if (proOriginalEl)
+            proOriginalEl.textContent = fmt(PRICE_MATRIX[ccy].pro, ccy);
 
           // Update discounted prices
           if (plusEl) plusEl.textContent = fmt(plusDiscounted, ccy);
