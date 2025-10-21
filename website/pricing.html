@@ -596,52 +596,110 @@
       </div>
     </section>
 
+    <!-- FAQ collapsable -->
+    <!-- Include Alpine.js -->
+    <script
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+
     <!-- FAQ -->
     <section class="py-20 px-6 bg-white">
       <div class="container mx-auto max-w-4xl">
         <h2 class="text-4xl font-bold text-center mb-12">
           Frequently Asked Questions
         </h2>
-        <div class="space-y-8">
-          <div class="border-b border-gray-200 pb-6">
-            <h3 class="text-xl font-semibold mb-3">Can I cancel anytime?</h3>
-            <p class="text-gray-700">
+
+        <div class="space-y-6">
+          <!-- FAQ Item -->
+          <div x-data="{ open: false }" class="border-b border-gray-200 pb-4">
+            <button
+              @click="open = !open"
+              class="flex justify-between w-full text-left"
+            >
+              <h3 class="text-xl font-semibold">Can I cancel anytime?</h3>
+              <span
+                x-text="open ? '−' : '+'"
+                class="text-2xl font-bold text-gray-500 transition-transform duration-200"
+              ></span>
+            </button>
+            <p x-show="open" x-collapse class="mt-2 text-gray-700">
               Absolutely. You can cancel your subscription at any time from your
               account settings. Your plan will remain active until the end of
               your current billing period.
             </p>
           </div>
-          <div class="border-b border-gray-200 pb-6">
-            <h3 class="text-xl font-semibold mb-3">
-              What's included in the free trial?
-            </h3>
-            <p class="text-gray-700">
+
+          <div x-data="{ open: false }" class="border-b border-gray-200 pb-4">
+            <button
+              @click="open = !open"
+              class="flex justify-between w-full text-left"
+            >
+              <h3 class="text-xl font-semibold">
+                What's included in the free trial?
+              </h3>
+              <span
+                x-text="open ? '−' : '+'"
+                class="text-2xl font-bold text-gray-500 transition-transform duration-200"
+              ></span>
+            </button>
+            <p x-show="open" x-collapse class="mt-2 text-gray-700">
               Your 7-day free trial includes all features for the plan that you
               selected.
             </p>
           </div>
-          <div class="border-b border-gray-200 pb-6">
-            <h3 class="text-xl font-semibold mb-3">How secure is my data?</h3>
-            <p class="text-gray-700">
+
+          <div x-data="{ open: false }" class="border-b border-gray-200 pb-4">
+            <button
+              @click="open = !open"
+              class="flex justify-between w-full text-left"
+            >
+              <h3 class="text-xl font-semibold">How secure is my data?</h3>
+              <span
+                x-text="open ? '−' : '+'"
+                class="text-2xl font-bold text-gray-500 transition-transform duration-200"
+              ></span>
+            </button>
+            <p x-show="open" x-collapse class="mt-2 text-gray-700">
               We use enterprise-grade security with robust backend, encrypted
               data storage, and secure authentication. Your data is
               automatically backed up and you can export it anytime as JSON.
             </p>
           </div>
-          <div class="border-b border-gray-200 pb-6">
-            <h3 class="text-xl font-semibold mb-3">
-              Do you offer student discounts?
-            </h3>
-            <p class="text-gray-700">
-              Yes students can apply for a 40% discount by emailing proof of
-              eligibility to support@habitblock.com.
+
+          <div x-data="{ open: false }" class="border-b border-gray-200 pb-4">
+            <button
+              @click="open = !open"
+              class="flex justify-between w-full text-left"
+            >
+              <h3 class="text-xl font-semibold">
+                Do you offer student discounts?
+              </h3>
+              <span
+                x-text="open ? '−' : '+'"
+                class="text-2xl font-bold text-gray-500 transition-transform duration-200"
+              ></span>
+            </button>
+            <p x-show="open" x-collapse class="mt-2 text-gray-700">
+              Yes students can apply for a 10% discount of non-discounted price
+              by emailing proof of eligibility to support@habitblock.com.
             </p>
           </div>
-          <div>
-            <h3 class="text-xl font-semibold mb-3">
-              What if I need more than Enterprise features?
-            </h3>
-            <p class="text-gray-700">
+
+          <div x-data="{ open: false }" class="border-b border-gray-200 pb-4">
+            <button
+              @click="open = !open"
+              class="flex justify-between w-full text-left"
+            >
+              <h3 class="text-xl font-semibold">
+                What if I need more than Enterprise features?
+              </h3>
+              <span
+                x-text="open ? '−' : '+'"
+                class="text-2xl font-bold text-gray-500 transition-transform duration-200"
+              ></span>
+            </button>
+            <p x-show="open" x-collapse class="mt-2 text-gray-700">
               We offer custom solutions for large organizations with specific
               needs like on-premise deployment, custom integrations, or advanced
               compliance requirements. Contact our sales team to discuss your
