@@ -257,7 +257,7 @@
     </noscript>
 
     <!-- FAQ -->
-    <section class="py-20 px-6">
+    <section class="py-20 px-6" x-data>
       <div class="container mx-auto max-w-4xl">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-bold mb-6">Frequently Asked Questions</h2>
@@ -267,12 +267,34 @@
           </p>
         </div>
 
-        <div class="space-y-8">
-          <div class="border-b border-gray-200 pb-6">
-            <h3 class="text-xl font-semibold mb-3">
-              How quickly do you respond to support requests?
-            </h3>
-            <p class="text-gray-700">
+        <div class="space-y-6">
+          <!-- Item -->
+          <div
+            x-data="{ open:false }"
+            x-id="['faq']"
+            class="border-b border-gray-200 pb-4"
+          >
+            <button
+              @click="open=!open"
+              class="flex items-center justify-between w-full text-left"
+              :aria-expanded="open"
+              :aria-controls="$id('faq')"
+            >
+              <h3 class="text-xl font-semibold">
+                How quickly do you respond to support requests?
+              </h3>
+              <span
+                class="text-2xl font-bold text-gray-500"
+                x-text="open ? '−' : '+'"
+              ></span>
+            </button>
+            <p
+              id=""
+              :id="$id('faq')"
+              x-show="open"
+              x-collapse
+              class="mt-2 text-gray-700"
+            >
               We typically respond to support emails within 24 hours during
               business days. For sales inquiries, we usually respond within 4
               hours. Enterprise customers receive priority support with faster
@@ -280,47 +302,127 @@
             </p>
           </div>
 
-          <div class="border-b border-gray-200 pb-6">
-            <h3 class="text-xl font-semibold mb-3">
-              Do you offer phone support?
-            </h3>
-            <p class="text-gray-700">
+          <!-- Item -->
+          <div
+            x-data="{ open:false }"
+            x-id="['faq']"
+            class="border-b border-gray-200 pb-4"
+          >
+            <button
+              @click="open=!open"
+              class="flex items-center justify-between w-full text-left"
+              :aria-expanded="open"
+              :aria-controls="$id('faq')"
+            >
+              <h3 class="text-xl font-semibold">Do you offer phone support?</h3>
+              <span
+                class="text-2xl font-bold text-gray-500"
+                x-text="open ? '−' : '+'"
+              ></span>
+            </button>
+            <p
+              :id="$id('faq')"
+              x-show="open"
+              x-collapse
+              class="mt-2 text-gray-700"
+            >
               Currently, we provide support primarily through email to ensure we
               can give you detailed, thoughtful responses. Enterprise customers
               do have access to phone support as part of their plan.
             </p>
           </div>
 
-          <div class="border-b border-gray-200 pb-6">
-            <h3 class="text-xl font-semibold mb-3">
-              Can I request new features?
-            </h3>
-            <p class="text-gray-700">
+          <!-- Item -->
+          <div
+            x-data="{ open:false }"
+            x-id="['faq']"
+            class="border-b border-gray-200 pb-4"
+          >
+            <button
+              @click="open=!open"
+              class="flex items-center justify-between w-full text-left"
+              :aria-expanded="open"
+              :aria-controls="$id('faq')"
+            >
+              <h3 class="text-xl font-semibold">Can I request new features?</h3>
+              <span
+                class="text-2xl font-bold text-gray-500"
+                x-text="open ? '−' : '+'"
+              ></span>
+            </button>
+            <p
+              :id="$id('faq')"
+              x-show="open"
+              x-collapse
+              class="mt-2 text-gray-700"
+            >
               Absolutely! We love hearing feature requests from our users. While
               we can't implement every suggestion, user feedback heavily
               influences our product roadmap. Just drop us a line.
             </p>
           </div>
 
-          <div class="border-b border-gray-200 pb-6">
-            <h3 class="text-xl font-semibold mb-3">
-              Where is your company located?
-            </h3>
-            <p class="text-gray-700">
-              Brightsun AI Ltd is registered in England & Wales. We're a
+          <!-- Item -->
+          <div
+            x-data="{ open:false }"
+            x-id="['faq']"
+            class="border-b border-gray-200 pb-4"
+          >
+            <button
+              @click="open=!open"
+              class="flex items-center justify-between w-full text-left"
+              :aria-expanded="open"
+              :aria-controls="$id('faq')"
+            >
+              <h3 class="text-xl font-semibold">
+                Where is your company located?
+              </h3>
+              <span
+                class="text-2xl font-bold text-gray-500"
+                x-text="open ? '−' : '+'"
+              ></span>
+            </button>
+            <p
+              :id="$id('faq')"
+              x-show="open"
+              x-collapse
+              class="mt-2 text-gray-700"
+            >
+              Brightsun AI Ltd is registered in England &amp; Wales. We're a
               remote-first company with team members across the UK, but we serve
               customers worldwide and provide support in multiple timezones.
             </p>
           </div>
 
-          <div>
-            <h3 class="text-xl font-semibold mb-3">
-              Do you have a public roadmap?
-            </h3>
-            <p class="text-gray-700">
+          <!-- Item -->
+          <div
+            x-data="{ open:false }"
+            x-id="['faq']"
+            class="border-b border-gray-200 pb-4"
+          >
+            <button
+              @click="open=!open"
+              class="flex items-center justify-between w-full text-left"
+              :aria-expanded="open"
+              :aria-controls="$id('faq')"
+            >
+              <h3 class="text-xl font-semibold">
+                Do you have a public roadmap?
+              </h3>
+              <span
+                class="text-2xl font-bold text-gray-500"
+                x-text="open ? '−' : '+'"
+              ></span>
+            </button>
+            <p
+              :id="$id('faq')"
+              x-show="open"
+              x-collapse
+              class="mt-2 text-gray-700"
+            >
               We share major feature updates and upcoming developments through
               our product updates. For detailed roadmap information or to
-              influence our priorities, reach out to us directly - especially if
+              influence our priorities, reach out to us directly—especially if
               you're considering Enterprise features.
             </p>
           </div>
@@ -443,6 +545,11 @@
     </footer>
 
     <!-- Scripts -->
+    <script
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+
     <script>
       function toggleMobileMenu() {
         const menu = document.getElementById("mobileMenu");
